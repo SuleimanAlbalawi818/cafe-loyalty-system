@@ -47,7 +47,7 @@
         <!-- الشعار واسم الكافيه يتغيران برمجياً -->
         <img src="logo.jpg" id="displayCafeLogo" alt="Logo" class="logo">
         
-        <h1 id="welcomeTitle">انضم لبرنامج ولاء MANDEL COFFEE</h1>
+        <img id="cafe-logo" src="" alt="شعار الكافيه">
         <p>سجل معنا واجمع النقاط مع كل كوب قهوة. احصل على قهوتك المجانية بعد 10 نقاط ☕</p>
 
         <input type="text" id="custName" placeholder="الاسم الكريم">
@@ -88,7 +88,7 @@
                     const cafeData = cafeSnap.data();
                     
                     // تغيير العنوان
-                    document.getElementById('welcomeTitle').innerText = `انضم لبرنامج ولاء ${cafeData.name}`;
+                    document.getElementById('cafe-logo').innerText = `انضم لبرنامج ولاء ${cafeData.name}`;
                     
                     // تغيير الشعار إذا كان موجوداً
                     if (cafeData.logoUrl && cafeData.logoUrl !== "logo.jpg") {
