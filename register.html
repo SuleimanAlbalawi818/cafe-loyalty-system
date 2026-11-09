@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إصدار بطاقة ولاء</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #eef2f5; 
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; margin: 0; 
+        }
+        .register-container { 
+            background: #fff; padding: 30px; border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            width: 90%; max-width: 400px; text-align: center; 
+        }
+        .logo { 
+            width: 90px; height: 90px; border-radius: 50%; 
+            border: 3px solid #ddd; margin-bottom: 15px; 
+            object-fit: cover;
+            background-color: #fff;
+        }
+        h1 { color: #111; font-size: 22px; margin-bottom: 10px; }
+        p { color: #666; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        
+        input { 
+            width: 100%; padding: 14px; margin-bottom: 15px; 
+            border: 1px solid #ccc; border-radius: 8px; 
+            box-sizing: border-box; font-family: inherit; font-size: 15px;
+        }
+        input:focus { outline: none; border-color: #555; }
+        
+        button { 
+            width: 100%; padding: 15px; background: #111; /* لون افتراضي يتغير برمجياً */
+            color: white; border: none; border-radius: 8px; 
+            font-size: 16px; font-weight: bold; cursor: pointer; 
+            transition: opacity 0.3s; 
+        }
+        button:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <!-- الشعار واسم الكافيه يتغيران برمجياً -->
+        <img src="logo.jpg" id="displayCafeLogo" alt="Logo" class="logo">
+        
+        <h1 id="welcomeTitle">انضم لبرنامج ولاء MANDEL COFFEE</h1>
+        <p>سجل معنا واجمع النقاط مع كل كوب قهوة. احصل على قهوتك المجانية بعد 10 نقاط ☕</p>
+
+        <input type="text" id="custName" placeholder="الاسم الكريم">
+        <input type="tel" id="custPhone" placeholder="رقم الهاتف">
+
+        <button id="registerBtn">إصدار بطاقتي الآن</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
+          authDomain: "cafe-system-24331.firebaseapp.com",
+          projectId: "cafe-system-24331",
+          storageBucket: "cafe-system-24331.firebasestorage.app",
+          messagingSenderId: "845856227747",
+          appId: "1:845856227747:web:378c6d02fc89410df41a16"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // قراءة اسم الكافيه من الرابط
+        const urlParams = new URLSearchParams(window.location.search);
+        const cafeId = urlParams.get('cafe') || 'mandel';
+
+        const registerBtn = document.getElementById('registerBtn');
+
+        // جلب بيانات الكافيه لتلوين الصفحة
+        const fetchCafeData = async () => {
+            try {
+                const cafeRef = doc(db, "cafes", cafeId);
+                const cafeSnap = await getDoc(cafeRef);
+                
+                if (cafeSnap.exists()) {
+                    const cafeData = cafeSnap.data();
+                    
+                    // تغيير العنوان
+                    document.getElementById('welcomeTitle').innerText = `انضم لبرنامج ولاء ${cafeData.name}`;
+                    
+                    // تغيير الشعار إذا كان موجوداً
+                    if (cafeData.logoUrl && cafeData.logoUrl !== "logo.jpg") {
+                        document.getElementById('displayCafeLogo').src = cafeData.logoUrl;
+                    }
+
+                    // تغيير لون الزر والإطار ليطابق لون الكافيه
+                    registerBtn.style.backgroundColor = cafeData.primaryColor;
+                    document.getElementById('displayCafeLogo').style.borderColor = cafeData.primaryColor;
+                }
+            } catch (error) {
+                console.error("خطأ في جلب بيانات الكافيه:", error);
+            }
+        };
+
+        fetchCafeData();
+
+        // عملية التسجيل
+        registerBtn.addEventListener('click', async () => {
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+
+            if (!name || !phone) {
+                return alert("الرجاء إدخال الاسم ورقم الهاتف");
+            }
+
+            registerBtn.disabled = true;
+            registerBtn.innerText = "جاري إنشاء بطاقتك...";
+
+            const randomStr = Math.random().toString(36).substring(2, 5).toUpperCase();
+            const phoneSuffix = phone.slice(-4);
+            const newCardId = `CAF-${phoneSuffix}${randomStr}`;
+
+            try {
+                // حفظ الزبون في قاعدة البيانات (مربوط برقم البطاقة)
+                const newDocRef = doc(db, "customers", newCardId);
+                await setDoc(newDocRef, {
+                    name: name,
+                    phone: phone,
+                    points: 0,
+                    cafeId: cafeId, // حفظ اسم الكافيه الذي سجل منه الزبون
+                    createdAt: new Date()
+                });
+
+                // الأهم: توجيه الزبون للبطاقة مع تمرير اسم الكافيه في الرابط!
+                window.location.href = `customer.html?cafe=${cafeId}&id=${newCardId}`;
+                
+            } catch (error) {
+                console.error(error);
+                alert("حدث خطأ أثناء التسجيل. حاول مرة أخرى.");
+                registerBtn.disabled = false;
+                registerBtn.innerText = "إصدار بطاقتي الآن";
+            }
+        });
+    </script>
+</body>
+</html>

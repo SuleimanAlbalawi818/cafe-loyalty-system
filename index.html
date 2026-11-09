@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الكاشير - نظام الولاء</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        h1 { margin-top: 0; color: #111; }
+        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-box input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        .search-box button { padding: 10px 20px; background: #1e7041; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .hidden { display: none; }
+        .points-display { font-size: 20px; font-weight: bold; margin: 20px 0; background: #eee; padding: 15px; border-radius: 8px; }
+        
+        /* قسم إضافة النقاط */
+        .add-points-box { display: flex; gap: 10px; margin-bottom: 10px; }
+        .add-points-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; text-align: center; }
+        .add-points-box button { flex: 2; padding: 12px; background: #000; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        .add-points-box button:hover { background: #333; }
+        
+        /* قسم خصم النقاط الجديد */
+        .deduct-points-box { display: flex; gap: 10px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #eee; }
+        .deduct-points-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; text-align: center; }
+        .deduct-points-box button { flex: 2; padding: 12px; background: #fd7e14; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        .deduct-points-box button:hover { background: #e8590c; }
+        
+        /* زر الاستبدال الثابت */
+        #redeemBtn { background-color: #dc3545; color: white; padding: 12px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        #redeemBtn:hover { background-color: #c82333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>لوحة الكاشير</h1>
+        
+        <div class="search-box">
+            <input type="text" id="customerId" placeholder="أدخل رقم البطاقة (مثال: CAF-X7K9)" />
+            <button id="searchBtn">بحث</button>
+        </div>
+
+        <div id="resultArea" class="hidden">
+            <h2 id="statusMessage"></h2>
+            <div class="points-display">
+                النقاط الحالية: <span id="currentPoints">0</span>
+            </div>
+            
+            <!-- قسم الإضافة -->
+            <div class="add-points-box">
+                <input type="number" id="pointsToAdd" placeholder="عدد" min="1" value="1" />
+                <button id="addMultiplePointsBtn">إضافة نقاط (+)</button>
+            </div>
+
+            <!-- قسم الخصم الجديد -->
+            <div class="deduct-points-box">
+                <input type="number" id="pointsToDeduct" placeholder="عدد" min="1" value="1" />
+                <button id="deductMultiplePointsBtn"> خصم نقاط (-)</button>
+            </div>
+
+            <!-- زر الاستبدال السريع لـ 10 نقاط -->
+            <button id="redeemBtn">
+                استبدال كوب مجاني (-10 نقاط) ☕
+            </button>
+        </div>
+    </div>
+
+    <!-- استدعاء مكتبات Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
+          authDomain: "cafe-system-24331.firebaseapp.com",
+          projectId: "cafe-system-24331",
+          storageBucket: "cafe-system-24331.firebasestorage.app",
+          messagingSenderId: "845856227747",
+          appId: "1:845856227747:web:378c6d02fc89410df41a16"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const searchBtn = document.getElementById('searchBtn');
+        const customerIdInput = document.getElementById('customerId');
+        const resultArea = document.getElementById('resultArea');
+        const statusMessage = document.getElementById('statusMessage');
+        const currentPointsEl = document.getElementById('currentPoints');
+        
+        // أزرار الإضافة
+        const pointsToAddInput = document.getElementById('pointsToAdd');
+        const addMultiplePointsBtn = document.getElementById('addMultiplePointsBtn');
+        
+        // أزرار الخصم
+        const pointsToDeductInput = document.getElementById('pointsToDeduct');
+        const deductMultiplePointsBtn = document.getElementById('deductMultiplePointsBtn');
+        
+        // زر الاستبدال
+        const redeemBtn = document.getElementById('redeemBtn');
+
+        let currentCustomerId = "";
+
+        // 1. البحث عن الزبون
+        searchBtn.addEventListener('click', async () => {
+            const id = customerIdInput.value.trim().toUpperCase();
+            if (!id) return alert("الرجاء إدخال رقم البطاقة");
+
+            currentCustomerId = id;
+            const docRef = doc(db, "customers", id);
+            const docSnap = await getDoc(docRef);
+
+            resultArea.classList.remove('hidden');
+            pointsToAddInput.value = "1"; 
+            pointsToDeductInput.value = "1";
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                statusMessage.innerText = "الزبون موجود!";
+                statusMessage.style.color = "green";
+                currentPointsEl.innerText = data.points;
+            } else {
+                statusMessage.innerText = "بطاقة جديدة! سيتم تسجيلها.";
+                statusMessage.style.color = "orange";
+                currentPointsEl.innerText = "0";
+                await setDoc(docRef, { points: 0, createdAt: new Date() });
+            }
+        });
+
+        // 2. إضافة نقاط
+        addMultiplePointsBtn.addEventListener('click', async () => {
+            if (!currentCustomerId) return alert("الرجاء البحث عن بطاقة زبون أولاً.");
+            
+            const pointsVal = parseInt(pointsToAddInput.value);
+            if (isNaN(pointsVal) || pointsVal <= 0) return alert("الرجاء إدخال عدد صحيح.");
+
+            const docRef = doc(db, "customers", currentCustomerId);
+            const docSnap = await getDoc(docRef);
+            
+            if (docSnap.exists()) {
+                try {
+                    addMultiplePointsBtn.disabled = true;
+                    const newPoints = docSnap.data().points + pointsVal;
+                    await updateDoc(docRef, { points: newPoints });
+                    
+                    currentPointsEl.innerText = newPoints;
+                    alert(`تمت إضافة ${pointsVal} نقطة بنجاح!`);
+                    pointsToAddInput.value = "1"; 
+                } catch (error) {
+                    console.error("خطأ:", error);
+                    alert("حدث خطأ أثناء الإضافة.");
+                } finally {
+                    addMultiplePointsBtn.disabled = false;
+                }
+            }
+        });
+
+        // 3. خصم نقاط (ميزة جديدة)
+        deductMultiplePointsBtn.addEventListener('click', async () => {
+            if (!currentCustomerId) return alert("الرجاء البحث عن بطاقة زبون أولاً.");
+            
+            const pointsVal = parseInt(pointsToDeductInput.value);
+            if (isNaN(pointsVal) || pointsVal <= 0) return alert("الرجاء إدخال عدد صحيح للخصم.");
+
+            const docRef = doc(db, "customers", currentCustomerId);
+            const docSnap = await getDoc(docRef);
+            
+            if (docSnap.exists()) {
+                const currentPoints = docSnap.data().points;
+                
+                // منع الخصم إذا كان الرصيد لا يكفي
+                if (currentPoints < pointsVal) {
+                    return alert(`لا يمكن الخصم! رصيد الزبون الحالي (${currentPoints}) أقل من المراد خصمه (${pointsVal}).`);
+                }
+
+                try {
+                    deductMultiplePointsBtn.disabled = true;
+                    const newPoints = currentPoints - pointsVal;
+                    await updateDoc(docRef, { points: newPoints });
+                    
+                    currentPointsEl.innerText = newPoints;
+                    alert(`تم خصم ${pointsVal} نقطة بنجاح!`);
+                    pointsToDeductInput.value = "1"; 
+                } catch (error) {
+                    console.error("خطأ:", error);
+                    alert("حدث خطأ أثناء الخصم.");
+                } finally {
+                    deductMultiplePointsBtn.disabled = false;
+                }
+            }
+        });
+
+        // 4. استبدال كوب مجاني (10 نقاط)
+        redeemBtn.addEventListener('click', async () => {
+            if (!currentCustomerId) return alert("الرجاء البحث عن بطاقة زبون أولاً.");
+            
+            const docRef = doc(db, "customers", currentCustomerId);
+            const docSnap = await getDoc(docRef);
+            
+            if (docSnap.exists()) {
+                const currentPoints = docSnap.data().points;
+
+                if (currentPoints < 10) {
+                    return alert("رصيد الزبون غير كافٍ. يجب أن يصل إلى 10 نقاط.");
+                }
+
+                try {
+                    redeemBtn.disabled = true;
+                    const newPoints = currentPoints - 10;
+                    await updateDoc(docRef, { points: newPoints });
+                    currentPointsEl.innerText = newPoints;
+                    alert("تمت عملية الاستبدال بنجاح! قُدمت المكافأة للزبون ☕");
+                } catch (error) {
+                    console.error("حدث خطأ:", error);
+                    alert("فشل عملية الاستبدال.");
+                } finally {
+                    redeemBtn.disabled = false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة - Mandel Coffee</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* شريط التنقل العلوي */
+        .navbar {
+            background-color: #111;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #1e7041;
+        }
+
+        /* الحاوية الرئيسية */
+        .container {
+            padding: 30px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* بطاقات الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            border-bottom: 4px solid #1e7041;
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #111;
+        }
+
+        /* جدول الزبائن */
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .table-container h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #111;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #555;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .vip-tag {
+            background-color: #d4af37;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <h2>MANDEL COFFEE | نظام الولاء</h2>
+        <span>مرحباً، مدير النظام 👋</span>
+    </div>
+
+    <div class="container">
+        <!-- قسم الإحصائيات -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>إجمالي الزبائن المسجلين</h3>
+                <div class="value" id="totalCustomers">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>إجمالي النقاط الفعالة</h3>
+                <div class="value" id="totalPoints">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>أعلى رصيد نقاط لزبون</h3>
+                <div class="value" id="topPoints">0</div>
+            </div>
+        </div>
+
+        <!-- جدول أفضل الزبائن -->
+        <div class="table-container">
+            <h3>قائمة الزبائن (الأعلى نقاطاً)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الترتيب</th>
+                        <th>اسم الزبون</th>
+                        <th>رقم الهاتف</th>
+                        <th>رقم البطاقة</th>
+                        <th>النقاط الحالية</th>
+                    </tr>
+                </thead>
+                <tbody id="customersTableBody">
+                    <tr><td colspan="5" style="text-align: center;">جاري تحميل البيانات...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- استدعاء مكتبات Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        // إعدادات قاعدة البيانات
+        const firebaseConfig = {
+          apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
+          authDomain: "cafe-system-24331.firebaseapp.com",
+          projectId: "cafe-system-24331",
+          storageBucket: "cafe-system-24331.firebasestorage.app",
+          messagingSenderId: "845856227747",
+          appId: "1:845856227747:web:378c6d02fc89410df41a16"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadAdminData() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "customers"));
+                
+                let customers = [];
+                let totalPts = 0;
+
+                // تجميع البيانات من قاعدة البيانات
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    customers.push({ id: doc.id, ...data });
+                    totalPts += (data.points || 0);
+                });
+
+                // ترتيب الزبائن من الأعلى نقاطاً إلى الأقل
+                customers.sort((a, b) => (b.points || 0) - (a.points || 0));
+
+                // تحديث الإحصائيات العلوية
+                document.getElementById('totalCustomers').innerText = customers.length;
+                document.getElementById('totalPoints').innerText = totalPts;
+                document.getElementById('topPoints').innerText = customers.length > 0 ? customers[0].points : 0;
+
+                // رسم الجدول
+                const tableBody = document.getElementById('customersTableBody');
+                tableBody.innerHTML = ""; // تفريغ رسالة "جاري التحميل"
+
+                customers.forEach((cust, index) => {
+                    const tr = document.createElement('tr');
+                    
+                    // تمييز أول 3 زبائن كـ VIP
+                    const rankDisplay = index < 3 ? `<span class="vip-tag">#${index + 1}</span>` : `#${index + 1}`;
+
+                    tr.innerHTML = `
+                        <td>${rankDisplay}</td>
+                        <td style="font-weight: bold;">${cust.name || 'غير معروف'}</td>
+                        <td dir="ltr" style="text-align: right;">${cust.phone || '---'}</td>
+                        <td>${cust.id}</td>
+                        <td style="color: #1e7041; font-weight: bold; font-size: 16px;">${cust.points || 0}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error("خطأ في جلب البيانات: ", error);
+                document.getElementById('customersTableBody').innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">فشل في تحميل البيانات!</td></tr>`;
+            }
+        }
+
+        // تشغيل الدالة عند فتح الصفحة
+        loadAdminData();
+    </script>
+</body>
+</html>

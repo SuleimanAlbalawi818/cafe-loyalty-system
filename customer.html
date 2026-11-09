@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بطاقة ولاء</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        /* تصميم البطاقة الأساسي */
+        .credit-card {
+            width: 360px;
+            height: 225px;
+            background: linear-gradient(135deg, #111111 0%, #1e7041 100%);
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: #fff;
+            box-sizing: border-box;
+            transition: background 0.5s ease;
+        }
+
+        .credit-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            animation: shine 6s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: contain;
+            border: 2px solid rgba(255,255,255,0.8);
+            background-color: #fff;
+        }
+
+        .cafe-name-header {
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #e0e0e0;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .card-body {
+            margin-top: 15px;
+        }
+
+        .card-number {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 24px;
+            letter-spacing: 4px;
+            text-align: left;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            direction: ltr;
+        }
+
+        .card-holder {
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 8px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            color: #d1d1d1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .points-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .points-label {
+            font-size: 11px;
+            color: #b3b3b3;
+            margin-bottom: 3px;
+        }
+
+        .points-value {
+            font-size: 22px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .vip-badge {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: #d4af37;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .wallet-btn {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 360px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+
+        .wallet-btn:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <div class="credit-card" id="cardElement">
+            <div class="card-header">
+                <!-- أرجعنا صورة ماندل لتكون هي الأساس وتظهر فوراً -->
+                <img src="images.jpg" class="card-logo" id="displayCafeLogo" alt="Logo">
+                <span class="cafe-name-header" id="displayCafeName">MANDEL COFFEE</span>
+            </div>
+            
+            <div class="card-body">
+                <div class="card-number" id="displayCardId">جاري التحميل...</div>
+                <div class="card-holder" id="displayCustomerName"></div>
+            </div>
+            
+            <div class="card-footer">
+                <div class="points-section">
+                    <span class="points-label">رصيد النقاط</span>
+                    <span class="points-value" id="displayPoints">0</span>
+                </div>
+                <div class="vip-badge">VIP MEMBER</div>
+            </div>
+        </div>
+
+        <button class="wallet-btn" onclick="alert('سيتم تفعيل هذه الميزة قريباً بعد موافقة جوجل!')">
+            + إضافة إلى محفظة الهاتف
+        </button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
+          authDomain: "cafe-system-24331.firebaseapp.com",
+          projectId: "cafe-system-24331",
+          storageBucket: "cafe-system-24331.firebasestorage.app",
+          messagingSenderId: "845856227747",
+          appId: "1:845856227747:web:378c6d02fc89410df41a16"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const cardId = urlParams.get('id');
+        const cafeId = urlParams.get('cafe') || 'mandel'; 
+
+        if (cardId) {
+            document.getElementById('displayCardId').innerText = cardId;
+            
+            const fetchAllData = async () => {
+                try {
+                    // جلب بيانات الكافيه
+                    const cafeRef = doc(db, "cafes", cafeId);
+                    const cafeSnap = await getDoc(cafeRef);
+                    
+                    if (cafeSnap.exists()) {
+                        const cafeData = cafeSnap.data();
+                        
+                        document.getElementById('displayCafeName').innerText = cafeData.name;
+                        
+                        // تغيير الشعار فقط إذا كان هناك شعار مختلف في قاعدة البيانات
+                        if (cafeData.logoUrl && cafeData.logoUrl !== "logo.jpg") {
+                            document.getElementById('displayCafeLogo').src = cafeData.logoUrl;
+                        }
+
+                        document.getElementById('cardElement').style.background = 
+                            `linear-gradient(135deg, ${cafeData.secondaryColor} 0%, ${cafeData.primaryColor} 100%)`;
+                    }
+
+                    // جلب بيانات الزبون
+                    const custRef = doc(db, "customers", cardId);
+                    const custSnap = await getDoc(custRef);
+                    
+                    if (custSnap.exists()) {
+                        const custData = custSnap.data();
+                        document.getElementById('displayCustomerName').innerText = custData.name;
+                        document.getElementById('displayPoints').innerText = custData.points;
+                    } else {
+                        document.getElementById('displayCustomerName').innerText = "بطاقة غير صالحة";
+                    }
+                } catch (error) {
+                    console.error("حدث خطأ:", error);
+                }
+            };
+            
+            fetchAllData();
+        } else {
+            document.getElementById('displayCardId').innerText = "خطأ في الرابط";
+        }
+    </script>
+</body>
+</html>
