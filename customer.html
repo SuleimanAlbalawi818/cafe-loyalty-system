@@ -207,7 +207,6 @@
         const cardId = urlParams.get('id');
         const cafeId = (urlParams.get('cafe') || 'mandel').toLowerCase();
 
-        // تحديد الصور والبيانات الاحتياطية لكل كافيه فوراً
         const defaultLogos = {
             mandel: 'Mandel.jpg',
             solaf: 'solaf.jpg'
@@ -271,7 +270,7 @@
             document.getElementById('displayCardId').innerText = "خطأ في الرابط";
         }
 
-        // برمجة زر إضافة البطاقة إلى Google Wallet
+        // برمجة زر إضافة البطاقة عبر سيرفر Render السحابي
         document.getElementById('addToWalletBtn').addEventListener('click', async () => {
             if (!cardId) return alert('رقم البطاقة غير موجود في الرابط!');
 
@@ -282,7 +281,7 @@
             try {
                 const fullLogoUrl = new URL(currentCafe.logoUrl, 'https://suleimanalbalawi818.github.io/cafe-loyalty-system/').href;
 
-                const response = await fetch('http://localhost:3000/create-pass', {
+                const response = await fetch('https://cafe-loyalty-system-oow4.onrender.com/create-pass', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -306,7 +305,7 @@
                 }
             } catch (err) {
                 console.error(err);
-                alert('تأكد من تشغيل السيرفر (node server.js) أولاً!');
+                alert('حدث خطأ في الاتصال بالسيرفر، يرجى المحاولة بعد ثوانٍ.');
                 btn.disabled = false;
                 btn.innerText = '+ إضافة إلى Google Wallet';
             }

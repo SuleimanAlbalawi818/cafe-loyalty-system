@@ -33,7 +33,7 @@
         <h1>لوحة الكاشير</h1>
         
         <div class="search-box">
-            <input type="text" id="customerId" placeholder="أدخل رقم البطاقة (مثال: MND-1234)" />
+            <input type="text" id="customerId" placeholder="أدخل رقم البطاقة (مثال: CAF-X7K9)" />
             <button id="searchBtn">بحث</button>
         </div>
 
@@ -91,16 +91,16 @@
 
         let currentCustomerId = "";
 
-        // دالة مساعدة لتحديث السيرفر ومحفظة جوجل
+        // تحديث السيرفر السحابي ومحفظة جوجل
         async function syncPointsWithServer(customerId, newPoints) {
             try {
-                await fetch('http://localhost:3000/update-points', {
+                await fetch('https://cafe-loyalty-system-oow4.onrender.com/update-points', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ customerId: customerId, points: newPoints })
                 });
             } catch (err) {
-                console.error("تعذر الاتصال بسيرفر المحفظة المحلي:", err);
+                console.error("تعذر الاتصال بالسيرفر:", err);
             }
         }
 
@@ -146,7 +146,6 @@
                     const newPoints = docSnap.data().points + pointsVal;
                     await updateDoc(docRef, { points: newPoints });
                     
-                    // إرسال التحديث لسيرفر Google Wallet
                     await syncPointsWithServer(currentCustomerId, newPoints);
 
                     currentPointsEl.innerText = newPoints;
@@ -183,7 +182,6 @@
                     const newPoints = currentPoints - pointsVal;
                     await updateDoc(docRef, { points: newPoints });
                     
-                    // إرسال التحديث لسيرفر Google Wallet
                     await syncPointsWithServer(currentCustomerId, newPoints);
 
                     currentPointsEl.innerText = newPoints;
@@ -217,7 +215,6 @@
                     const newPoints = currentPoints - 10;
                     await updateDoc(docRef, { points: newPoints });
                     
-                    // إرسال التحديث لسيرفر Google Wallet
                     await syncPointsWithServer(currentCustomerId, newPoints);
 
                     currentPointsEl.innerText = newPoints;
