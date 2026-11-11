@@ -2,7 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { GoogleAuth } = require('google-auth-library');
-const credentials = require('./key.json');
+
+// قراءة المفتاح من Render تلقائياً، أو من ملف key.json على جهازك
+const credentials = process.env.GOOGLE_CREDENTIALS 
+    ? JSON.parse(process.env.GOOGLE_CREDENTIALS) 
+    : require('./key.json');
 
 const app = express();
 app.use(cors());
@@ -11,7 +15,7 @@ app.use(express.json());
 const issuerId = '3388000000023233741';
 
 const auth = new GoogleAuth({
-    keyFile: './key.json',
+    credentials: credentials,
     scopes: ['https://www.googleapis.com/auth/wallet_object.issuer']
 });
 
