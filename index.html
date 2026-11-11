@@ -14,19 +14,16 @@
         .hidden { display: none; }
         .points-display { font-size: 20px; font-weight: bold; margin: 20px 0; background: #eee; padding: 15px; border-radius: 8px; }
         
-        /* قسم إضافة النقاط */
         .add-points-box { display: flex; gap: 10px; margin-bottom: 10px; }
         .add-points-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; text-align: center; }
         .add-points-box button { flex: 2; padding: 12px; background: #000; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
         .add-points-box button:hover { background: #333; }
         
-        /* قسم خصم النقاط الجديد */
         .deduct-points-box { display: flex; gap: 10px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #eee; }
         .deduct-points-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; text-align: center; }
         .deduct-points-box button { flex: 2; padding: 12px; background: #fd7e14; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
         .deduct-points-box button:hover { background: #e8590c; }
         
-        /* زر الاستبدال الثابت */
         #redeemBtn { background-color: #dc3545; color: white; padding: 12px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
         #redeemBtn:hover { background-color: #c82333; }
     </style>
@@ -36,7 +33,7 @@
         <h1>لوحة الكاشير</h1>
         
         <div class="search-box">
-            <input type="text" id="customerId" placeholder="أدخل رقم البطاقة (مثال: CAF-X7K9)" />
+            <input type="text" id="customerId" placeholder="أدخل رقم البطاقة (مثال: MND-1234)" />
             <button id="searchBtn">بحث</button>
         </div>
 
@@ -46,26 +43,22 @@
                 النقاط الحالية: <span id="currentPoints">0</span>
             </div>
             
-            <!-- قسم الإضافة -->
             <div class="add-points-box">
                 <input type="number" id="pointsToAdd" placeholder="عدد" min="1" value="1" />
                 <button id="addMultiplePointsBtn">إضافة نقاط (+)</button>
             </div>
 
-            <!-- قسم الخصم الجديد -->
             <div class="deduct-points-box">
                 <input type="number" id="pointsToDeduct" placeholder="عدد" min="1" value="1" />
-                <button id="deductMultiplePointsBtn"> خصم نقاط (-)</button>
+                <button id="deductMultiplePointsBtn">خصم نقاط (-)</button>
             </div>
 
-            <!-- زر الاستبدال السريع لـ 10 نقاط -->
             <button id="redeemBtn">
                 استبدال كوب مجاني (-10 نقاط) ☕
             </button>
         </div>
     </div>
 
-    <!-- استدعاء مكتبات Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
@@ -88,22 +81,32 @@
         const statusMessage = document.getElementById('statusMessage');
         const currentPointsEl = document.getElementById('currentPoints');
         
-        // أزرار الإضافة
         const pointsToAddInput = document.getElementById('pointsToAdd');
         const addMultiplePointsBtn = document.getElementById('addMultiplePointsBtn');
         
-        // أزرار الخصم
         const pointsToDeductInput = document.getElementById('pointsToDeduct');
         const deductMultiplePointsBtn = document.getElementById('deductMultiplePointsBtn');
         
-        // زر الاستبدال
         const redeemBtn = document.getElementById('redeemBtn');
 
         let currentCustomerId = "";
 
+        // دالة مساعدة لتحديث السيرفر ومحفظة جوجل
+        async function syncPointsWithServer(customerId, newPoints) {
+            try {
+                await fetch('http://localhost:3000/update-points', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ customerId: customerId, points: newPoints })
+                });
+            } catch (err) {
+                console.error("تعذر الاتصال بسيرفر المحفظة المحلي:", err);
+            }
+        }
+
         // 1. البحث عن الزبون
         searchBtn.addEventListener('click', async () => {
-            const id = customerIdInput.value.trim().toUpperCase();
+            const id = customerIdInput.value.trim();
             if (!id) return alert("الرجاء إدخال رقم البطاقة");
 
             currentCustomerId = id;
@@ -143,6 +146,9 @@
                     const newPoints = docSnap.data().points + pointsVal;
                     await updateDoc(docRef, { points: newPoints });
                     
+                    // إرسال التحديث لسيرفر Google Wallet
+                    await syncPointsWithServer(currentCustomerId, newPoints);
+
                     currentPointsEl.innerText = newPoints;
                     alert(`تمت إضافة ${pointsVal} نقطة بنجاح!`);
                     pointsToAddInput.value = "1"; 
@@ -155,7 +161,7 @@
             }
         });
 
-        // 3. خصم نقاط (ميزة جديدة)
+        // 3. خصم نقاط
         deductMultiplePointsBtn.addEventListener('click', async () => {
             if (!currentCustomerId) return alert("الرجاء البحث عن بطاقة زبون أولاً.");
             
@@ -168,7 +174,6 @@
             if (docSnap.exists()) {
                 const currentPoints = docSnap.data().points;
                 
-                // منع الخصم إذا كان الرصيد لا يكفي
                 if (currentPoints < pointsVal) {
                     return alert(`لا يمكن الخصم! رصيد الزبون الحالي (${currentPoints}) أقل من المراد خصمه (${pointsVal}).`);
                 }
@@ -178,6 +183,9 @@
                     const newPoints = currentPoints - pointsVal;
                     await updateDoc(docRef, { points: newPoints });
                     
+                    // إرسال التحديث لسيرفر Google Wallet
+                    await syncPointsWithServer(currentCustomerId, newPoints);
+
                     currentPointsEl.innerText = newPoints;
                     alert(`تم خصم ${pointsVal} نقطة بنجاح!`);
                     pointsToDeductInput.value = "1"; 
@@ -208,6 +216,10 @@
                     redeemBtn.disabled = true;
                     const newPoints = currentPoints - 10;
                     await updateDoc(docRef, { points: newPoints });
+                    
+                    // إرسال التحديث لسيرفر Google Wallet
+                    await syncPointsWithServer(currentCustomerId, newPoints);
+
                     currentPointsEl.innerText = newPoints;
                     alert("تمت عملية الاستبدال بنجاح! قُدمت المكافأة للزبون ☕");
                 } catch (error) {

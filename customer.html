@@ -24,11 +24,10 @@
             padding: 20px;
         }
 
-        /* تصميم البطاقة الأساسي */
         .credit-card {
             width: 360px;
             height: 225px;
-            background: linear-gradient(135deg, #111111 0%, #1e7041 100%);
+            background: linear-gradient(135deg, #111111 0%, #333333 100%);
             border-radius: 18px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
             padding: 25px;
@@ -71,6 +70,7 @@
             object-fit: contain;
             border: 2px solid rgba(255,255,255,0.8);
             background-color: #fff;
+            display: none;
         }
 
         .cafe-name-header {
@@ -152,6 +152,11 @@
         .wallet-btn:hover {
             background-color: #333;
         }
+
+        .wallet-btn:disabled {
+            background-color: #777;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -159,9 +164,8 @@
     <div class="wrapper">
         <div class="credit-card" id="cardElement">
             <div class="card-header">
-                <!-- أرجعنا صورة ماندل لتكون هي الأساس وتظهر فوراً -->
-                <img src="Mandel.jpg" class="card-logo" id="displayCafeLogo" alt="Logo">
-                <span class="cafe-name-header" id="displayCafeName">MANDEL COFFEE</span>
+                <img src="" class="card-logo" id="displayCafeLogo" alt="Logo">
+                <span class="cafe-name-header" id="displayCafeName">...</span>
             </div>
             
             <div class="card-body">
@@ -178,8 +182,8 @@
             </div>
         </div>
 
-        <button class="wallet-btn" onclick="alert('سيتم تفعيل هذه الميزة قريباً بعد موافقة جوجل!')">
-            + إضافة إلى محفظة الهاتف
+        <button class="wallet-btn" id="addToWalletBtn">
+            + إضافة إلى Google Wallet
         </button>
     </div>
 
@@ -201,37 +205,57 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const cardId = urlParams.get('id');
-        const cafeId = urlParams.get('cafe') || 'mandel'; 
+        const cafeId = (urlParams.get('cafe') || 'mandel').toLowerCase();
+
+        // تحديد الصور والبيانات الاحتياطية لكل كافيه فوراً
+        const defaultLogos = {
+            mandel: 'Mandel.jpg',
+            solaf: 'solaf.jpg'
+        };
+
+        let currentCustomer = { name: 'عميل مميز', points: 0 };
+        let currentCafe = {
+            name: cafeId === 'solaf' ? 'SOLAF CAFE' : 'MANDEL COFFEE',
+            logoUrl: defaultLogos[cafeId] || 'Mandel.jpg',
+            primaryColor: '#1e7041'
+        };
+
+        const logoEl = document.getElementById('displayCafeLogo');
+        logoEl.src = currentCafe.logoUrl;
+        logoEl.style.display = 'block';
+        document.getElementById('displayCafeName').innerText = currentCafe.name;
 
         if (cardId) {
             document.getElementById('displayCardId').innerText = cardId;
             
             const fetchAllData = async () => {
                 try {
-                    // جلب بيانات الكافيه
                     const cafeRef = doc(db, "cafes", cafeId);
                     const cafeSnap = await getDoc(cafeRef);
                     
                     if (cafeSnap.exists()) {
                         const cafeData = cafeSnap.data();
+                        currentCafe.name = cafeData.name || currentCafe.name;
+                        currentCafe.primaryColor = cafeData.primaryColor || '#1e7041';
+
+                        document.getElementById('displayCafeName').innerText = currentCafe.name;
                         
-                        document.getElementById('displayCafeName').innerText = cafeData.name;
-                        
-                        // تغيير الشعار فقط إذا كان هناك شعار مختلف في قاعدة البيانات
                         if (cafeData.logoUrl && cafeData.logoUrl !== "logo.jpg") {
-                            document.getElementById('displayCafeLogo').src = cafeData.logoUrl;
+                            currentCafe.logoUrl = cafeData.logoUrl;
+                            logoEl.src = cafeData.logoUrl;
                         }
 
                         document.getElementById('cardElement').style.background = 
-                            `linear-gradient(135deg, ${cafeData.secondaryColor} 0%, ${cafeData.primaryColor} 100%)`;
+                            `linear-gradient(135deg, ${cafeData.secondaryColor || '#111111'} 0%, ${cafeData.primaryColor || '#1e7041'} 100%)`;
                     }
 
-                    // جلب بيانات الزبون
                     const custRef = doc(db, "customers", cardId);
                     const custSnap = await getDoc(custRef);
                     
                     if (custSnap.exists()) {
                         const custData = custSnap.data();
+                        currentCustomer.name = custData.name;
+                        currentCustomer.points = custData.points;
                         document.getElementById('displayCustomerName').innerText = custData.name;
                         document.getElementById('displayPoints').innerText = custData.points;
                     } else {
@@ -246,6 +270,47 @@
         } else {
             document.getElementById('displayCardId').innerText = "خطأ في الرابط";
         }
+
+        // برمجة زر إضافة البطاقة إلى Google Wallet
+        document.getElementById('addToWalletBtn').addEventListener('click', async () => {
+            if (!cardId) return alert('رقم البطاقة غير موجود في الرابط!');
+
+            const btn = document.getElementById('addToWalletBtn');
+            btn.disabled = true;
+            btn.innerText = 'جاري تجهيز البطاقة... ⏳';
+
+            try {
+                const fullLogoUrl = new URL(currentCafe.logoUrl, 'https://suleimanalbalawi818.github.io/cafe-loyalty-system/').href;
+
+                const response = await fetch('http://localhost:3000/create-pass', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        cardId: cardId,
+                        customerName: currentCustomer.name,
+                        points: currentCustomer.points,
+                        cafeId: cafeId,
+                        cafeName: currentCafe.name,
+                        logoUrl: fullLogoUrl,
+                        primaryColor: currentCafe.primaryColor
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success && data.saveUrl) {
+                    window.location.href = data.saveUrl;
+                } else {
+                    alert('حدث خطأ أثناء تجهيز البطاقة.');
+                    btn.disabled = false;
+                    btn.innerText = '+ إضافة إلى Google Wallet';
+                }
+            } catch (err) {
+                console.error(err);
+                alert('تأكد من تشغيل السيرفر (node server.js) أولاً!');
+                btn.disabled = false;
+                btn.innerText = '+ إضافة إلى Google Wallet';
+            }
+        });
     </script>
 </body>
 </html>
