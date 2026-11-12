@@ -251,4 +251,5 @@ app.post('/send-birthday-offer', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.
+    console.log(`🚀 سيرفر نظام الولاء يعمل الآن على المنفذ ${PORT}...`);
+});
