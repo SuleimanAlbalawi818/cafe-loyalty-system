@@ -12,7 +12,13 @@
         .search-box input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
         .search-box button { padding: 10px 20px; background: #1e7041; color: white; border: none; border-radius: 5px; cursor: pointer; }
         .hidden { display: none; }
-        .points-display { font-size: 20px; font-weight: bold; margin: 20px 0; background: #eee; padding: 15px; border-radius: 8px; }
+        
+        .customer-info { font-size: 15px; color: #444; margin-bottom: 10px; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
+        .birthday-banner { background-color: #fff3cd; color: #856404; border: 2px solid #ffeeba; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; font-size: 15px; }
+        .birthday-btn { background-color: #6f42c1; color: white; padding: 10px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-size: 14px; font-weight: bold; margin-top: 8px; transition: 0.3s; }
+        .birthday-btn:hover { background-color: #59339d; }
+
+        .points-display { font-size: 20px; font-weight: bold; margin: 15px 0; background: #eee; padding: 15px; border-radius: 8px; }
         
         .add-points-box { display: flex; gap: 10px; margin-bottom: 10px; }
         .add-points-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; text-align: center; }
@@ -39,6 +45,18 @@
 
         <div id="resultArea" class="hidden">
             <h2 id="statusMessage"></h2>
+            
+            <div id="customerDetails" class="customer-info hidden">
+                <div>الاسم: <strong id="custNameDisplay">-</strong></div>
+                <div style="margin-top:4px;">تاريخ الميلاد: <strong id="custBirthDisplay">-</strong></div>
+            </div>
+
+            <!-- تنبيه عيد الميلاد -->
+            <div id="birthdayAlert" class="birthday-banner hidden">
+                <span id="birthdayText">🎂 اليوم عيد ميلاد هذا الزبون! يستحق خصم الميلاد</span>
+                <button id="sendBirthdayBtn" class="birthday-btn">إرسال إشعار هدية الميلاد لمحفظة الزبون 🎁</button>
+            </div>
+
             <div class="points-display">
                 النقاط الحالية: <span id="currentPoints">0</span>
             </div>
@@ -81,6 +99,13 @@
         const statusMessage = document.getElementById('statusMessage');
         const currentPointsEl = document.getElementById('currentPoints');
         
+        const customerDetails = document.getElementById('customerDetails');
+        const custNameDisplay = document.getElementById('custNameDisplay');
+        const custBirthDisplay = document.getElementById('custBirthDisplay');
+        const birthdayAlert = document.getElementById('birthdayAlert');
+        const birthdayText = document.getElementById('birthdayText');
+        const sendBirthdayBtn = document.getElementById('sendBirthdayBtn');
+
         const pointsToAddInput = document.getElementById('pointsToAdd');
         const addMultiplePointsBtn = document.getElementById('addMultiplePointsBtn');
         
@@ -90,8 +115,8 @@
         const redeemBtn = document.getElementById('redeemBtn');
 
         let currentCustomerId = "";
+        let currentCustomerName = "";
 
-        // تحديث السيرفر السحابي ومحفظة جوجل
         async function syncPointsWithServer(customerId, newPoints) {
             try {
                 await fetch('https://cafe-loyalty-system-oow4.onrender.com/update-points', {
@@ -104,9 +129,20 @@
             }
         }
 
+        // فحص ما إذا كان تاريخ اليوم يطابق يوم وشهر ميلاد الزبون
+        function isBirthdayToday(birthDateStr) {
+            if (!birthDateStr) return false;
+            const parts = birthDateStr.split('-'); // YYYY-MM-DD
+            if (parts.length !== 3) return false;
+            const today = new Date();
+            const birthMonth = parseInt(parts[1], 10);
+            const birthDay = parseInt(parts[2], 10);
+            return (today.getMonth() + 1 === birthMonth) && (today.getDate() === birthDay);
+        }
+
         // 1. البحث عن الزبون
         searchBtn.addEventListener('click', async () => {
-            const id = customerIdInput.value.trim();
+            const id = customerIdInput.value.trim().toUpperCase();
             if (!id) return alert("الرجاء إدخال رقم البطاقة");
 
             currentCustomerId = id;
@@ -116,17 +152,60 @@
             resultArea.classList.remove('hidden');
             pointsToAddInput.value = "1"; 
             pointsToDeductInput.value = "1";
+            birthdayAlert.classList.add('hidden');
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 statusMessage.innerText = "الزبون موجود!";
                 statusMessage.style.color = "green";
                 currentPointsEl.innerText = data.points;
+                currentCustomerName = data.name || "عميل مميز";
+
+                customerDetails.classList.remove('hidden');
+                custNameDisplay.innerText = currentCustomerName;
+                custBirthDisplay.innerText = data.birthDate || "غير مسجل";
+
+                if (data.birthDate) {
+                    birthdayAlert.classList.remove('hidden');
+                    if (isBirthdayToday(data.birthDate)) {
+                        birthdayText.innerText = `🎂 اليوم عيد ميلاد ${currentCustomerName}! يستحق هدية الميلاد`;
+                        birthdayAlert.style.backgroundColor = "#fff3cd";
+                    } else {
+                        birthdayText.innerText = `تاريخ ميلاد الزبون: ${data.birthDate}`;
+                        birthdayAlert.style.backgroundColor = "#eef2f5";
+                    }
+                }
             } else {
                 statusMessage.innerText = "بطاقة جديدة! سيتم تسجيلها.";
                 statusMessage.style.color = "orange";
                 currentPointsEl.innerText = "0";
+                customerDetails.classList.add('hidden');
                 await setDoc(docRef, { points: 0, createdAt: new Date() });
+            }
+        });
+
+        // إرسال إشعار هدية الميلاد إلى Google Wallet
+        sendBirthdayBtn.addEventListener('click', async () => {
+            if (!currentCustomerId) return;
+            sendBirthdayBtn.disabled = true;
+            sendBirthdayBtn.innerText = "جاري إرسال الإشعار... ⏳";
+
+            try {
+                const res = await fetch('https://cafe-loyalty-system-oow4.onrender.com/send-birthday-offer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customerId: currentCustomerId,
+                        customerName: currentCustomerName
+                    })
+                });
+                const result = await res.json();
+                alert(result.message || "تم الإرسال!");
+            } catch (err) {
+                alert("تعذر الاتصال بالسيرفر.");
+            } finally {
+                sendBirthdayBtn.disabled = false;
+                sendBirthdayBtn.innerText = "إرسال إشعار هدية الميلاد لمحفظة الزبون 🎁";
             }
         });
 

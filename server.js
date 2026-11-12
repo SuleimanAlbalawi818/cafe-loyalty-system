@@ -3,7 +3,6 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { GoogleAuth } = require('google-auth-library');
 
-// قراءة المفتاح من Render تلقائياً، أو من ملف key.json على جهازك
 const credentials = process.env.GOOGLE_CREDENTIALS 
     ? JSON.parse(process.env.GOOGLE_CREDENTIALS) 
     : require('./key.json');
@@ -19,7 +18,6 @@ const auth = new GoogleAuth({
     scopes: ['https://www.googleapis.com/auth/wallet_object.issuer']
 });
 
-// دالة مساعدة لتجهيز قالب الكافيه (مندل أو سلاف أو أي كافيه جديد)
 async function ensureClassExists(client, cafeId, cafeName, logoUrl, primaryColor) {
     const classSuffix = cafeId === 'mandel' ? 'MandelRewards' : `${cafeId}_rewards`;
     const classId = `${issuerId}.${classSuffix}`;
@@ -88,7 +86,6 @@ app.post('/create-pass', async (req, res) => {
             }
         };
 
-        // فحص ما إذا كانت البطاقة موجودة مسبقاً لتحديثها أو إنشائها من جديد
         try {
             await client.request({ url: objectUrl, method: 'GET' });
             await client.request({ url: objectUrl, method: 'PUT', data: objectPayload });
@@ -211,7 +208,47 @@ app.post('/redeem-points', async (req, res) => {
     });
 });
 
+// 4. إرسال إشعار وخصم عيد الميلاد إلى محفظة Google Wallet للزبون
+app.post('/send-birthday-offer', async (req, res) => {
+    const { customerId, customerName } = req.body;
+
+    if (!customerId) {
+        return res.status(400).json({ error: 'رقم البطاقة مطلوب' });
+    }
+
+    try {
+        const client = await auth.getClient();
+        const safeCardId = customerId.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const objectId = `${issuerId}.${safeCardId}`;
+        const objectUrl = `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyObject/${objectId}`;
+
+        await client.request({
+            url: objectUrl,
+            method: 'PATCH',
+            data: {
+                messages: [{
+                    header: `كل عام وأنت بخير يا ${customerName || 'صديقنا'}! 🎂`,
+                    body: 'بمناسبة يوم ميلادك، لك خصم خاص أو قهوة مجانية اليوم! أبرِز البطاقة للكاشير.',
+                    id: `bday_${Date.now()}`,
+                    messageType: 'TEXT_AND_NOTIFY'
+                }]
+            }
+        });
+
+        console.log(`🎂 تم إرسال إشعار عيد الميلاد للزبون ${customerId}`);
+        return res.status(200).json({
+            success: true,
+            message: 'تم إرسال إشعار هدية الميلاد لهاتف الزبون بنجاح!'
+        });
+    } catch (error) {
+        console.error('❌ خطأ في إرسال إشعار الميلاد:', error.response ? error.response.data : error.message);
+        return res.status(400).json({
+            success: false,
+            message: 'الزبون لم يضف البطاقة لمحفظة جوجل بعد، أو تعذر الإرسال.'
+        });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 سيرفر نظام الولاء يعمل الآن على المنفذ ${PORT}...`);
-});
+    console.
