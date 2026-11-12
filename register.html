@@ -91,7 +91,6 @@
         const logoEl = document.getElementById('displayCafeLogo');
         const titleEl = document.getElementById('cafeTitle');
 
-        // شعارات افتراضية فورية حسب الرابط
         if (cafeId === 'solaf') {
             logoEl.src = 'solaf.jpg';
         }
@@ -104,7 +103,6 @@
                 
                 if (cafeSnap.exists()) {
                     const cafeData = cafeSnap.data();
-                    
                     titleEl.innerText = `انضم لبرنامج ولاء ${cafeData.name}`;
                     
                     if (cafeData.logoUrl && cafeData.logoUrl !== "logo.jpg") {
@@ -123,11 +121,35 @@
 
         fetchCafeData();
 
+        // دالة لتوليد رقم بطاقة قصير وفريد (مثل MAN-12 أو SOL-32)
+        async function generateShortCardId(cafeCode) {
+            // نأخذ أول 3 حروف من اسم الكافيه بالأحرف الكبيرة (MAN أو SOL)
+            const prefix = cafeCode.substring(0, 3).toUpperCase();
+            
+            // نحاول توليد رقم قصير من خانتين (بين 10 و 99)، وإذا امتلأت ينتقل لـ 3 خانات تلقائياً
+            for (let attempt = 0; attempt < 20; attempt++) {
+                const randomNum = attempt < 15 
+                    ? Math.floor(10 + Math.random() * 90)   // رقم من خانتين (10 - 99)
+                    : Math.floor(100 + Math.random() * 900); // احتياط من 3 خانات إذا امتلأت الأرقام
+                
+                const candidateId = `${prefix}-${randomNum}`;
+                const checkRef = doc(db, "customers", candidateId);
+                const checkSnap = await getDoc(checkRef);
+                
+                // إذا لم يكن الرقم مستخدماً من قبل، نعتمده فوراً
+                if (!checkSnap.exists()) {
+                    return candidateId;
+                }
+            }
+            // حل احتياطي أخير في حال ازدحام الأرقام
+            return `${prefix}-${Date.now().toString().slice(-3)}`;
+        }
+
         // عملية التسجيل
         registerBtn.addEventListener('click', async () => {
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
-            const birthDate = document.getElementById('custBirthDate').value; // بصيغة YYYY-MM-DD (السنة-الشهر-اليوم)
+            const birthDate = document.getElementById('custBirthDate').value;
 
             if (!name || !phone || !birthDate) {
                 return alert("الرجاء إدخال الاسم، رقم الهاتف، وتاريخ الميلاد بالكامل");
@@ -136,16 +158,15 @@
             registerBtn.disabled = true;
             registerBtn.innerText = "جاري إنشاء بطاقتك...";
 
-            const randomStr = Math.random().toString(36).substring(2, 5).toUpperCase();
-            const phoneSuffix = phone.slice(-4);
-            const newCardId = `CAF-${phoneSuffix}${randomStr}`;
-
             try {
+                // توليد الـ ID القصير (مثلاً MAN-12 أو SOL-32)
+                const newCardId = await generateShortCardId(cafeId);
+
                 const newDocRef = doc(db, "customers", newCardId);
                 await setDoc(newDocRef, {
                     name: name,
                     phone: phone,
-                    birthDate: birthDate, // حفظ اليوم والشهر والسنة (مثال: 1999-05-14)
+                    birthDate: birthDate,
                     points: 0,
                     cafeId: cafeId,
                     createdAt: new Date()
