@@ -16,7 +16,7 @@
         }
         .main-wrapper {
             width: 100%;
-            max-width: 950px;
+            max-width: 980px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -133,7 +133,6 @@
         .deduct-points-box { display: flex; gap: 10px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #eee; }
         .deduct-points-box button { flex: 2; padding: 12px; background: #fd7e14; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold; }
         
-        /* قائمة أزرار استبدال الجوائز عند الكاشير */
         .redeem-buttons-container {
             display: flex;
             flex-direction: column;
@@ -153,7 +152,6 @@
         }
         .redeem-tier-btn:hover { background-color: #c82333; }
 
-        /* صناديق إعدادات المدير */
         .reward-settings-box {
             background: #f8f9fa;
             border: 2px solid #e2e8f0;
@@ -195,7 +193,6 @@
             width: 100%;
         }
 
-        /* قائمة الجوائز المضافة عند المدير مع زر الحذف */
         .rewards-list-manager {
             margin-top: 15px;
             display: flex;
@@ -245,16 +242,19 @@
         th { background: #f8f9fa; color: #444; }
         tr:hover { background: #f5f5f5; }
         .action-btn {
-            padding: 5px 10px;
+            padding: 6px 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 12px;
             font-weight: bold;
             color: white;
+            margin-left: 4px;
+            margin-bottom: 4px;
         }
         .select-cust-btn { background: #00439c; }
-        .delete-cust-btn { background: #dc3545; margin-right: 5px; }
+        .whatsapp-cust-btn { background: #25D366; }
+        .delete-cust-btn { background: #dc3545; }
 
         .log-badge {
             display: inline-block;
@@ -348,7 +348,25 @@
         <div id="managerDashboard" class="manager-container hidden">
             <h2 style="margin-top:0; border-bottom:2px solid #eee; padding-bottom:10px;">👑 لوحة تقارير وإدارة المتجر (خاصة بالمدير)</h2>
             
-            <!-- قسم إدارة الجوائز المتعددة (إضافة وحذف) -->
+            <!-- الميزة الرابعة: قسم إرسال العروض التسويقية اللحظية لبطاقات الزبائن -->
+            <div class="reward-settings-box" style="border-color: #d4af37; background: #fffdf5;">
+                <h3 style="margin:0; font-size:16px; color:#111;">📢 نشر عرض تسويقي مباشر على بطاقات جميع زبائن المتجر</h3>
+                <p style="margin:5px 0 0 0; font-size:12px; color:#666;">يظهر هذا العرض فوراً كشريط إعلاني بارز داخل بطاقة كل زبون يفتح بطاقته.</p>
+                <div class="reward-settings-grid">
+                    <div class="reward-field" style="grid-column: span 2;">
+                        <label>نص العرض أو الإعلان الحالي:</label>
+                        <input type="text" id="promoMessageInput" placeholder="مثال: 🔥 عرض اليوم فقط: نقطتان بدل نقطة على كل طلب!" />
+                    </div>
+                    <div class="reward-field">
+                        <button id="publishPromoBtn" class="save-reward-btn" style="background:#d4af37; color:#111;">📢 نشر العرض الآن</button>
+                    </div>
+                    <div class="reward-field">
+                        <button id="clearPromoBtn" class="save-reward-btn" style="background:#dc3545;">🗑️ إيقاف / مسح العرض</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم إدارة الجوائز المتعددة -->
             <div class="reward-settings-box">
                 <h3 style="margin:0; font-size:16px; color:#111;">🎁 إدارة جوائز ومكافآت المتجر (يمكنك إضافة أكثر من جائزة)</h3>
                 <div class="reward-settings-grid">
@@ -364,8 +382,6 @@
                         <button id="addRewardTierBtn" class="save-reward-btn" style="background:#1e7041;">➕ إضافة الجائزة</button>
                     </div>
                 </div>
-
-                <!-- قائمة الجوائز الحالية مع زر الحذف -->
                 <div id="managerRewardsList" class="rewards-list-manager"></div>
             </div>
 
@@ -422,7 +438,7 @@
                             <th>تاريخ الميلاد</th>
                             <th>رقم البطاقة</th>
                             <th>النقاط</th>
-                            <th>إجراءات سريعة</th>
+                            <th>إجراءات وتواصل سريع</th>
                         </tr>
                     </thead>
                     <tbody id="mgrTableBody">
@@ -431,7 +447,7 @@
                 </table>
             </div>
 
-            <!-- سجل الرقابة المالية وآخر الحركات (Audit Log) -->
+            <!-- سجل الرقابة المالية وآخر الحركات -->
             <div style="border-top:2px solid #eee; padding-top:20px;">
                 <h3 style="margin:0 0 12px 0; color:#111;">🕵️‍♂️ سجل الرقابة المالية وآخر حركات الكاشير (آخر 30 حركة)</h3>
                 <div class="table-wrapper" style="margin-bottom:0;">
@@ -511,7 +527,10 @@
         const deductMultiplePointsBtn = document.getElementById('deductMultiplePointsBtn');
         const redeemButtonsContainer = document.getElementById('redeemButtonsContainer');
 
-        // عناصر إدارة الجوائز المتعددة والرموز السرية
+        const promoMessageInput = document.getElementById('promoMessageInput');
+        const publishPromoBtn = document.getElementById('publishPromoBtn');
+        const clearPromoBtn = document.getElementById('clearPromoBtn');
+
         const newRewardPointsInput = document.getElementById('newRewardPointsInput');
         const newRewardTitleInput = document.getElementById('newRewardTitleInput');
         const addRewardTierBtn = document.getElementById('addRewardTierBtn');
@@ -525,8 +544,7 @@
         let activeRole = null;
         let storeCashierPin = "1111";
         let storeManagerPin = "9999";
-
-        // مصفوفة الجوائز المتعددة للمتجر
+        let storeDisplayName = currentCafeId.toUpperCase();
         let storeRewardsList = [];
 
         let currentCustomerId = "";
@@ -537,12 +555,9 @@
         storeBadge.innerText = `متجر: ${currentCafeId.toUpperCase()}`;
         loginStoreBadge.innerText = `متجر: ${currentCafeId.toUpperCase()}`;
 
-        // رسم قائمة الجوائز عند المدير (مع زر الحذف) + رسم أزرار الاستبدال عند الكاشير
         function renderRewardsUI() {
-            // ترتيب الجوائز تصاعدياً حسب النقاط (مثلاً 100 ثم 150)
             storeRewardsList.sort((a, b) => Number(a.points) - Number(b.points));
 
-            // 1. تحديث قائمة الجوائز في لوحة المدير مع زر الحذف
             managerRewardsList.innerHTML = "";
             if (storeRewardsList.length === 0) {
                 managerRewardsList.innerHTML = `<div style="color:#777; font-size:13px;">لا توجد جوائز مضافة حالياً. أضف جائزتك الأولى من الأعلى.</div>`;
@@ -567,7 +582,6 @@
                 });
             }
 
-            // 2. تحديث أزرار الاستبدال في شاشة الكاشير
             redeemButtonsContainer.innerHTML = "";
             storeRewardsList.forEach((reward) => {
                 const btn = document.createElement('button');
@@ -577,7 +591,6 @@
                 redeemButtonsContainer.appendChild(btn);
             });
 
-            // تحديث عنوان إحصائية الجاهزين للمكافأة بناءً على أقل جائزة
             const minPts = storeRewardsList.length > 0 ? storeRewardsList[0].points : 10;
             mgrReadyHeader.innerText = `زبائن مؤهلون لجائزة (+${minPts})`;
         }
@@ -602,6 +615,7 @@
                 if (cafeSnap.exists()) {
                     const data = cafeSnap.data();
                     if (data.name) {
+                        storeDisplayName = data.name;
                         storeBadge.innerText = data.name;
                         loginStoreBadge.innerText = data.name;
                     }
@@ -612,13 +626,16 @@
                         loginSubmitBtn.style.backgroundColor = data.primaryColor;
                     }
                     
-                    // قراءة مصفوفة الجوائز المتعددة، أو تحويل الجائزة الفردية القديمة تلقائياً
                     if (Array.isArray(data.rewards) && data.rewards.length > 0) {
                         storeRewardsList = data.rewards;
                     } else {
                         const fallbackTitle = data.rewardTitle || (data.category === 'gaming' ? "ساعة لعب مجانية 🎮" : "كوب قهوة مجاني ☕");
                         const fallbackPoints = Number(data.rewardPoints) || 10;
                         storeRewardsList = [{ points: fallbackPoints, title: fallbackTitle }];
+                    }
+
+                    if (data.promoMessage) {
+                        promoMessageInput.value = data.promoMessage;
                     }
 
                     if (data.cashierPin) storeCashierPin = String(data.cashierPin).trim();
@@ -634,7 +651,43 @@
         }
         loadStoreConfig();
 
-        // إضافة جائزة جديدة إلى القائمة بدون مسح الجوائز السابقة
+        // نشر العرض التسويقي المباشر على بطاقات الزبائن
+        publishPromoBtn.addEventListener('click', async () => {
+            const msg = promoMessageInput.value.trim();
+            if (!msg) return alert("الرجاء كتابة نص العرض أولاً!");
+
+            publishPromoBtn.disabled = true;
+            publishPromoBtn.innerText = "جاري النشر...";
+            try {
+                await updateDoc(doc(db, "cafes", currentCafeId), {
+                    promoMessage: msg,
+                    promoUpdatedAt: Date.now()
+                });
+                alert("📢 تم نشر العرض بنجاح! يظهر الآن في أعلى بطاقات جميع زبائن المتجر.");
+            } catch (err) {
+                console.error(err);
+                alert("حدث خطأ أثناء نشر العرض.");
+            } finally {
+                publishPromoBtn.disabled = false;
+                publishPromoBtn.innerText = "📢 نشر العرض الآن";
+            }
+        });
+
+        // إيقاف / مسح العرض التسويقي
+        clearPromoBtn.addEventListener('click', async () => {
+            if (!confirm("هل تريد إيقاف العرض الحالي وإخفاءه من بطاقات الزبائن؟")) return;
+            try {
+                await updateDoc(doc(db, "cafes", currentCafeId), {
+                    promoMessage: ""
+                });
+                promoMessageInput.value = "";
+                alert("✅ تم إيقاف العرض وإخفاؤه من بطاقات الزبائن.");
+            } catch (err) {
+                console.error(err);
+                alert("حدث خطأ أثناء مسح العرض.");
+            }
+        });
+
         addRewardTierBtn.addEventListener('click', async () => {
             const pts = parseInt(newRewardPointsInput.value);
             const title = newRewardTitleInput.value.trim();
@@ -646,7 +699,6 @@
             addRewardTierBtn.innerText = "جاري الإضافة...";
 
             try {
-                // إذا كان هناك جائزة بنفس عدد النقاط نحدثها، وإلا نضيفها كجائزة جديدة
                 const existingIndex = storeRewardsList.findIndex(r => Number(r.points) === pts);
                 if (existingIndex >= 0) {
                     storeRewardsList[existingIndex].title = title;
@@ -676,10 +728,9 @@
             }
         });
 
-        // حذف جائزة من قائمة الجوائز
         async function handleDeleteRewardTier(index) {
             if (storeRewardsList.length <= 1) {
-                return alert("⚠️ يجب أن يبقى هناك جائزة واحدة على الأقل في المتجر! يمكنك إضافة جائزة أخرى أولاً ثم حذف هذه.");
+                return alert("⚠️ يجب أن يبقى هناك جائزة واحدة على الأقل في المتجر!");
             }
 
             const target = storeRewardsList[index];
@@ -703,7 +754,6 @@
             }
         }
 
-        // حفظ الرموز السرية
         savePinsBtn.addEventListener('click', async () => {
             const newCashierPin = mgrCashierPinInput.value.trim();
             const newManagerPin = mgrManagerPinInput.value.trim();
@@ -947,7 +997,6 @@
             }
         });
 
-        // دالة استبدال جائزة محددة يختارها الكاشير
         async function handleRedeemSpecificReward(reqPoints, reqTitle) {
             if (!currentCustomerId) return;
             const docRef = doc(db, "customers", currentCustomerId);
@@ -974,6 +1023,34 @@
                     alert("فشل عملية الاستبدال.");
                 }
             }
+        }
+
+        // دالة تنسيق رقم الهاتف وفتح محادثة واتساب برسالة ذكية
+        function sendWhatsAppToCustomer(cust) {
+            if (!cust.phone) return alert("لا يوجد رقم هاتف مسجل لهذا الزبون!");
+            let cleanPhone = cust.phone.replace(/\D/g, '');
+            if (cleanPhone.startsWith('07')) {
+                cleanPhone = '962' + cleanPhone.substring(1);
+            } else if (cleanPhone.startsWith('05')) {
+                cleanPhone = '966' + cleanPhone.substring(1);
+            }
+
+            const minRewardPts = storeRewardsList.length > 0 ? Number(storeRewardsList[0].points) : 10;
+            const firstRewardTitle = storeRewardsList.length > 0 ? storeRewardsList[0].title : 'مكافأتك المجانية';
+            const activePromo = promoMessageInput.value.trim();
+
+            let msg = `مرحباً ${cust.name || ''} 👋، نسعد بتواصلك معنا من *${storeDisplayName}*!\nرصيد بطاقتك (${cust.id}) الحالي هو: *${cust.points || 0} نقطة*.`;
+
+            if (cust.birthDate && isBirthdayToday(cust.birthDate)) {
+                msg = `كل عام وأنت بألف خير يا ${cust.name || ''} 🎂🎉! أسرة *${storeDisplayName}* تهنئك بعيد ميلادك وتدعوك لاستلام هدية ميلادك اليوم!`;
+            } else if ((cust.points || 0) >= minRewardPts) {
+                msg = `مبروك يا ${cust.name || ''} 🎉! رصيدك في *${storeDisplayName}* وصل إلى *${cust.points} نقطة*، ولديك مكافأة جاهزة للاستبدال (${firstRewardTitle}) بانتظارك!`;
+            } else if (activePromo) {
+                msg += `\n\n📢 *عرضنا الخاص لك:* ${activePromo}`;
+            }
+
+            const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+            window.open(waUrl, '_blank');
         }
 
         async function loadManagerDashboardData() {
@@ -1035,8 +1112,9 @@
                     <td><b>${cust.id}</b></td>
                     <td style="font-weight:bold; color:#1e7041; font-size:15px;">${cust.points || 0}</td>
                     <td>
-                        <button class="action-btn select-cust-btn" data-id="${cust.id}">🔍 فتح بالكاشير</button>
-                        <button class="action-btn delete-cust-btn" data-id="${cust.id}" data-name="${cust.name || cust.id}">🗑️ حذف</button>
+                        <button class="action-btn select-cust-btn" data-id="${cust.id}">🔍 بالكاشير</button>
+                        <button class="action-btn whatsapp-cust-btn" data-id="${cust.id}">💬 واتساب</button>
+                        <button class="action-btn delete-cust-btn" data-id="${cust.id}" data-name="${cust.name || cust.id}">🗑️</button>
                     </td>
                 `;
                 mgrTableBody.appendChild(tr);
@@ -1047,6 +1125,14 @@
                     const id = e.currentTarget.getAttribute('data-id');
                     searchCustomerById(id);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            document.querySelectorAll('.whatsapp-cust-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.currentTarget.getAttribute('data-id');
+                    const custObj = storeCustomersList.find(c => c.id === id);
+                    if (custObj) sendWhatsAppToCustomer(custObj);
                 });
             });
 
