@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +21,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .navbar h2 {
@@ -36,7 +37,9 @@
             margin: auto;
         }
 
-        .hidden { display: none !important; }
+        .hidden {
+            display: none !important;
+        }
 
         .login-box {
             background: white;
@@ -44,7 +47,7 @@
             margin: 60px auto;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
             text-align: center;
         }
 
@@ -59,7 +62,7 @@
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
 
         .panel-card h3 {
@@ -78,7 +81,8 @@
             margin-top: 12px;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 11px;
             border: 1px solid #ccc;
@@ -93,7 +97,9 @@
             gap: 15px;
         }
 
-        .color-box { flex: 1; }
+        .color-box {
+            flex: 1;
+        }
 
         input[type="color"] {
             height: 42px;
@@ -115,7 +121,9 @@
             transition: 0.3s;
         }
 
-        .btn-primary:hover { background: #333; }
+        .btn-primary:hover {
+            background: #333;
+        }
 
         .btn-delete {
             background: #dc3545;
@@ -129,7 +137,9 @@
             transition: 0.2s;
         }
 
-        .btn-delete:hover { background: #c82333; }
+        .btn-delete:hover {
+            background: #c82333;
+        }
 
         .links-box {
             margin-top: 15px;
@@ -189,7 +199,7 @@
             background: white;
             padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             text-align: center;
             border-bottom: 4px solid #1e7041;
         }
@@ -210,7 +220,7 @@
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             overflow-x: auto;
         }
 
@@ -225,7 +235,10 @@
             gap: 10px;
         }
 
-        .table-header h3 { margin: 0; color: #111; }
+        .table-header h3 {
+            margin: 0;
+            color: #111;
+        }
 
         .filter-select {
             width: auto;
@@ -238,7 +251,8 @@
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             padding: 14px;
             text-align: right;
             border-bottom: 1px solid #eee;
@@ -250,7 +264,9 @@
             font-weight: 600;
         }
 
-        tr:hover { background-color: #f1f1f1; }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
 
         .vip-tag {
             background-color: #d4af37;
@@ -262,6 +278,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="navbar">
@@ -279,12 +296,12 @@
 
     <!-- لوحة التحكم الكاملة -->
     <div id="dashboardSection" class="container hidden">
-        
+
         <!-- القسم الأول: إضافة متجر جديد + قائمة المتاجر -->
         <div class="management-grid">
             <div class="panel-card">
                 <h3>➕ إضافة / تعديل متجر</h3>
-                
+
                 <label>كود المتجر بالإنجليزية (بدون مسافات - يحدد بادئة البطاقة):</label>
                 <input type="text" id="storeId" placeholder="مثال: ps5 أو gamezone أو solaf" />
 
@@ -299,6 +316,17 @@
 
                 <label>اسم ملف الشعار أو رابط الصورة:</label>
                 <input type="text" id="storeLogo" placeholder="مثال: ikgamecenter.jpg أو Mandel.jpg" />
+
+                <div class="color-row">
+                    <div class="color-box">
+                        <label>الرمز السري للكاشير (الموظف):</label>
+                        <input type="text" id="cashierPin" placeholder="مثال: 1111" value="1111" />
+                    </div>
+                    <div class="color-box">
+                        <label>الرمز السري لمدير المحل:</label>
+                        <input type="text" id="managerPin" placeholder="مثال: 9999" value="9999" />
+                    </div>
+                </div>
 
                 <div class="color-row">
                     <div class="color-box">
@@ -366,7 +394,9 @@
                     </tr>
                 </thead>
                 <tbody id="customersTableBody">
-                    <tr><td colspan="8" style="text-align: center;">جاري تحميل البيانات...</td></tr>
+                    <tr>
+                        <td colspan="8" style="text-align: center;">جاري تحميل البيانات...</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -377,12 +407,12 @@
         import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
-          apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
-          authDomain: "cafe-system-24331.firebaseapp.com",
-          projectId: "cafe-system-24331",
-          storageBucket: "cafe-system-24331.firebasestorage.app",
-          messagingSenderId: "845856227747",
-          appId: "1:845856227747:web:378c6d02fc89410df41a16"
+            apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
+            authDomain: "cafe-system-24331.firebaseapp.com",
+            projectId: "cafe-system-24331",
+            storageBucket: "cafe-system-24331.firebasestorage.app",
+            messagingSenderId: "845856227747",
+            appId: "1:845856227747:web:378c6d02fc89410df41a16"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -500,6 +530,8 @@
 
         // 3. حفظ متجر جديد (مع تحويل اسم الصورة تلقائياً إلى رابط كامل)
         saveStoreBtn.addEventListener('click', async () => {
+            const cashierPin = document.getElementById('cashierPin').value.trim() || '1111';
+            const managerPin = document.getElementById('managerPin').value.trim() || '9999';
             const storeId = document.getElementById('storeId').value.trim().toLowerCase().replace(/\s+/g, '');
             const storeName = document.getElementById('storeName').value.trim();
             const category = document.getElementById('storeCategory').value;
@@ -512,8 +544,8 @@
             }
 
             const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', '');
-            const finalLogoUrl = logoInput.startsWith('http') 
-                ? logoInput 
+            const finalLogoUrl = logoInput.startsWith('http')
+                ? logoInput
                 : `${baseUrl}${logoInput.replace(/^\//, '')}`;
 
             saveStoreBtn.disabled = true;
@@ -521,6 +553,8 @@
 
             try {
                 await setDoc(doc(db, "cafes", storeId), {
+                    cashierPin: cashierPin,
+                    managerPin: managerPin,
                     name: storeName,
                     category: category,
                     logoUrl: finalLogoUrl,
@@ -561,8 +595,8 @@
         }
 
         function renderTableAndStats(selectedCafe) {
-            const filtered = selectedCafe === 'all' 
-                ? [...allCustomers] 
+            const filtered = selectedCafe === 'all'
+                ? [...allCustomers]
                 : allCustomers.filter(c => (c.cafeId || 'mandel').toLowerCase() === selectedCafe);
 
             filtered.sort((a, b) => (b.points || 0) - (a.points || 0));
@@ -632,4 +666,5 @@
         });
     </script>
 </body>
+
 </html>

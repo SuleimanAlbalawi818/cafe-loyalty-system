@@ -3,83 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الكاشير - SHABTEN CARD</title>
+    <title>بوابة المتجر - SHABTEN CARD</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        .store-badge { display: inline-block; background: #1e7041; color: white; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; margin-bottom: 10px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            color: #333;
+        }
+        .main-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .manager-container {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            margin-top: 25px;
+            box-sizing: border-box;
+        }
+        .store-badge {
+            display: inline-block;
+            background: #111;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
         h1 { margin-top: 0; font-size: 22px; color: #111; }
+        .hidden { display: none !important; }
+
+        /* تبويبات اختيار نوع الدخول (موظف / مدير) */
+        .role-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .role-tab {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .role-tab.active {
+            border-color: #111;
+            background: #111;
+            color: #fff;
+        }
+        .pin-input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #1e7041;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* شريط معلومات المستخدم بعد الدخول */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+        .logout-btn {
+            background: #eee;
+            color: #333;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* عناصر الكاشير */
         .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-box input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 15px; text-transform: uppercase; }
-        .search-box button { padding: 10px 20px; background: #1e7041; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .hidden { display: none; }
+        .search-box input { flex: 1; padding: 11px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; text-transform: uppercase; }
+        .search-box button { padding: 11px 20px; background: #1e7041; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
         
-        .customer-info { font-size: 15px; color: #444; margin-bottom: 10px; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
-        .birthday-banner { background-color: #fff3cd; color: #856404; border: 2px solid #ffeeba; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; font-size: 15px; }
-        .birthday-btn { background-color: #6f42c1; color: white; padding: 10px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-size: 14px; font-weight: bold; margin-top: 8px; transition: 0.3s; }
-        .birthday-btn:hover { background-color: #59339d; }
+        .customer-info { font-size: 15px; color: #444; margin-bottom: 10px; background: #f9f9f9; padding: 12px; border-radius: 8px; border: 1px solid #eee; }
+        .birthday-banner { background-color: #fff3cd; color: #856404; border: 2px solid #ffeeba; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; font-size: 14px; }
+        .birthday-btn { background-color: #6f42c1; color: white; padding: 10px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 8px; }
 
         .points-display { font-size: 20px; font-weight: bold; margin: 15px 0; background: #eee; padding: 15px; border-radius: 8px; }
         
         .add-points-box { display: flex; gap: 10px; margin-bottom: 10px; }
-        .add-points-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; text-align: center; }
-        .add-points-box button { flex: 2; padding: 12px; background: #000; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        .add-points-box input, .deduct-points-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; text-align: center; }
+        .add-points-box button { flex: 2; padding: 12px; background: #000; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold; }
         
         .deduct-points-box { display: flex; gap: 10px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #eee; }
-        .deduct-points-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; text-align: center; }
-        .deduct-points-box button { flex: 2; padding: 12px; background: #fd7e14; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        .deduct-points-box button { flex: 2; padding: 12px; background: #fd7e14; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold; }
         
-        #redeemBtn { background-color: #dc3545; color: white; padding: 12px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        #redeemBtn { background-color: #dc3545; color: white; padding: 13px; border: none; border-radius: 6px; width: 100%; cursor: pointer; font-size: 15px; font-weight: bold; }
+
+        /* عناصر لوحة مدير المحل */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-bottom: 4px solid #111;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-box h4 { margin: 0 0 8px 0; font-size: 13px; color: #666; }
+        .stat-box .num { font-size: 26px; font-weight: bold; color: #111; }
+
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; color: #444; }
+        tr:hover { background: #f5f5f5; }
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+        .select-cust-btn { background: #00439c; }
+        .delete-cust-btn { background: #dc3545; margin-right: 5px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <span id="storeBadge" class="store-badge">جاري التحميل...</span>
-        <h1 id="cashierTitle">لوحة الكاشير</h1>
+    <div class="main-wrapper">
         
-        <div class="search-box">
-            <input type="text" id="customerId" placeholder="أدخل رقم البطاقة (مثال: MAN-12)" />
-            <button id="searchBtn">بحث</button>
+        <!-- 1. صندوق تسجيل الدخول (يظهر أولاً) -->
+        <div id="authContainer" class="container">
+            <span id="loginStoreBadge" class="store-badge">جاري التحميل...</span>
+            <h1>تسجيل الدخول للمتجر</h1>
+            <p style="font-size:13px; color:#666; margin-bottom:15px;">اختر نوع الحساب وأدخل الرمز السري للمتابعة</p>
+
+            <div class="role-tabs">
+                <div id="tabCashier" class="role-tab active">👨‍💼 موظف (كاشير)</div>
+                <div id="tabManager" class="role-tab">👑 مدير المحل</div>
+            </div>
+
+            <input type="password" id="pinInput" class="pin-input" placeholder="أدخل الرمز السري للموظف" />
+            <button id="loginSubmitBtn" class="login-btn">دخول 🔒</button>
         </div>
 
-        <div id="resultArea" class="hidden">
-            <h2 id="statusMessage"></h2>
+        <!-- 2. شاشة الكاشير (تظهر للموظف وللمدير) -->
+        <div id="cashierContainer" class="container hidden">
+            <div class="top-bar">
+                <span id="roleIndicator" style="font-weight:bold; color:#1e7041;">👨‍💼 وضع الموظف</span>
+                <button id="logoutBtn" class="logout-btn">تسجيل خروج 🚪</button>
+            </div>
+
+            <span id="storeBadge" class="store-badge">المتجر</span>
+            <h1 id="cashierTitle">لوحة الكاشير</h1>
             
-            <div id="customerDetails" class="customer-info hidden">
-                <div>الاسم: <strong id="custNameDisplay">-</strong></div>
-                <div style="margin-top:4px;">تاريخ الميلاد: <strong id="custBirthDisplay">-</strong></div>
+            <div class="search-box">
+                <input type="text" id="customerId" placeholder="أدخل رقم البطاقة" />
+                <button id="searchBtn">بحث</button>
             </div>
 
-            <div id="birthdayAlert" class="birthday-banner hidden">
-                <span id="birthdayText">🎂 اليوم عيد ميلاد هذا الزبون! يستحق خصم الميلاد</span>
-                <button id="sendBirthdayBtn" class="birthday-btn">إرسال إشعار هدية الميلاد لمحفظة الزبون 🎁</button>
-            </div>
-
-            <div id="actionsArea">
-                <div class="points-display">
-                    النقاط الحالية: <span id="currentPoints">0</span>
-                </div>
+            <div id="resultArea" class="hidden">
+                <h3 id="statusMessage" style="margin-top:0;"></h3>
                 
-                <div class="add-points-box">
-                    <input type="number" id="pointsToAdd" placeholder="عدد" min="1" value="1" />
-                    <button id="addMultiplePointsBtn">إضافة نقاط (+)</button>
+                <div id="customerDetails" class="customer-info hidden">
+                    <div>الاسم: <strong id="custNameDisplay">-</strong></div>
+                    <div style="margin-top:4px;">رقم الهاتف: <strong id="custPhoneDisplay" dir="ltr">-</strong></div>
+                    <div style="margin-top:4px;">تاريخ الميلاد: <strong id="custBirthDisplay">-</strong></div>
                 </div>
 
-                <div class="deduct-points-box">
-                    <input type="number" id="pointsToDeduct" placeholder="عدد" min="1" value="1" />
-                    <button id="deductMultiplePointsBtn">خصم نقاط (-)</button>
+                <div id="birthdayAlert" class="birthday-banner hidden">
+                    <span id="birthdayText">🎂 اليوم عيد ميلاد هذا الزبون! يستحق خصم الميلاد</span>
+                    <button id="sendBirthdayBtn" class="birthday-btn">إرسال إشعار هدية الميلاد لمحفظة الزبون 🎁</button>
                 </div>
 
-                <button id="redeemBtn">
-                    استبدال المكافأة (-10 نقاط) ☕
-                </button>
+                <div id="actionsArea">
+                    <div class="points-display">
+                        النقاط الحالية: <span id="currentPoints">0</span>
+                    </div>
+                    
+                    <div class="add-points-box">
+                        <input type="number" id="pointsToAdd" placeholder="عدد" min="1" value="1" />
+                        <button id="addMultiplePointsBtn">إضافة نقاط (+)</button>
+                    </div>
+
+                    <div class="deduct-points-box">
+                        <input type="number" id="pointsToDeduct" placeholder="عدد" min="1" value="1" />
+                        <button id="deductMultiplePointsBtn">خصم نقاط (-)</button>
+                    </div>
+
+                    <button id="redeemBtn">
+                        استبدال المكافأة (-10 نقاط) ☕
+                    </button>
+                </div>
             </div>
         </div>
+
+        <!-- 3. لوحة الإدارة الكاملة الخاصة بمدير المحل فقط -->
+        <div id="managerDashboard" class="manager-container hidden">
+            <h2 style="margin-top:0; border-bottom:2px solid #eee; padding-bottom:10px;">👑 لوحة تقارير وإدارة المتجر (خاصة بالمدير)</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-box" id="statBox1">
+                    <h4>إجمالي زبائن المتجر</h4>
+                    <div class="num" id="mgrTotalCustomers">0</div>
+                </div>
+                <div class="stat-box" id="statBox2">
+                    <h4>مجموع النقاط الفعالة</h4>
+                    <div class="num" id="mgrTotalPoints">0</div>
+                </div>
+                <div class="stat-box" id="statBox3">
+                    <h4>زبائن جاهزون للمكافأة (+10)</h4>
+                    <div class="num" id="mgrReadyRewards">0</div>
+                </div>
+                <div class="stat-box" id="statBox4">
+                    <h4>أعياد ميلاد اليوم 🎂</h4>
+                    <div class="num" id="mgrBirthdaysToday">0</div>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+                <h3 style="margin:0;">📋 سجل زبائن المتجر بالكامل</h3>
+                <input type="text" id="mgrSearchInput" placeholder="ابحث بالاسم أو الهاتف أو رقم البطاقة..." style="padding:8px 12px; border:1px solid #ccc; border-radius:6px; width:260px;" />
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم الزبون</th>
+                            <th>رقم الهاتف</th>
+                            <th>تاريخ الميلاد</th>
+                            <th>رقم البطاقة</th>
+                            <th>النقاط</th>
+                            <th>إجراءات سريعة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mgrTableBody">
+                        <tr><td colspan="7" style="text-align:center;">جاري تحميل بيانات الزبائن...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
@@ -93,10 +309,23 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // قراءة كود المحل الخاص بهذا الكاشير من الرابط
         const urlParams = new URLSearchParams(window.location.search);
         const currentCafeId = (urlParams.get('cafe') || 'mandel').toLowerCase();
         const expectedPrefix = currentCafeId.substring(0, 3).toUpperCase();
+
+        // عناصر تسجيل الدخول
+        const authContainer = document.getElementById('authContainer');
+        const loginStoreBadge = document.getElementById('loginStoreBadge');
+        const tabCashier = document.getElementById('tabCashier');
+        const tabManager = document.getElementById('tabManager');
+        const pinInput = document.getElementById('pinInput');
+        const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+
+        // عناصر الكاشير والمدير
+        const cashierContainer = document.getElementById('cashierContainer');
+        const managerDashboard = document.getElementById('managerDashboard');
+        const roleIndicator = document.getElementById('roleIndicator');
+        const logoutBtn = document.getElementById('logoutBtn');
 
         const storeBadge = document.getElementById('storeBadge');
         const searchBtn = document.getElementById('searchBtn');
@@ -108,6 +337,7 @@
         
         const customerDetails = document.getElementById('customerDetails');
         const custNameDisplay = document.getElementById('custNameDisplay');
+        const custPhoneDisplay = document.getElementById('custPhoneDisplay');
         const custBirthDisplay = document.getElementById('custBirthDisplay');
         const birthdayAlert = document.getElementById('birthdayAlert');
         const birthdayText = document.getElementById('birthdayText');
@@ -119,33 +349,103 @@
         const deductMultiplePointsBtn = document.getElementById('deductMultiplePointsBtn');
         const redeemBtn = document.getElementById('redeemBtn');
 
+        let selectedRole = 'cashier'; // 'cashier' or 'manager'
+        let activeRole = null;
+        let storeCashierPin = "1111"; // الرمز الافتراضي للموظف إذا لم يحدده الأدمن
+        let storeManagerPin = "9999"; // الرمز الافتراضي للمدير إذا لم يحدده الأدمن
+
         let currentCustomerId = "";
         let currentCustomerName = "";
+        let storeCustomersList = [];
 
-        // ضبط مثال رقم البطاقة حسب المحل
         customerIdInput.placeholder = `أدخل رقم البطاقة (مثال: ${expectedPrefix}-12)`;
         storeBadge.innerText = `متجر: ${currentCafeId.toUpperCase()}`;
+        loginStoreBadge.innerText = `متجر: ${currentCafeId.toUpperCase()}`;
 
-        // جلب إعدادات المحل (الاسم، اللون، ونوع النشاط: كافيه أو بلايستيشن)
+        // تبديل التبويبات بين الموظف والمدير
+        tabCashier.addEventListener('click', () => {
+            selectedRole = 'cashier';
+            tabCashier.classList.add('active');
+            tabManager.classList.remove('active');
+            pinInput.placeholder = "أدخل الرمز السري للموظف (الكاشير)";
+        });
+
+        tabManager.addEventListener('click', () => {
+            selectedRole = 'manager';
+            tabManager.classList.add('active');
+            tabCashier.classList.remove('active');
+            pinInput.placeholder = "أدخل الرمز السري لمدير المحل";
+        });
+
+        // جلب إعدادات المتجر والرموز السرية من Firebase
         async function loadStoreConfig() {
             try {
                 const cafeSnap = await getDoc(doc(db, "cafes", currentCafeId));
                 if (cafeSnap.exists()) {
                     const data = cafeSnap.data();
-                    if (data.name) storeBadge.innerText = data.name;
+                    if (data.name) {
+                        storeBadge.innerText = data.name;
+                        loginStoreBadge.innerText = data.name;
+                    }
                     if (data.primaryColor) {
                         storeBadge.style.backgroundColor = data.primaryColor;
+                        loginStoreBadge.style.backgroundColor = data.primaryColor;
                         searchBtn.style.backgroundColor = data.primaryColor;
+                        loginSubmitBtn.style.backgroundColor = data.primaryColor;
                     }
                     if (data.category === 'gaming') {
                         redeemBtn.innerText = "استبدال ساعة لعب مجانية (-10 نقاط) 🎮";
                     }
+                    if (data.cashierPin) storeCashierPin = String(data.cashierPin).trim();
+                    if (data.managerPin) storeManagerPin = String(data.managerPin).trim();
                 }
             } catch (e) {
                 console.error("خطأ في تحميل بيانات المتجر:", e);
             }
         }
         loadStoreConfig();
+
+        // عملية تسجيل الدخول (موظف أو مدير)
+        loginSubmitBtn.addEventListener('click', async () => {
+            const enteredPin = pinInput.value.trim();
+            if (!enteredPin) return alert("الرجاء إدخال الرمز السري");
+
+            if (selectedRole === 'cashier') {
+                // يسمح بدخول الكاشير برمز الكاشير أو رمز المدير
+                if (enteredPin === storeCashierPin || enteredPin === storeManagerPin) {
+                    activeRole = 'cashier';
+                    authContainer.classList.add('hidden');
+                    cashierContainer.classList.remove('hidden');
+                    managerDashboard.classList.add('hidden');
+                    roleIndicator.innerText = "👨‍💼 وضع الموظف (الكاشير)";
+                    roleIndicator.style.color = "#1e7041";
+                } else {
+                    alert("❌ الرمز السري للموظف غير صحيح!");
+                }
+            } else if (selectedRole === 'manager') {
+                if (enteredPin === storeManagerPin) {
+                    activeRole = 'manager';
+                    authContainer.classList.add('hidden');
+                    cashierContainer.classList.remove('hidden');
+                    managerDashboard.classList.remove('hidden');
+                    roleIndicator.innerText = "👑 وضع مدير المحل (صلاحيات كاملة)";
+                    roleIndicator.style.color = "#d4af37";
+                    await loadManagerDashboardData();
+                } else {
+                    alert("❌ الرمز السري لمدير المحل غير صحيح!");
+                }
+            }
+        });
+
+        // تسجيل الخروج والعودة لشاشة الاختيار
+        logoutBtn.addEventListener('click', () => {
+            activeRole = null;
+            pinInput.value = "";
+            resultArea.classList.add('hidden');
+            cashierContainer.classList.add('hidden');
+            managerDashboard.classList.add('hidden');
+            authContainer.classList.remove('hidden');
+        });
 
         async function syncPointsWithServer(customerId, newPoints) {
             try {
@@ -167,11 +467,9 @@
             return (today.getMonth() + 1 === parseInt(parts[1], 10)) && (today.getDate() === parseInt(parts[2], 10));
         }
 
-        // 1. البحث عن الزبون مع التحقق من تبعيته لنفس المتجر
-        searchBtn.addEventListener('click', async () => {
-            const id = customerIdInput.value.trim().toUpperCase();
-            if (!id) return alert("الرجاء إدخال رقم البطاقة");
-
+        // دالة البحث عن زبون وعرضه في الكاشير
+        async function searchCustomerById(id) {
+            customerIdInput.value = id;
             const docRef = doc(db, "customers", id);
             const docSnap = await getDoc(docRef);
 
@@ -183,7 +481,6 @@
                 const data = docSnap.data();
                 const customerCafe = (data.cafeId || 'mandel').toLowerCase();
 
-                // التحقق الصارم: هل الزبون تابع لهذا المحل؟
                 if (customerCafe !== currentCafeId) {
                     currentCustomerId = "";
                     statusMessage.innerText = "⛔ عفواً، هذه البطاقة تابعة لمتجر آخر!";
@@ -192,16 +489,16 @@
                     return;
                 }
 
-                // الزبون صحيح وتابع لنفس المحل
                 currentCustomerId = id;
                 actionsArea.classList.remove('hidden');
-                statusMessage.innerText = "الزبون موجود!";
+                statusMessage.innerText = "بيانات الزبون:";
                 statusMessage.style.color = "green";
-                currentPointsEl.innerText = data.points;
+                currentPointsEl.innerText = data.points || 0;
                 currentCustomerName = data.name || "عميل مميز";
 
                 customerDetails.classList.remove('hidden');
                 custNameDisplay.innerText = currentCustomerName;
+                custPhoneDisplay.innerText = data.phone || "غير مسجل";
                 custBirthDisplay.innerText = data.birthDate || "غير مسجل";
 
                 if (data.birthDate && isBirthdayToday(data.birthDate)) {
@@ -214,6 +511,12 @@
                 statusMessage.style.color = "#dc3545";
                 actionsArea.classList.add('hidden');
             }
+        }
+
+        searchBtn.addEventListener('click', () => {
+            const id = customerIdInput.value.trim().toUpperCase();
+            if (!id) return alert("الرجاء إدخال رقم البطاقة");
+            searchCustomerById(id);
         });
 
         // إرسال إشعار هدية الميلاد
@@ -241,7 +544,7 @@
             }
         });
 
-        // 2. إضافة نقاط
+        // إضافة نقاط
         addMultiplePointsBtn.addEventListener('click', async () => {
             if (!currentCustomerId) return;
             const pointsVal = parseInt(pointsToAddInput.value);
@@ -253,13 +556,14 @@
             if (docSnap.exists()) {
                 try {
                     addMultiplePointsBtn.disabled = true;
-                    const newPoints = docSnap.data().points + pointsVal;
+                    const newPoints = (docSnap.data().points || 0) + pointsVal;
                     await updateDoc(docRef, { points: newPoints });
                     await syncPointsWithServer(currentCustomerId, newPoints);
 
                     currentPointsEl.innerText = newPoints;
                     alert(`تمت إضافة ${pointsVal} نقطة بنجاح!`);
-                    pointsToAddInput.value = "1"; 
+                    pointsToAddInput.value = "1";
+                    if (activeRole === 'manager') loadManagerDashboardData();
                 } catch (error) {
                     alert("حدث خطأ أثناء الإضافة.");
                 } finally {
@@ -268,7 +572,7 @@
             }
         });
 
-        // 3. خصم نقاط
+        // خصم نقاط
         deductMultiplePointsBtn.addEventListener('click', async () => {
             if (!currentCustomerId) return;
             const pointsVal = parseInt(pointsToDeductInput.value);
@@ -278,7 +582,7 @@
             const docSnap = await getDoc(docRef);
             
             if (docSnap.exists()) {
-                const currentPoints = docSnap.data().points;
+                const currentPoints = docSnap.data().points || 0;
                 if (currentPoints < pointsVal) {
                     return alert(`لا يمكن الخصم! رصيد الزبون (${currentPoints}) أقل من (${pointsVal}).`);
                 }
@@ -291,7 +595,8 @@
 
                     currentPointsEl.innerText = newPoints;
                     alert(`تم خصم ${pointsVal} نقطة بنجاح!`);
-                    pointsToDeductInput.value = "1"; 
+                    pointsToDeductInput.value = "1";
+                    if (activeRole === 'manager') loadManagerDashboardData();
                 } catch (error) {
                     alert("حدث خطأ أثناء الخصم.");
                 } finally {
@@ -300,14 +605,14 @@
             }
         });
 
-        // 4. استبدال المكافأة (10 نقاط)
+        // استبدال المكافأة (10 نقاط)
         redeemBtn.addEventListener('click', async () => {
             if (!currentCustomerId) return;
             const docRef = doc(db, "customers", currentCustomerId);
             const docSnap = await getDoc(docRef);
             
             if (docSnap.exists()) {
-                const currentPoints = docSnap.data().points;
+                const currentPoints = docSnap.data().points || 0;
                 if (currentPoints < 10) {
                     return alert("رصيد الزبون غير كافٍ. يجب أن يصل إلى 10 نقاط.");
                 }
@@ -320,12 +625,114 @@
 
                     currentPointsEl.innerText = newPoints;
                     alert("تمت عملية الاستبدال بنجاح! قُدمت المكافأة للزبون 🎁");
+                    if (activeRole === 'manager') loadManagerDashboardData();
                 } catch (error) {
                     alert("فشل عملية الاستبدال.");
                 } finally {
                     redeemBtn.disabled = false;
                 }
             }
+        });
+
+        // ================= وظائف لوحة مدير المحل =================
+        async function loadManagerDashboardData() {
+            const mgrTableBody = document.getElementById('mgrTableBody');
+            try {
+                const snap = await getDocs(collection(db, "customers"));
+                storeCustomersList = [];
+
+                snap.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if ((data.cafeId || 'mandel').toLowerCase() === currentCafeId) {
+                        storeCustomersList.push({ id: docSnap.id, ...data });
+                    }
+                });
+
+                // ترتيب تنازلي حسب النقاط
+                storeCustomersList.sort((a, b) => (b.points || 0) - (a.points || 0));
+
+                // حساب الإحصائيات الخاصة بالمتجر
+                let totalPts = 0;
+                let readyRewards = 0;
+                let birthdaysCount = 0;
+
+                storeCustomersList.forEach(c => {
+                    const pts = c.points || 0;
+                    totalPts += pts;
+                    if (pts >= 10) readyRewards++;
+                    if (c.birthDate && isBirthdayToday(c.birthDate)) birthdaysCount++;
+                });
+
+                document.getElementById('mgrTotalCustomers').innerText = storeCustomersList.length;
+                document.getElementById('mgrTotalPoints').innerText = totalPts;
+                document.getElementById('mgrReadyRewards').innerText = readyRewards;
+                document.getElementById('mgrBirthdaysToday').innerText = birthdaysCount;
+
+                renderManagerTable(storeCustomersList);
+            } catch (err) {
+                console.error(err);
+                mgrTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">خطأ في تحميل البيانات</td></tr>`;
+            }
+        }
+
+        function renderManagerTable(list) {
+            const mgrTableBody = document.getElementById('mgrTableBody');
+            mgrTableBody.innerHTML = "";
+
+            if (list.length === 0) {
+                mgrTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">لا يوجد زبائن مسجلين في هذا المتجر حتى الآن.</td></tr>`;
+                return;
+            }
+
+            list.forEach((cust, idx) => {
+                const tr = document.createElement('tr');
+                const bdayBadge = (cust.birthDate && isBirthdayToday(cust.birthDate)) ? ' 🎂' : '';
+                tr.innerHTML = `
+                    <td>${idx + 1}</td>
+                    <td style="font-weight:bold;">${cust.name || 'غير معروف'}${bdayBadge}</td>
+                    <td dir="ltr" style="text-align:right;">${cust.phone || '---'}</td>
+                    <td>${cust.birthDate || '---'}</td>
+                    <td><b>${cust.id}</b></td>
+                    <td style="font-weight:bold; color:#1e7041; font-size:15px;">${cust.points || 0}</td>
+                    <td>
+                        <button class="action-btn select-cust-btn" data-id="${cust.id}">🔍 فتح بالكاشير</button>
+                        <button class="action-btn delete-cust-btn" data-id="${cust.id}" data-name="${cust.name || cust.id}">🗑️ حذف</button>
+                    </td>
+                `;
+                mgrTableBody.appendChild(tr);
+            });
+
+            // زر فتح الزبون في الكاشير مباشرة بدون كتابة الكود
+            document.querySelectorAll('.select-cust-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.currentTarget.getAttribute('data-id');
+                    searchCustomerById(id);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            // زر حذف الزبون من قبل مدير المحل
+            document.querySelectorAll('.delete-cust-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.currentTarget.getAttribute('data-id');
+                    const name = e.currentTarget.getAttribute('data-name');
+                    if (confirm(`⚠️ هل أنت متأكد من حذف بطاقة الزبون "${name}" (${id})؟`)) {
+                        await deleteDoc(doc(db, "customers", id));
+                        loadManagerDashboardData();
+                    }
+                });
+            });
+        }
+
+        // البحث الفوري داخل جدول المدير
+        document.getElementById('mgrSearchInput').addEventListener('input', (e) => {
+            const q = e.target.value.trim().toLowerCase();
+            const filtered = storeCustomersList.filter(c => 
+                (c.name && c.name.toLowerCase().includes(q)) ||
+                (c.phone && c.phone.includes(q)) ||
+                (c.id && c.id.toLowerCase().includes(q))
+            );
+            renderManagerTable(filtered);
         });
     </script>
 </body>
