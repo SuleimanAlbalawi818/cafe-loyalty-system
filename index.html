@@ -16,7 +16,7 @@
         }
         .main-wrapper {
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -135,7 +135,7 @@
         
         #redeemBtn { background-color: #dc3545; color: white; padding: 13px; border: none; border-radius: 6px; width: 100%; cursor: pointer; font-size: 15px; font-weight: bold; }
 
-        /* إعدادات الجائزة لمدير المحل */
+        /* إعدادات الجائزة والرموز لمدير المحل */
         .reward-settings-box {
             background: #f8f9fa;
             border: 2px solid #e2e8f0;
@@ -144,19 +144,15 @@
             margin-bottom: 25px;
         }
         .reward-settings-grid {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
             gap: 12px;
-            flex-wrap: wrap;
             align-items: flex-end;
-            margin-top: 10px;
-        }
-        .reward-field {
-            flex: 1;
-            min-width: 180px;
+            margin-top: 12px;
         }
         .reward-field label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             margin-bottom: 6px;
             color: #444;
@@ -173,11 +169,12 @@
             background: #111;
             color: #fff;
             border: none;
-            padding: 11px 22px;
+            padding: 11px 20px;
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
             height: 40px;
+            width: 100%;
         }
 
         .stats-grid {
@@ -197,7 +194,7 @@
         .stat-box h4 { margin: 0 0 8px 0; font-size: 13px; color: #666; }
         .stat-box .num { font-size: 26px; font-weight: bold; color: #111; }
 
-        .table-wrapper { overflow-x: auto; }
+        .table-wrapper { overflow-x: auto; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
         th, td { padding: 12px; text-align: right; border-bottom: 1px solid #eee; }
         th { background: #f8f9fa; color: #444; }
@@ -213,6 +210,26 @@
         }
         .select-cust-btn { background: #00439c; }
         .delete-cust-btn { background: #dc3545; margin-right: 5px; }
+
+        /* شارات سجل الحركات (Audit Log) */
+        .log-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .log-add { background: #d4edda; color: #155724; }
+        .log-deduct { background: #fff3cd; color: #856404; }
+        .log-redeem { background: #f8d7da; color: #721c24; }
+        .actor-tag {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: #eee;
+            color: #333;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -288,19 +305,29 @@
         <div id="managerDashboard" class="manager-container hidden">
             <h2 style="margin-top:0; border-bottom:2px solid #eee; padding-bottom:10px;">👑 لوحة تقارير وإدارة المتجر (خاصة بالمدير)</h2>
             
-            <!-- قسم تحكم صاحب المتجر بعدد نقاط الجائزة -->
+            <!-- إعدادات المكافأة والرموز السرية -->
             <div class="reward-settings-box">
-                <h3 style="margin:0; font-size:16px; color:#111;">⚙️ إعدادات آلية خصم النقاط والجائزة</h3>
+                <h3 style="margin:0; font-size:16px; color:#111;">⚙️ إعدادات المكافأة والرموز السرية للمتجر</h3>
                 <div class="reward-settings-grid">
                     <div class="reward-field">
-                        <label>عدد النقاط المطلوبة للجائزة:</label>
+                        <label>النقاط المطلوبة للجائزة:</label>
                         <input type="number" id="mgrRewardPointsInput" min="1" value="10" />
                     </div>
                     <div class="reward-field">
-                        <label>وصف الجائزة (يظهر للكاشير والزبون):</label>
-                        <input type="text" id="mgrRewardTitleInput" placeholder="مثال: كوب مجاني ☕ أو ساعة لعب 🎮" />
+                        <label>وصف الجائزة:</label>
+                        <input type="text" id="mgrRewardTitleInput" placeholder="كوب مجاني ☕ / ساعة لعب 🎮" />
                     </div>
-                    <button id="saveRewardSettingsBtn" class="save-reward-btn">حفظ الإعدادات 💾</button>
+                    <div class="reward-field">
+                        <label>رمز الكاشير (الموظف):</label>
+                        <input type="text" id="mgrCashierPinInput" placeholder="1111" />
+                    </div>
+                    <div class="reward-field">
+                        <label>رمز مدير المحل:</label>
+                        <input type="text" id="mgrManagerPinInput" placeholder="9999" />
+                    </div>
+                    <div class="reward-field">
+                        <button id="saveRewardSettingsBtn" class="save-reward-btn">حفظ الإعدادات 💾</button>
+                    </div>
                 </div>
             </div>
 
@@ -323,6 +350,7 @@
                 </div>
             </div>
 
+            <!-- جدول زبائن المتجر -->
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
                 <h3 style="margin:0;">📋 سجل زبائن المتجر بالكامل</h3>
                 <input type="text" id="mgrSearchInput" placeholder="ابحث بالاسم أو الهاتف أو رقم البطاقة..." style="padding:8px 12px; border:1px solid #ccc; border-radius:6px; width:260px;" />
@@ -346,13 +374,36 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- سجل الرقابة المالية وآخر الحركات (Audit Log) -->
+            <div style="border-top:2px solid #eee; padding-top:20px;">
+                <h3 style="margin:0 0 12px 0; color:#111;">🕵️‍♂️ سجل الرقابة المالية وآخر حركات الكاشير (آخر 30 حركة)</h3>
+                <div class="table-wrapper" style="margin-bottom:0;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الوقت والتاريخ</th>
+                                <th>نوع الحركة</th>
+                                <th>النقاط</th>
+                                <th>الزبون والبطاقة</th>
+                                <th>الرصيد بعد الحركة</th>
+                                <th>المنفّذ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditLogTableBody">
+                            <tr><td colspan="6" style="text-align:center;">جاري تحميل سجل الحركات...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
 
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
@@ -404,9 +455,10 @@
         const deductMultiplePointsBtn = document.getElementById('deductMultiplePointsBtn');
         const redeemBtn = document.getElementById('redeemBtn');
 
-        // عناصر إعدادات الجائزة للمدير
         const mgrRewardPointsInput = document.getElementById('mgrRewardPointsInput');
         const mgrRewardTitleInput = document.getElementById('mgrRewardTitleInput');
+        const mgrCashierPinInput = document.getElementById('mgrCashierPinInput');
+        const mgrManagerPinInput = document.getElementById('mgrManagerPinInput');
         const saveRewardSettingsBtn = document.getElementById('saveRewardSettingsBtn');
         const mgrReadyHeader = document.getElementById('mgrReadyHeader');
 
@@ -415,7 +467,6 @@
         let storeCashierPin = "1111";
         let storeManagerPin = "9999";
 
-        // متغيرات الجائزة القابلة للتخصيص من مدير المتجر
         let storeRewardPoints = 10;
         let storeRewardTitle = "كوب قهوة مجاني ☕";
 
@@ -446,7 +497,6 @@
             pinInput.placeholder = "أدخل الرمز السري لمدير المحل";
         });
 
-        // جلب إعدادات المتجر والرموز السرية وإعدادات الجائزة
         async function loadStoreConfig() {
             try {
                 const cafeSnap = await getDoc(doc(db, "cafes", currentCafeId));
@@ -463,7 +513,6 @@
                         loginSubmitBtn.style.backgroundColor = data.primaryColor;
                     }
                     
-                    // تحديد الجائزة الافتراضية حسب النشاط، أو قراءة ما حدده المدير مسبقاً
                     if (data.category === 'gaming') {
                         storeRewardTitle = data.rewardTitle || "ساعة لعب مجانية 🎮";
                     } else {
@@ -471,12 +520,14 @@
                     }
                     storeRewardPoints = Number(data.rewardPoints) || 10;
 
-                    mgrRewardPointsInput.value = storeRewardPoints;
-                    mgrRewardTitleInput.value = storeRewardTitle;
-                    updateRedeemButtonUI();
-
                     if (data.cashierPin) storeCashierPin = String(data.cashierPin).trim();
                     if (data.managerPin) storeManagerPin = String(data.managerPin).trim();
+
+                    mgrRewardPointsInput.value = storeRewardPoints;
+                    mgrRewardTitleInput.value = storeRewardTitle;
+                    mgrCashierPinInput.value = storeCashierPin;
+                    mgrManagerPinInput.value = storeManagerPin;
+                    updateRedeemButtonUI();
                 }
             } catch (e) {
                 console.error("خطأ في تحميل بيانات المتجر:", e);
@@ -484,17 +535,16 @@
         }
         loadStoreConfig();
 
-        // حفظ إعدادات الجائزة من قبل مدير المحل
+        // حفظ إعدادات الجائزة والرموز السرية
         saveRewardSettingsBtn.addEventListener('click', async () => {
             const newPts = parseInt(mgrRewardPointsInput.value);
             const newTitle = mgrRewardTitleInput.value.trim();
+            const newCashierPin = mgrCashierPinInput.value.trim();
+            const newManagerPin = mgrManagerPinInput.value.trim();
 
-            if (isNaN(newPts) || newPts <= 0) {
-                return alert("الرجاء إدخال عدد نقاط صحيح أكبر من صفر!");
-            }
-            if (!newTitle) {
-                return alert("الرجاء كتابة وصف الجائزة!");
-            }
+            if (isNaN(newPts) || newPts <= 0) return alert("الرجاء إدخال عدد نقاط صحيح أكبر من صفر!");
+            if (!newTitle) return alert("الرجاء كتابة وصف الجائزة!");
+            if (!newCashierPin || !newManagerPin) return alert("الرجاء إدخال الرموز السرية للموظف والمدير!");
 
             saveRewardSettingsBtn.disabled = true;
             saveRewardSettingsBtn.innerText = "جاري الحفظ...";
@@ -502,14 +552,18 @@
             try {
                 await updateDoc(doc(db, "cafes", currentCafeId), {
                     rewardPoints: newPts,
-                    rewardTitle: newTitle
+                    rewardTitle: newTitle,
+                    cashierPin: newCashierPin,
+                    managerPin: newManagerPin
                 });
 
                 storeRewardPoints = newPts;
                 storeRewardTitle = newTitle;
+                storeCashierPin = newCashierPin;
+                storeManagerPin = newManagerPin;
                 updateRedeemButtonUI();
                 await loadManagerDashboardData();
-                alert(`✅ تم التحديث! أصبحت الجائزة (${storeRewardTitle}) مقابل (${storeRewardPoints}) نقاط.`);
+                alert(`✅ تم حفظ إعدادات الجائزة والرموز السرية بنجاح!`);
             } catch (err) {
                 console.error(err);
                 alert("حدث خطأ أثناء حفظ الإعدادات.");
@@ -543,6 +597,7 @@
                     roleIndicator.innerText = "👑 وضع مدير المحل (صلاحيات كاملة)";
                     roleIndicator.style.color = "#d4af37";
                     await loadManagerDashboardData();
+                    await loadStoreAuditLogs();
                 } else {
                     alert("❌ الرمز السري لمدير المحل غير صحيح!");
                 }
@@ -557,6 +612,27 @@
             managerDashboard.classList.add('hidden');
             authContainer.classList.remove('hidden');
         });
+
+        // دالة تسجيل الحركات في سجل الرقابة المالية (Audit Log)
+        async function recordAuditLog(actionType, pointsChange, newBalance) {
+            try {
+                await addDoc(collection(db, "logs"), {
+                    cafeId: currentCafeId,
+                    customerId: currentCustomerId,
+                    customerName: currentCustomerName,
+                    actionType: actionType, // 'add' | 'deduct' | 'redeem'
+                    pointsChange: pointsChange,
+                    newBalance: newBalance,
+                    performedBy: activeRole === 'manager' ? '👑 مدير المحل' : '👨‍💼 موظف الكاشير',
+                    timestamp: Date.now()
+                });
+                if (activeRole === 'manager') {
+                    await loadStoreAuditLogs();
+                }
+            } catch (e) {
+                console.error("خطأ في حفظ سجل الحركة:", e);
+            }
+        }
 
         async function syncPointsWithServer(customerId, newPoints) {
             try {
@@ -653,6 +729,7 @@
             }
         });
 
+        // إضافة نقاط + توثيق الحركة
         addMultiplePointsBtn.addEventListener('click', async () => {
             if (!currentCustomerId) return;
             const pointsVal = parseInt(pointsToAddInput.value);
@@ -666,6 +743,7 @@
                     addMultiplePointsBtn.disabled = true;
                     const newPoints = (docSnap.data().points || 0) + pointsVal;
                     await updateDoc(docRef, { points: newPoints });
+                    await recordAuditLog('add', `+${pointsVal}`, newPoints);
                     await syncPointsWithServer(currentCustomerId, newPoints);
 
                     currentPointsEl.innerText = newPoints;
@@ -680,6 +758,7 @@
             }
         });
 
+        // خصم نقاط + توثيق الحركة
         deductMultiplePointsBtn.addEventListener('click', async () => {
             if (!currentCustomerId) return;
             const pointsVal = parseInt(pointsToDeductInput.value);
@@ -698,6 +777,7 @@
                     deductMultiplePointsBtn.disabled = true;
                     const newPoints = currentPoints - pointsVal;
                     await updateDoc(docRef, { points: newPoints });
+                    await recordAuditLog('deduct', `-${pointsVal}`, newPoints);
                     await syncPointsWithServer(currentCustomerId, newPoints);
 
                     currentPointsEl.innerText = newPoints;
@@ -712,7 +792,7 @@
             }
         });
 
-        // استبدال المكافأة بناءً على عدد النقاط الذي حدده صاحب المتجر
+        // استبدال المكافأة + توثيق الحركة
         redeemBtn.addEventListener('click', async () => {
             if (!currentCustomerId) return;
             const docRef = doc(db, "customers", currentCustomerId);
@@ -728,6 +808,7 @@
                     redeemBtn.disabled = true;
                     const newPoints = currentPoints - storeRewardPoints;
                     await updateDoc(docRef, { points: newPoints });
+                    await recordAuditLog('redeem', `-${storeRewardPoints}`, newPoints);
                     await syncPointsWithServer(currentCustomerId, newPoints);
 
                     currentPointsEl.innerText = newPoints;
@@ -824,6 +905,61 @@
                     }
                 });
             });
+        }
+
+        // جلب وعرض سجل الرقابة المالية (Audit Log) الخاص بالمتجر
+        async function loadStoreAuditLogs() {
+            const logBody = document.getElementById('auditLogTableBody');
+            try {
+                const snap = await getDocs(collection(db, "logs"));
+                const logs = [];
+
+                snap.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if ((data.cafeId || '').toLowerCase() === currentCafeId) {
+                        logs.push(data);
+                    }
+                });
+
+                // ترتيب من الأحدث إلى الأقدم وأخذ آخر 30 حركة
+                logs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                const recentLogs = logs.slice(0, 30);
+
+                logBody.innerHTML = "";
+                if (recentLogs.length === 0) {
+                    logBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#777;">لا توجد حركات مسجلة في هذا المتجر بعد.</td></tr>`;
+                    return;
+                }
+
+                recentLogs.forEach(log => {
+                    const dateStr = log.timestamp 
+                        ? new Date(log.timestamp).toLocaleString('ar-JO', { dateStyle: 'short', timeStyle: 'short' })
+                        : '---';
+
+                    let badgeHtml = '';
+                    if (log.actionType === 'add') {
+                        badgeHtml = `<span class="log-badge log-add">➕ إضافة نقاط</span>`;
+                    } else if (log.actionType === 'deduct') {
+                        badgeHtml = `<span class="log-badge log-deduct">➖ خصم يدوي</span>`;
+                    } else {
+                        badgeHtml = `<span class="log-badge log-redeem">🎁 استبدال مكافأة</span>`;
+                    }
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-size:12px; color:#555;">${dateStr}</td>
+                        <td>${badgeHtml}</td>
+                        <td dir="ltr" style="text-align:right; font-weight:bold;">${log.pointsChange}</td>
+                        <td><b>${log.customerName || '-'}</b> <span style="color:#666; font-size:12px;">(${log.customerId})</span></td>
+                        <td style="font-weight:bold;">${log.newBalance}</td>
+                        <td><span class="actor-tag">${log.performedBy || 'الكاشير'}</span></td>
+                    `;
+                    logBody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error("خطأ في جلب سجل الرقابة:", err);
+                logBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">تعذر تحميل سجل الحركات</td></tr>`;
+            }
         }
 
         document.getElementById('mgrSearchInput').addEventListener('input', (e) => {
