@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,61 +17,50 @@
             padding: 20px;
             box-sizing: border-box;
         }
-
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         .loader-box {
             background: #fff;
             padding: 40px 30px;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             text-align: center;
             font-weight: bold;
             color: #333;
         }
-
         .spinner {
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             border: 4px solid #ddd;
             border-top-color: #111;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin: 0 auto 15px auto;
         }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .card-wrapper {
             width: 100%;
-            max-width: 380px;
+            max-width: 400px;
             text-align: center;
         }
 
-        /* تصميم البطاقة بتدرج محايد يتغير برمجياً حسب المتجر */
         .loyalty-card {
             background: linear-gradient(135deg, #222222, #111111);
             color: #fff;
-            border-radius: 18px;
+            border-radius: 20px;
             padding: 22px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
             position: relative;
             overflow: hidden;
             text-align: right;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .store-info {
@@ -82,11 +70,11 @@
         }
 
         .store-logo {
-            width: 52px;
-            height: 52px;
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(255,255,255,0.85);
             background: #fff;
         }
 
@@ -98,30 +86,105 @@
 
         .brand-badge {
             font-size: 10px;
-            background: rgba(255, 255, 255, 0.18);
+            background: rgba(255,255,255,0.18);
             padding: 4px 8px;
             border-radius: 10px;
             letter-spacing: 1px;
+            font-weight: bold;
         }
 
+        /* صندوق النقاط وشريط التقدم والأختام */
         .points-box {
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 12px;
-            padding: 15px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 14px;
+            padding: 16px;
             text-align: center;
             margin-bottom: 18px;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.15);
         }
 
         .points-label {
             font-size: 13px;
             opacity: 0.9;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .points-value {
             font-size: 34px;
             font-weight: bold;
+            line-height: 1.2;
+        }
+
+        /* شريط التقدم البصري */
+        .progress-track {
+            width: 100%;
+            height: 10px;
+            background: rgba(0,0,0,0.35);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ffd700, #ffae00);
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* شبكة الأختام التفاعلية */
+        .stamps-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin: 14px 0 10px 0;
+            justify-items: center;
+        }
+
+        .stamp-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 2px dashed rgba(255,255,255,0.35);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: rgba(255,255,255,0.4);
+            transition: all 0.35s ease;
+        }
+
+        .stamp-circle.active {
+            background: #fff;
+            border: 2px solid #ffd700;
+            color: #111;
+            transform: scale(1.06);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+        }
+
+        .motivation-text {
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 8px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.25);
+            color: #fff;
+        }
+
+        .motivation-ready {
+            background: rgba(40, 167, 69, 0.85);
+            color: #fff;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
         }
 
         .card-footer {
@@ -129,7 +192,7 @@
             justify-content: space-between;
             align-items: flex-end;
             font-size: 14px;
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255,255,255,0.15);
             padding-top: 12px;
         }
 
@@ -154,30 +217,20 @@
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
             transition: 0.3s;
         }
-
-        .wallet-btn:hover {
-            opacity: 0.9;
-        }
-
-        .wallet-btn:disabled {
-            background: #666;
-            cursor: not-allowed;
-        }
+        .wallet-btn:hover { opacity: 0.9; }
+        .wallet-btn:disabled { background: #666; cursor: not-allowed; }
     </style>
 </head>
-
 <body>
 
-    <!-- شاشة التحميل حتى لا يظهر أي شعار خاطئ -->
     <div id="loadingBox" class="loader-box">
         <div class="spinner"></div>
         <div id="loadingText">جاري تجهيز بطاقتك...</div>
     </div>
 
-    <!-- البطاقة الفعلية -->
     <div id="cardWrapper" class="card-wrapper hidden">
         <div id="loyaltyCard" class="loyalty-card">
             <div class="card-header">
@@ -194,6 +247,17 @@
             <div class="points-box">
                 <div class="points-label">رصيد النقاط الحالي</div>
                 <div id="cardPoints" class="points-value">0</div>
+
+                <!-- شريط التقدم -->
+                <div class="progress-track">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+
+                <!-- شبكة الأختام التفاعلية -->
+                <div id="stampsGrid" class="stamps-grid"></div>
+
+                <!-- الرسالة التحفيزية -->
+                <div id="motivationText" class="motivation-text">اجمع النقاط للحصول على مكافأتك!</div>
             </div>
 
             <div class="card-footer">
@@ -218,12 +282,12 @@
         import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
-            authDomain: "cafe-system-24331.firebaseapp.com",
-            projectId: "cafe-system-24331",
-            storageBucket: "cafe-system-24331.firebasestorage.app",
-            messagingSenderId: "845856227747",
-            appId: "1:845856227747:web:378c6d02fc89410df41a16"
+          apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
+          authDomain: "cafe-system-24331.firebaseapp.com",
+          projectId: "cafe-system-24331",
+          storageBucket: "cafe-system-24331.firebasestorage.app",
+          messagingSenderId: "845856227747",
+          appId: "1:845856227747:web:378c6d02fc89410df41a16"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -241,12 +305,49 @@
         const cardStoreName = document.getElementById('cardStoreName');
         const rewardHint = document.getElementById('rewardHint');
         const cardPoints = document.getElementById('cardPoints');
+        const progressFill = document.getElementById('progressFill');
+        const stampsGrid = document.getElementById('stampsGrid');
+        const motivationText = document.getElementById('motivationText');
         const cardCustName = document.getElementById('cardCustName');
         const cardIdDisplay = document.getElementById('cardIdDisplay');
         const googleWalletBtn = document.getElementById('googleWalletBtn');
 
         let customerDataGlobal = null;
         let cafeDataGlobal = {};
+        let targetPoints = 10;
+        let rewardTitleText = "كوب قهوة مجاني ☕";
+        let stampIcon = "☕";
+
+        // دالة لتحديث شريط التقدم والأختام التفاعلية والرسالة التحفيزية
+        function updateStampsAndProgress(currentPts) {
+            cardPoints.innerText = currentPts;
+
+            // حساب النسبة المئوية لشريط التقدم (بحد أقصى 100%)
+            const percentage = Math.min(100, Math.round((currentPts / targetPoints) * 100));
+            progressFill.style.width = `${percentage}%`;
+
+            // رسم الأختام (بحد أقصى 15 ختماً للحفاظ على جمالية التصميم)
+            const stampsCount = Math.min(targetPoints, 15);
+            stampsGrid.innerHTML = "";
+            for (let i = 1; i <= stampsCount; i++) {
+                const circle = document.createElement('div');
+                const isStamped = currentPts >= i;
+                circle.className = `stamp-circle ${isStamped ? 'active' : ''}`;
+                circle.innerText = isStamped ? stampIcon : i;
+                stampsGrid.appendChild(circle);
+            }
+
+            // تحديث الرسالة التحفيزية
+            if (currentPts >= targetPoints) {
+                const rewardsCount = Math.floor(currentPts / targetPoints);
+                motivationText.className = "motivation-text motivation-ready";
+                motivationText.innerText = `🎉 مبروك! لديك (${rewardsCount}) مكافأة جاهزة للاستبدال (${rewardTitleText})!`;
+            } else {
+                const remaining = targetPoints - currentPts;
+                motivationText.className = "motivation-text";
+                motivationText.innerText = `باقي لك ${remaining} نقاط فقط للحصول على ${rewardTitleText}`;
+            }
+        }
 
         async function initCardPage() {
             if (!cardId) {
@@ -255,7 +356,6 @@
             }
 
             try {
-                // 1. جلب بيانات الزبون أولاً
                 const custRef = doc(db, "customers", cardId);
                 const custSnap = await getDoc(custRef);
 
@@ -266,21 +366,22 @@
 
                 customerDataGlobal = custSnap.data();
 
-                // إذا لم يكن كود المتجر موجوداً في الرابط، نأخذه من ملف الزبون نفسه
                 if (!cafeId && customerDataGlobal.cafeId) {
                     cafeId = customerDataGlobal.cafeId.toLowerCase();
                 }
 
-                // 2. جلب هوية المتجر (الاسم، الشعار، الألوان) قبل إظهار البطاقة
                 if (cafeId) {
                     const cafeSnap = await getDoc(doc(db, "cafes", cafeId));
                     if (cafeSnap.exists()) {
                         cafeDataGlobal = cafeSnap.data();
                         cardStoreName.innerText = cafeDataGlobal.name || cafeId.toUpperCase();
 
-                        const reqPts = cafeDataGlobal.rewardPoints || 10;
-                        const reqTitle = cafeDataGlobal.rewardTitle || (cafeDataGlobal.category === 'gaming' ? 'ساعة لعب مجانية 🎮' : 'كوب قهوة مجاني ☕');
-                        rewardHint.innerText = `${reqTitle} عند ${reqPts} نقاط`;
+                        targetPoints = Number(cafeDataGlobal.rewardPoints) || 10;
+                        const isGaming = cafeDataGlobal.category === 'gaming';
+                        stampIcon = isGaming ? "🎮" : "☕";
+                        rewardTitleText = cafeDataGlobal.rewardTitle || (isGaming ? 'ساعة لعب مجانية 🎮' : 'كوب قهوة مجاني ☕');
+
+                        rewardHint.innerText = `${rewardTitleText} عند ${targetPoints} نقاط`;
 
                         if (cafeDataGlobal.logoUrl) {
                             cardLogo.src = cafeDataGlobal.logoUrl;
@@ -293,20 +394,20 @@
                     }
                 }
 
-                // 3. عرض بيانات الزبون وتفعيل التحديث اللحظي للنقاط
                 cardCustName.innerText = customerDataGlobal.name || 'عميل مميز';
                 cardIdDisplay.innerText = cardId;
-                cardPoints.innerText = customerDataGlobal.points || 0;
+                updateStampsAndProgress(customerDataGlobal.points || 0);
 
+                // تحديث فوري (Live) للأختام وشريط التقدم بمجرد أن يضيف الكاشير نقطة
                 onSnapshot(custRef, (liveSnap) => {
                     if (liveSnap.exists()) {
                         const liveData = liveSnap.data();
-                        cardPoints.innerText = liveData.points || 0;
-                        customerDataGlobal.points = liveData.points || 0;
+                        const pts = liveData.points || 0;
+                        customerDataGlobal.points = pts;
+                        updateStampsAndProgress(pts);
                     }
                 });
 
-                // إخفاء التحميل وإظهار البطاقة الجاهزة
                 loadingBox.classList.add('hidden');
                 cardWrapper.classList.remove('hidden');
 
@@ -318,7 +419,6 @@
 
         initCardPage();
 
-        // زر الإضافة إلى Google Wallet بنفس هوية المتجر
         googleWalletBtn.addEventListener('click', async () => {
             if (!customerDataGlobal) return;
             googleWalletBtn.disabled = true;
@@ -354,5 +454,4 @@
         });
     </script>
 </body>
-
 </html>
