@@ -436,18 +436,26 @@
             }
         }
 
-        // 3. حفظ متجر جديد
+        // 3. حفظ متجر جديد (مع تحويل اسم الصورة تلقائياً إلى رابط كامل)
         saveStoreBtn.addEventListener('click', async () => {
             const storeId = document.getElementById('storeId').value.trim().toLowerCase().replace(/\s+/g, '');
             const storeName = document.getElementById('storeName').value.trim();
             const category = document.getElementById('storeCategory').value;
-            const logoUrl = document.getElementById('storeLogo').value.trim() || 'Mandel.jpg';
+            let logoInput = document.getElementById('storeLogo').value.trim() || 'Mandel.jpg';
             const primaryColor = document.getElementById('primaryColor').value;
             const secondaryColor = document.getElementById('secondaryColor').value;
 
             if (!storeId || !storeName) {
                 return alert("الرجاء إدخال كود المتجر والاسم التجاري!");
             }
+
+            // استخراج الرابط الأساسي للموقع تلقائياً
+            const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', '');
+
+            // إذا كتب المدير اسم الصورة فقط (بدون http)، يحولها النظام تلقائياً لرابط كامل يناسب Google Wallet
+            const finalLogoUrl = logoInput.startsWith('http') 
+                ? logoInput 
+                : `${baseUrl}${logoInput.replace(/^\//, '')}`;
 
             saveStoreBtn.disabled = true;
             saveStoreBtn.innerText = "جاري الحفظ... ⏳";
@@ -456,13 +464,12 @@
                 await setDoc(doc(db, "cafes", storeId), {
                     name: storeName,
                     category: category,
-                    logoUrl: logoUrl,
+                    logoUrl: finalLogoUrl, // حفظ الرابط الكامل الجاهز لمحفظة جوجل
                     primaryColor: primaryColor,
                     secondaryColor: secondaryColor,
                     updatedAt: new Date()
                 });
 
-                const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', '');
                 document.getElementById('regLinkText').innerText = `${baseUrl}register.html?cafe=${storeId}`;
                 document.getElementById('cashierLinkText').innerText = `${baseUrl}index.html?cafe=${storeId}`;
                 document.getElementById('generatedLinks').classList.remove('hidden');
