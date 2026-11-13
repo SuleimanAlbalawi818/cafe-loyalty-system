@@ -208,6 +208,10 @@
                 
                 if (cafeSnap.exists()) {
                     const cafeData = cafeSnap.data();
+                    if (cafeData.isActive === false) {
+                        loadingScreen.innerHTML = "⏸️ نظام الولاء لهذا المتجر متوقف مؤقتاً للتحديث. يرجى مراجعة إدارة المتجر.";
+                        return;
+                    }
                     titleEl.innerText = `برنامج ولاء ${cafeData.name}`;
                     
                     let reqPts = cafeData.rewardPoints || 10;

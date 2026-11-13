@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +20,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         .navbar h2 {
@@ -37,9 +36,7 @@
             margin: auto;
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         .login-box {
             background: white;
@@ -47,13 +44,13 @@
             margin: 60px auto;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
             text-align: center;
         }
 
         .management-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
             gap: 25px;
             margin-bottom: 30px;
         }
@@ -62,7 +59,7 @@
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .panel-card h3 {
@@ -81,8 +78,7 @@
             margin-top: 12px;
         }
 
-        input,
-        select {
+        input, select {
             width: 100%;
             padding: 11px;
             border: 1px solid #ccc;
@@ -97,9 +93,7 @@
             gap: 15px;
         }
 
-        .color-box {
-            flex: 1;
-        }
+        .color-box { flex: 1; }
 
         input[type="color"] {
             height: 42px;
@@ -121,9 +115,7 @@
             transition: 0.3s;
         }
 
-        .btn-primary:hover {
-            background: #333;
-        }
+        .btn-primary:hover { background: #333; }
 
         .btn-delete {
             background: #dc3545;
@@ -137,9 +129,31 @@
             transition: 0.2s;
         }
 
-        .btn-delete:hover {
-            background: #c82333;
+        .btn-delete:hover { background: #c82333; }
+
+        .btn-toggle-status {
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: 0.2s;
         }
+        .btn-suspend { background: #fd7e14; }
+        .btn-activate { background: #1e7041; }
+
+        .status-pill {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        .status-active { background: #d4edda; color: #155724; }
+        .status-suspended { background: #f8d7da; color: #721c24; }
 
         .links-box {
             margin-top: 15px;
@@ -164,20 +178,25 @@
         .store-card {
             background: #f9f9f9;
             border: 1px solid #e0e0e0;
-            padding: 12px;
+            padding: 14px;
             border-radius: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 10px;
+        }
+        .store-card.suspended-card {
+            background: #fff5f5;
+            border-color: #f5c6cb;
+            opacity: 0.9;
         }
 
         .store-actions {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 8px;
+            gap: 6px;
         }
 
         .badge-type {
@@ -199,7 +218,7 @@
             background: white;
             padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             text-align: center;
             border-bottom: 4px solid #1e7041;
         }
@@ -220,7 +239,7 @@
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             overflow-x: auto;
         }
 
@@ -235,10 +254,7 @@
             gap: 10px;
         }
 
-        .table-header h3 {
-            margin: 0;
-            color: #111;
-        }
+        .table-header h3 { margin: 0; color: #111; }
 
         .filter-select {
             width: auto;
@@ -251,8 +267,7 @@
             border-collapse: collapse;
         }
 
-        th,
-        td {
+        th, td {
             padding: 14px;
             text-align: right;
             border-bottom: 1px solid #eee;
@@ -264,9 +279,7 @@
             font-weight: 600;
         }
 
-        tr:hover {
-            background-color: #f1f1f1;
-        }
+        tr:hover { background-color: #f1f1f1; }
 
         .vip-tag {
             background-color: #d4af37;
@@ -278,7 +291,6 @@
         }
     </style>
 </head>
-
 <body>
 
     <div class="navbar">
@@ -286,7 +298,6 @@
         <span>مرحباً، مدير النظام 👋</span>
     </div>
 
-    <!-- شاشة الحماية بكلمة مرور -->
     <div id="loginSection" class="login-box">
         <h3 style="margin-top:0;">تسجيل دخول الإدارة 🔒</h3>
         <label style="text-align:right;">أدخل الرمز السري:</label>
@@ -294,14 +305,12 @@
         <button id="loginBtn" class="btn-primary">دخول للوحة التحكم</button>
     </div>
 
-    <!-- لوحة التحكم الكاملة -->
     <div id="dashboardSection" class="container hidden">
-
-        <!-- القسم الأول: إضافة متجر جديد + قائمة المتاجر -->
+        
         <div class="management-grid">
             <div class="panel-card">
                 <h3>➕ إضافة / تعديل متجر</h3>
-
+                
                 <label>كود المتجر بالإنجليزية (بدون مسافات - يحدد بادئة البطاقة):</label>
                 <input type="text" id="storeId" placeholder="مثال: ps5 أو gamezone أو solaf" />
 
@@ -319,11 +328,11 @@
 
                 <div class="color-row">
                     <div class="color-box">
-                        <label>الرمز السري للكاشير (الموظف):</label>
+                        <label>رمز الكاشير (الموظف):</label>
                         <input type="text" id="cashierPin" placeholder="مثال: 1111" value="1111" />
                     </div>
                     <div class="color-box">
-                        <label>الرمز السري لمدير المحل:</label>
+                        <label>رمز مدير المحل:</label>
                         <input type="text" id="managerPin" placeholder="مثال: 9999" value="9999" />
                     </div>
                 </div>
@@ -351,12 +360,11 @@
             </div>
 
             <div class="panel-card">
-                <h3>🏢 المتاجر والعملاء المسجلين</h3>
+                <h3>🏢 المتاجر والاشتراكات المسجلة</h3>
                 <div id="storesContainer">جاري التحميل...</div>
             </div>
         </div>
 
-        <!-- القسم الثاني: بطاقات الإحصائيات -->
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>إجمالي الزبائن المسجلين</h3>
@@ -372,7 +380,6 @@
             </div>
         </div>
 
-        <!-- القسم الثالث: جدول الزبائن مع فلتر المتاجر وزر الحذف -->
         <div class="table-container">
             <div class="table-header">
                 <h3>📋 قائمة الزبائن المسجلين</h3>
@@ -394,9 +401,7 @@
                     </tr>
                 </thead>
                 <tbody id="customersTableBody">
-                    <tr>
-                        <td colspan="8" style="text-align: center;">جاري تحميل البيانات...</td>
-                    </tr>
+                    <tr><td colspan="8" style="text-align: center;">جاري تحميل البيانات...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -404,15 +409,15 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
-            authDomain: "cafe-system-24331.firebaseapp.com",
-            projectId: "cafe-system-24331",
-            storageBucket: "cafe-system-24331.firebasestorage.app",
-            messagingSenderId: "845856227747",
-            appId: "1:845856227747:web:378c6d02fc89410df41a16"
+          apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
+          authDomain: "cafe-system-24331.firebaseapp.com",
+          projectId: "cafe-system-24331",
+          storageBucket: "cafe-system-24331.firebasestorage.app",
+          messagingSenderId: "845856227747",
+          appId: "1:845856227747:web:378c6d02fc89410df41a16"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -428,7 +433,6 @@
         const storesContainer = document.getElementById('storesContainer');
         const cafeFilter = document.getElementById('cafeFilter');
 
-        // 1. تسجيل الدخول
         loginBtn.addEventListener('click', () => {
             const pin = document.getElementById('adminPin').value.trim();
             if (pin === SECRET_PIN) {
@@ -441,7 +445,6 @@
             }
         });
 
-        // 2. جلب المتاجر وتعبئة الفلتر مع زر الحذف
         async function loadAllStores() {
             storesContainer.innerHTML = "جاري جلب المتاجر...";
             try {
@@ -461,6 +464,15 @@
                     const id = docSnap.id;
                     const typeLabel = data.category === 'gaming' ? '🎮 بلايستيشن' : '☕ كافيه';
                     const prefix = id.substring(0, 3).toUpperCase();
+                    const isActive = data.isActive !== false; // افتراضياً المتجر نشط ما لم يكن false
+
+                    const statusBadge = isActive 
+                        ? `<span class="status-pill status-active">🟢 نشط</span>`
+                        : `<span class="status-pill status-suspended">🔴 موقوف</span>`;
+
+                    const toggleBtnHtml = isActive
+                        ? `<button class="btn-toggle-status btn-suspend toggle-store-btn" data-id="${id}" data-active="true" data-name="${data.name || id}">⏸️ تجميد الاشتراك</button>`
+                        : `<button class="btn-toggle-status btn-activate toggle-store-btn" data-id="${id}" data-active="false" data-name="${data.name || id}">▶️ تفعيل الاشتراك</button>`;
 
                     const opt = document.createElement('option');
                     opt.value = id.toLowerCase();
@@ -468,22 +480,34 @@
                     cafeFilter.appendChild(opt);
 
                     const div = document.createElement('div');
-                    div.className = 'store-card';
+                    div.className = `store-card ${!isActive ? 'suspended-card' : ''}`;
                     div.innerHTML = `
                         <div>
-                            <strong style="color:${data.primaryColor || '#111'}">${data.name || id}</strong>
-                            <div style="font-size:12px; color:#666; margin-top:3px;">الكود: <b>${id}</b> | البادئة: <b>${prefix}-XX</b></div>
-                            <div style="font-size:12px; margin-top:5px;">
+                            <strong style="color:${data.primaryColor || '#111'}">${data.name || id}</strong> ${statusBadge}
+                            <div style="font-size:12px; color:#666; margin-top:4px;">الكود: <b>${id}</b> | البادئة: <b>${prefix}-XX</b></div>
+                            <div style="font-size:12px; color:#555; margin-top:2px;">رمز الموظف: <b>${data.cashierPin || '1111'}</b> | رمز المدير: <b>${data.managerPin || '9999'}</b></div>
+                            <div style="font-size:12px; margin-top:6px;">
                                 <a href="${baseUrl}register.html?cafe=${id}" target="_blank" style="color:#00439c;">رابط التسجيل</a> | 
                                 <a href="${baseUrl}index.html?cafe=${id}" target="_blank" style="color:#1e7041;">رابط الكاشير</a>
                             </div>
                         </div>
                         <div class="store-actions">
                             <span class="badge-type">${typeLabel}</span>
+                            ${toggleBtnHtml}
                             <button class="btn-delete delete-store-btn" data-id="${id}" data-name="${data.name || id}">🗑️ حذف المتجر</button>
                         </div>
                     `;
                     storesContainer.appendChild(div);
+                });
+
+                // ربط أزرار تجميد / تفعيل الاشتراك
+                document.querySelectorAll('.toggle-store-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const storeId = e.currentTarget.getAttribute('data-id');
+                        const storeName = e.currentTarget.getAttribute('data-name');
+                        const currentlyActive = e.currentTarget.getAttribute('data-active') === 'true';
+                        await handleToggleStoreStatus(storeId, storeName, currentlyActive);
+                    });
                 });
 
                 // ربط أزرار حذف المتاجر
@@ -500,7 +524,22 @@
             }
         }
 
-        // دالة حذف متجر (مع خيار حذف زبائنه أيضاً)
+        // دالة تجميد أو تفعيل اشتراك المتجر
+        async function handleToggleStoreStatus(storeId, storeName, currentlyActive) {
+            const actionText = currentlyActive ? "تجميد وإيقاف" : "إعادة تفعيل";
+            if (!confirm(`هل أنت متأكد من ${actionText} اشتراك متجر "${storeName}"؟`)) return;
+
+            try {
+                await updateDoc(doc(db, "cafes", storeId), {
+                    isActive: !currentlyActive
+                });
+                await loadAllStores();
+            } catch (err) {
+                console.error(err);
+                alert("حدث خطأ أثناء تغيير حالة اشتراك المتجر.");
+            }
+        }
+
         async function handleDeleteStore(storeId, storeName) {
             const confirmStore = confirm(`⚠️ هل أنت متأكد من حذف متجر "${storeName}" (${storeId}) نهائياً؟`);
             if (!confirmStore) return;
@@ -508,10 +547,8 @@
             const deleteCustomersToo = confirm(`هل تريد أيضاً حذف جميع الزبائن والبطاقات التابعة لمتجر "${storeName}"؟\n\nاضغط (موافق / OK) لحذف المتجر مع زبائنه.\nاضغط (إلغاء / Cancel) لحذف المتجر فقط مع إبقاء الزبائن.`);
 
             try {
-                // حذف المتجر من مجموعة cafes
                 await deleteDoc(doc(db, "cafes", storeId));
 
-                // إذا اختار حذف زبائن المتجر أيضاً
                 if (deleteCustomersToo) {
                     const storeCustomers = allCustomers.filter(c => (c.cafeId || '').toLowerCase() === storeId.toLowerCase());
                     for (const cust of storeCustomers) {
@@ -528,14 +565,13 @@
             }
         }
 
-        // 3. حفظ متجر جديد (مع تحويل اسم الصورة تلقائياً إلى رابط كامل)
         saveStoreBtn.addEventListener('click', async () => {
-            const cashierPin = document.getElementById('cashierPin').value.trim() || '1111';
-            const managerPin = document.getElementById('managerPin').value.trim() || '9999';
             const storeId = document.getElementById('storeId').value.trim().toLowerCase().replace(/\s+/g, '');
             const storeName = document.getElementById('storeName').value.trim();
             const category = document.getElementById('storeCategory').value;
             let logoInput = document.getElementById('storeLogo').value.trim() || 'Mandel.jpg';
+            const cashierPin = document.getElementById('cashierPin').value.trim() || '1111';
+            const managerPin = document.getElementById('managerPin').value.trim() || '9999';
             const primaryColor = document.getElementById('primaryColor').value;
             const secondaryColor = document.getElementById('secondaryColor').value;
 
@@ -544,8 +580,8 @@
             }
 
             const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', '');
-            const finalLogoUrl = logoInput.startsWith('http')
-                ? logoInput
+            const finalLogoUrl = logoInput.startsWith('http') 
+                ? logoInput 
                 : `${baseUrl}${logoInput.replace(/^\//, '')}`;
 
             saveStoreBtn.disabled = true;
@@ -553,15 +589,16 @@
 
             try {
                 await setDoc(doc(db, "cafes", storeId), {
-                    cashierPin: cashierPin,
-                    managerPin: managerPin,
                     name: storeName,
                     category: category,
                     logoUrl: finalLogoUrl,
+                    cashierPin: cashierPin,
+                    managerPin: managerPin,
                     primaryColor: primaryColor,
                     secondaryColor: secondaryColor,
+                    isActive: true,
                     updatedAt: new Date()
-                });
+                }, { merge: true });
 
                 document.getElementById('regLinkText').innerText = `${baseUrl}register.html?cafe=${storeId}`;
                 document.getElementById('cashierLinkText').innerText = `${baseUrl}index.html?cafe=${storeId}`;
@@ -577,7 +614,6 @@
             }
         });
 
-        // 4. جلب الزبائن وعرض الإحصائيات
         async function loadAdminData() {
             try {
                 const querySnapshot = await getDocs(collection(db, "customers"));
@@ -595,8 +631,8 @@
         }
 
         function renderTableAndStats(selectedCafe) {
-            const filtered = selectedCafe === 'all'
-                ? [...allCustomers]
+            const filtered = selectedCafe === 'all' 
+                ? [...allCustomers] 
                 : allCustomers.filter(c => (c.cafeId || 'mandel').toLowerCase() === selectedCafe);
 
             filtered.sort((a, b) => (b.points || 0) - (a.points || 0));
@@ -636,7 +672,6 @@
                 tableBody.appendChild(tr);
             });
 
-            // ربط أزرار حذف الزبائن
             document.querySelectorAll('.delete-cust-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const custId = e.currentTarget.getAttribute('data-id');
@@ -646,7 +681,6 @@
             });
         }
 
-        // دالة حذف زبون مفرد
         async function handleDeleteCustomer(custId, custName) {
             const confirmed = confirm(`⚠️ هل أنت متأكد من حذف بطاقة الزبون "${custName}" (${custId}) نهائياً؟`);
             if (!confirmed) return;
@@ -666,5 +700,4 @@
         });
     </script>
 </body>
-
 </html>
