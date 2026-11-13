@@ -42,9 +42,21 @@
             background-color: #fff;
         }
         h1 { color: #111; font-size: 20px; margin-top: 0; margin-bottom: 6px; }
-        p { color: #666; font-size: 13px; margin-bottom: 18px; line-height: 1.5; }
+        p { color: #666; font-size: 13px; margin-bottom: 14px; line-height: 1.5; }
         
-        /* تبويبات التبديل بين زبون جديد وزبون مسجل */
+        /* شريط هدية الترحيب التشويقي */
+        .welcome-bonus-banner {
+            background: linear-gradient(135deg, #fff3cd, #ffeeba);
+            color: #856404;
+            border: 1px solid #ffe8a1;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+        }
+
         .mode-tabs {
             display: flex;
             gap: 8px;
@@ -99,25 +111,24 @@
 <body>
 
     <div class="register-container">
-        <!-- شاشة انتظار سريعة ريثما يتم جلب بيانات المتجر -->
         <div id="loadingScreen" class="loader-box">
             <div class="spinner"></div>
             <div>جاري تحميل بيانات المتجر...</div>
         </div>
 
-        <!-- محتوى الصفحة يظهر بعد جلب هوية المتجر -->
         <div id="mainContent" class="hidden">
             <img id="displayCafeLogo" class="logo hidden" src="" alt="شعار المتجر">
             <h1 id="cafeTitle">برنامج الولاء</h1>
             <p id="cafeDesc">سجل معنا واجمع النقاط مع كل زيارة للحصول على مكافأتك المجانية ✨</p>
 
-            <!-- شريط التبديل: تسجيل جديد أو دخول لبطاقة سابقة -->
+            <!-- شريط نقاط الترحيب المجانية (يظهر تلقائياً إذا فعّله مدير المحل) -->
+            <div id="welcomeBanner" class="welcome-bonus-banner hidden"></div>
+
             <div class="mode-tabs">
                 <div id="tabNewUser" class="mode-tab active">✨ عميل جديد (أول مرة)</div>
                 <div id="tabExistingUser" class="mode-tab">🔑 لدي بطاقة (دخول)</div>
             </div>
 
-            <!-- القسم الأول: فورم تسجيل زبون جديد -->
             <div id="newCustomerForm">
                 <input type="text" id="custName" placeholder="الاسم الكريم">
                 <input type="tel" id="custPhone" placeholder="رقم الهاتف (مثال: 079xxxxxxx)">
@@ -128,7 +139,6 @@
                 <button id="registerBtn">إصدار بطاقتي الآن</button>
             </div>
 
-            <!-- القسم الثاني: فورم تسجيل الدخول لزبون مسجل مسبقاً -->
             <div id="loginCustomerForm" class="hidden">
                 <label for="loginIdentifier" class="field-label">أدخل رقم هاتفك أو رقم البطاقة:</label>
                 <input type="text" id="loginIdentifier" placeholder="رقم الهاتف أو كود البطاقة (مثال: MAN-12)">
@@ -139,7 +149,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
@@ -163,13 +173,15 @@
         const logoEl = document.getElementById('displayCafeLogo');
         const titleEl = document.getElementById('cafeTitle');
         const descEl = document.getElementById('cafeDesc');
+        const welcomeBanner = document.getElementById('welcomeBanner');
 
         const tabNewUser = document.getElementById('tabNewUser');
         const tabExistingUser = document.getElementById('tabExistingUser');
         const newCustomerForm = document.getElementById('newCustomerForm');
         const loginCustomerForm = document.getElementById('loginCustomerForm');
 
-        // التبديل بين تبويب "عميل جديد" وتبويب "لدي بطاقة"
+        let storeWelcomePoints = 0;
+
         tabNewUser.addEventListener('click', () => {
             tabNewUser.classList.add('active');
             tabExistingUser.classList.remove('active');
@@ -198,7 +210,6 @@
                     const cafeData = cafeSnap.data();
                     titleEl.innerText = `برنامج ولاء ${cafeData.name}`;
                     
-                    // قراءة أول جائزة لعرضها في الوصف التشويقي
                     let reqPts = cafeData.rewardPoints || 10;
                     let reqTitle = cafeData.rewardTitle || (cafeData.category === 'gaming' ? 'ساعتك المجانية 🎮' : 'قهوتك المجانية ☕');
                     if (Array.isArray(cafeData.rewards) && cafeData.rewards.length > 0) {
@@ -206,6 +217,13 @@
                         reqTitle = cafeData.rewards[0].title;
                     }
                     descEl.innerText = `اجمع النقاط في كل زيارة واحصل على ${reqTitle} عند ${reqPts} نقاط!`;
+
+                    // قراءة نقاط الترحيب المجانية وعرضها للزبون الجديد
+                    storeWelcomePoints = Number(cafeData.welcomePoints) || 0;
+                    if (storeWelcomePoints > 0) {
+                        welcomeBanner.innerText = `🎁 هدية ترحيبية: سجل الآن واحصل على (${storeWelcomePoints}) نقاط مجانية في بطاقتك فوراً!`;
+                        welcomeBanner.classList.remove('hidden');
+                    }
 
                     if (cafeData.logoUrl) {
                         logoEl.src = cafeData.logoUrl;
@@ -231,12 +249,10 @@
 
         fetchCafeData();
 
-        // دالة للبحث عن زبون مسجل مسبقاً في نفس المتجر (برقم الهاتف أو رقم البطاقة)
         async function findExistingCustomerInStore(phoneOrId) {
             const cleanInput = phoneOrId.trim().toUpperCase();
             const cleanPhone = phoneOrId.replace(/\s+/g, '');
 
-            // 1. فحص إذا كان المدخل هو رقم البطاقة مباشرة (مثل MAN-12)
             const directRef = doc(db, "customers", cleanInput);
             const directSnap = await getDoc(directRef);
             if (directSnap.exists()) {
@@ -246,7 +262,6 @@
                 }
             }
 
-            // 2. البحث برقم الهاتف داخل نفس المتجر
             const snap = await getDocs(collection(db, "customers"));
             let matchedId = null;
             snap.forEach((docSnap) => {
@@ -279,7 +294,6 @@
             return `${prefix}-${Date.now().toString().slice(-3)}`;
         }
 
-        // 1. زر تسجيل زبون جديد (مع فحص تلقائي إذا كان رقم هاتفه مسجلاً مسبقاً)
         registerBtn.addEventListener('click', async () => {
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
@@ -293,7 +307,6 @@
             registerBtn.innerText = "جاري التحقق وإنشاء البطاقة...";
 
             try {
-                // إذا كان رقم الهاتف مسجلاً مسبقاً في نفس المتجر، نفتحه له مباشرة بدون تكرار
                 const existingCardId = await findExistingCustomerInStore(phone);
                 if (existingCardId) {
                     alert("أهلاً بك مجدداً! رقم هاتفك مسجل لدينا مسبقاً، سيتم فتح بطاقتك الحالية الآن 🎉");
@@ -302,16 +315,31 @@
                 }
 
                 const newCardId = await generateShortCardId(cafeId);
+                const initialPoints = storeWelcomePoints > 0 ? storeWelcomePoints : 0;
 
                 const newDocRef = doc(db, "customers", newCardId);
                 await setDoc(newDocRef, {
                     name: name,
                     phone: phone,
                     birthDate: birthDate,
-                    points: 0,
+                    points: initialPoints,
                     cafeId: cafeId,
                     createdAt: new Date()
                 });
+
+                // إذا حصل الزبون على نقاط ترحيبية، نسجلها في سجل الرقابة المالية للمتجر
+                if (initialPoints > 0) {
+                    await addDoc(collection(db, "logs"), {
+                        cafeId: cafeId,
+                        customerId: newCardId,
+                        customerName: name,
+                        actionType: 'add',
+                        pointsChange: `+${initialPoints} (ترحيب)`,
+                        newBalance: initialPoints,
+                        performedBy: '🎁 هدية تسجيل تلقائية',
+                        timestamp: Date.now()
+                    });
+                }
 
                 window.location.href = `customer.html?cafe=${cafeId}&id=${newCardId}`;
                 
@@ -323,7 +351,6 @@
             }
         });
 
-        // 2. زر تسجيل الدخول للزبون المسجل مسبقاً
         loginCustBtn.addEventListener('click', async () => {
             const identifier = document.getElementById('loginIdentifier').value.trim();
             if (!identifier) {
