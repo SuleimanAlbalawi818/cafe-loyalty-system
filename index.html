@@ -53,7 +53,6 @@
         h1 { margin-top: 0; font-size: 22px; color: #111; }
         .hidden { display: none !important; }
 
-        /* تبويبات اختيار نوع الدخول (موظف / مدير) */
         .role-tabs {
             display: flex;
             gap: 10px;
@@ -97,7 +96,6 @@
             cursor: pointer;
         }
 
-        /* شريط معلومات المستخدم بعد الدخول */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -118,7 +116,6 @@
             font-size: 12px;
         }
 
-        /* عناصر الكاشير */
         .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
         .search-box input { flex: 1; padding: 11px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; text-transform: uppercase; }
         .search-box button { padding: 11px 20px; background: #1e7041; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
@@ -138,7 +135,51 @@
         
         #redeemBtn { background-color: #dc3545; color: white; padding: 13px; border: none; border-radius: 6px; width: 100%; cursor: pointer; font-size: 15px; font-weight: bold; }
 
-        /* عناصر لوحة مدير المحل */
+        /* إعدادات الجائزة لمدير المحل */
+        .reward-settings-box {
+            background: #f8f9fa;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 25px;
+        }
+        .reward-settings-grid {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            margin-top: 10px;
+        }
+        .reward-field {
+            flex: 1;
+            min-width: 180px;
+        }
+        .reward-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #444;
+        }
+        .reward-field input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .save-reward-btn {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 11px 22px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            height: 40px;
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -177,7 +218,7 @@
 <body>
     <div class="main-wrapper">
         
-        <!-- 1. صندوق تسجيل الدخول (يظهر أولاً) -->
+        <!-- 1. صندوق تسجيل الدخول -->
         <div id="authContainer" class="container">
             <span id="loginStoreBadge" class="store-badge">جاري التحميل...</span>
             <h1>تسجيل الدخول للمتجر</h1>
@@ -192,7 +233,7 @@
             <button id="loginSubmitBtn" class="login-btn">دخول 🔒</button>
         </div>
 
-        <!-- 2. شاشة الكاشير (تظهر للموظف وللمدير) -->
+        <!-- 2. شاشة الكاشير -->
         <div id="cashierContainer" class="container hidden">
             <div class="top-bar">
                 <span id="roleIndicator" style="font-weight:bold; color:#1e7041;">👨‍💼 وضع الموظف</span>
@@ -237,7 +278,7 @@
                     </div>
 
                     <button id="redeemBtn">
-                        استبدال المكافأة (-10 نقاط) ☕
+                        استبدال المكافأة (-10 نقاط) 🎁
                     </button>
                 </div>
             </div>
@@ -247,20 +288,36 @@
         <div id="managerDashboard" class="manager-container hidden">
             <h2 style="margin-top:0; border-bottom:2px solid #eee; padding-bottom:10px;">👑 لوحة تقارير وإدارة المتجر (خاصة بالمدير)</h2>
             
+            <!-- قسم تحكم صاحب المتجر بعدد نقاط الجائزة -->
+            <div class="reward-settings-box">
+                <h3 style="margin:0; font-size:16px; color:#111;">⚙️ إعدادات آلية خصم النقاط والجائزة</h3>
+                <div class="reward-settings-grid">
+                    <div class="reward-field">
+                        <label>عدد النقاط المطلوبة للجائزة:</label>
+                        <input type="number" id="mgrRewardPointsInput" min="1" value="10" />
+                    </div>
+                    <div class="reward-field">
+                        <label>وصف الجائزة (يظهر للكاشير والزبون):</label>
+                        <input type="text" id="mgrRewardTitleInput" placeholder="مثال: كوب مجاني ☕ أو ساعة لعب 🎮" />
+                    </div>
+                    <button id="saveRewardSettingsBtn" class="save-reward-btn">حفظ الإعدادات 💾</button>
+                </div>
+            </div>
+
             <div class="stats-grid">
-                <div class="stat-box" id="statBox1">
+                <div class="stat-box">
                     <h4>إجمالي زبائن المتجر</h4>
                     <div class="num" id="mgrTotalCustomers">0</div>
                 </div>
-                <div class="stat-box" id="statBox2">
+                <div class="stat-box">
                     <h4>مجموع النقاط الفعالة</h4>
                     <div class="num" id="mgrTotalPoints">0</div>
                 </div>
-                <div class="stat-box" id="statBox3">
-                    <h4>زبائن جاهزون للمكافأة (+10)</h4>
+                <div class="stat-box">
+                    <h4 id="mgrReadyHeader">زبائن جاهزون للمكافأة (+10)</h4>
                     <div class="num" id="mgrReadyRewards">0</div>
                 </div>
-                <div class="stat-box" id="statBox4">
+                <div class="stat-box">
                     <h4>أعياد ميلاد اليوم 🎂</h4>
                     <div class="num" id="mgrBirthdaysToday">0</div>
                 </div>
@@ -313,7 +370,6 @@
         const currentCafeId = (urlParams.get('cafe') || 'mandel').toLowerCase();
         const expectedPrefix = currentCafeId.substring(0, 3).toUpperCase();
 
-        // عناصر تسجيل الدخول
         const authContainer = document.getElementById('authContainer');
         const loginStoreBadge = document.getElementById('loginStoreBadge');
         const tabCashier = document.getElementById('tabCashier');
@@ -321,7 +377,6 @@
         const pinInput = document.getElementById('pinInput');
         const loginSubmitBtn = document.getElementById('loginSubmitBtn');
 
-        // عناصر الكاشير والمدير
         const cashierContainer = document.getElementById('cashierContainer');
         const managerDashboard = document.getElementById('managerDashboard');
         const roleIndicator = document.getElementById('roleIndicator');
@@ -349,10 +404,20 @@
         const deductMultiplePointsBtn = document.getElementById('deductMultiplePointsBtn');
         const redeemBtn = document.getElementById('redeemBtn');
 
-        let selectedRole = 'cashier'; // 'cashier' or 'manager'
+        // عناصر إعدادات الجائزة للمدير
+        const mgrRewardPointsInput = document.getElementById('mgrRewardPointsInput');
+        const mgrRewardTitleInput = document.getElementById('mgrRewardTitleInput');
+        const saveRewardSettingsBtn = document.getElementById('saveRewardSettingsBtn');
+        const mgrReadyHeader = document.getElementById('mgrReadyHeader');
+
+        let selectedRole = 'cashier';
         let activeRole = null;
-        let storeCashierPin = "1111"; // الرمز الافتراضي للموظف إذا لم يحدده الأدمن
-        let storeManagerPin = "9999"; // الرمز الافتراضي للمدير إذا لم يحدده الأدمن
+        let storeCashierPin = "1111";
+        let storeManagerPin = "9999";
+
+        // متغيرات الجائزة القابلة للتخصيص من مدير المتجر
+        let storeRewardPoints = 10;
+        let storeRewardTitle = "كوب قهوة مجاني ☕";
 
         let currentCustomerId = "";
         let currentCustomerName = "";
@@ -362,7 +427,11 @@
         storeBadge.innerText = `متجر: ${currentCafeId.toUpperCase()}`;
         loginStoreBadge.innerText = `متجر: ${currentCafeId.toUpperCase()}`;
 
-        // تبديل التبويبات بين الموظف والمدير
+        function updateRedeemButtonUI() {
+            redeemBtn.innerText = `استبدال ${storeRewardTitle} (-${storeRewardPoints} نقاط)`;
+            mgrReadyHeader.innerText = `زبائن جاهزون للمكافأة (+${storeRewardPoints})`;
+        }
+
         tabCashier.addEventListener('click', () => {
             selectedRole = 'cashier';
             tabCashier.classList.add('active');
@@ -377,7 +446,7 @@
             pinInput.placeholder = "أدخل الرمز السري لمدير المحل";
         });
 
-        // جلب إعدادات المتجر والرموز السرية من Firebase
+        // جلب إعدادات المتجر والرموز السرية وإعدادات الجائزة
         async function loadStoreConfig() {
             try {
                 const cafeSnap = await getDoc(doc(db, "cafes", currentCafeId));
@@ -393,9 +462,19 @@
                         searchBtn.style.backgroundColor = data.primaryColor;
                         loginSubmitBtn.style.backgroundColor = data.primaryColor;
                     }
+                    
+                    // تحديد الجائزة الافتراضية حسب النشاط، أو قراءة ما حدده المدير مسبقاً
                     if (data.category === 'gaming') {
-                        redeemBtn.innerText = "استبدال ساعة لعب مجانية (-10 نقاط) 🎮";
+                        storeRewardTitle = data.rewardTitle || "ساعة لعب مجانية 🎮";
+                    } else {
+                        storeRewardTitle = data.rewardTitle || "كوب قهوة مجاني ☕";
                     }
+                    storeRewardPoints = Number(data.rewardPoints) || 10;
+
+                    mgrRewardPointsInput.value = storeRewardPoints;
+                    mgrRewardTitleInput.value = storeRewardTitle;
+                    updateRedeemButtonUI();
+
                     if (data.cashierPin) storeCashierPin = String(data.cashierPin).trim();
                     if (data.managerPin) storeManagerPin = String(data.managerPin).trim();
                 }
@@ -405,13 +484,46 @@
         }
         loadStoreConfig();
 
-        // عملية تسجيل الدخول (موظف أو مدير)
+        // حفظ إعدادات الجائزة من قبل مدير المحل
+        saveRewardSettingsBtn.addEventListener('click', async () => {
+            const newPts = parseInt(mgrRewardPointsInput.value);
+            const newTitle = mgrRewardTitleInput.value.trim();
+
+            if (isNaN(newPts) || newPts <= 0) {
+                return alert("الرجاء إدخال عدد نقاط صحيح أكبر من صفر!");
+            }
+            if (!newTitle) {
+                return alert("الرجاء كتابة وصف الجائزة!");
+            }
+
+            saveRewardSettingsBtn.disabled = true;
+            saveRewardSettingsBtn.innerText = "جاري الحفظ...";
+
+            try {
+                await updateDoc(doc(db, "cafes", currentCafeId), {
+                    rewardPoints: newPts,
+                    rewardTitle: newTitle
+                });
+
+                storeRewardPoints = newPts;
+                storeRewardTitle = newTitle;
+                updateRedeemButtonUI();
+                await loadManagerDashboardData();
+                alert(`✅ تم التحديث! أصبحت الجائزة (${storeRewardTitle}) مقابل (${storeRewardPoints}) نقاط.`);
+            } catch (err) {
+                console.error(err);
+                alert("حدث خطأ أثناء حفظ الإعدادات.");
+            } finally {
+                saveRewardSettingsBtn.disabled = false;
+                saveRewardSettingsBtn.innerText = "حفظ الإعدادات 💾";
+            }
+        });
+
         loginSubmitBtn.addEventListener('click', async () => {
             const enteredPin = pinInput.value.trim();
             if (!enteredPin) return alert("الرجاء إدخال الرمز السري");
 
             if (selectedRole === 'cashier') {
-                // يسمح بدخول الكاشير برمز الكاشير أو رمز المدير
                 if (enteredPin === storeCashierPin || enteredPin === storeManagerPin) {
                     activeRole = 'cashier';
                     authContainer.classList.add('hidden');
@@ -437,7 +549,6 @@
             }
         });
 
-        // تسجيل الخروج والعودة لشاشة الاختيار
         logoutBtn.addEventListener('click', () => {
             activeRole = null;
             pinInput.value = "";
@@ -467,7 +578,6 @@
             return (today.getMonth() + 1 === parseInt(parts[1], 10)) && (today.getDate() === parseInt(parts[2], 10));
         }
 
-        // دالة البحث عن زبون وعرضه في الكاشير
         async function searchCustomerById(id) {
             customerIdInput.value = id;
             const docRef = doc(db, "customers", id);
@@ -519,7 +629,6 @@
             searchCustomerById(id);
         });
 
-        // إرسال إشعار هدية الميلاد
         sendBirthdayBtn.addEventListener('click', async () => {
             if (!currentCustomerId) return;
             sendBirthdayBtn.disabled = true;
@@ -544,7 +653,6 @@
             }
         });
 
-        // إضافة نقاط
         addMultiplePointsBtn.addEventListener('click', async () => {
             if (!currentCustomerId) return;
             const pointsVal = parseInt(pointsToAddInput.value);
@@ -572,7 +680,6 @@
             }
         });
 
-        // خصم نقاط
         deductMultiplePointsBtn.addEventListener('click', async () => {
             if (!currentCustomerId) return;
             const pointsVal = parseInt(pointsToDeductInput.value);
@@ -605,7 +712,7 @@
             }
         });
 
-        // استبدال المكافأة (10 نقاط)
+        // استبدال المكافأة بناءً على عدد النقاط الذي حدده صاحب المتجر
         redeemBtn.addEventListener('click', async () => {
             if (!currentCustomerId) return;
             const docRef = doc(db, "customers", currentCustomerId);
@@ -613,18 +720,18 @@
             
             if (docSnap.exists()) {
                 const currentPoints = docSnap.data().points || 0;
-                if (currentPoints < 10) {
-                    return alert("رصيد الزبون غير كافٍ. يجب أن يصل إلى 10 نقاط.");
+                if (currentPoints < storeRewardPoints) {
+                    return alert(`رصيد الزبون غير كافٍ. يجب أن يصل إلى ${storeRewardPoints} نقاط لاستبدال (${storeRewardTitle}).`);
                 }
 
                 try {
                     redeemBtn.disabled = true;
-                    const newPoints = currentPoints - 10;
+                    const newPoints = currentPoints - storeRewardPoints;
                     await updateDoc(docRef, { points: newPoints });
                     await syncPointsWithServer(currentCustomerId, newPoints);
 
                     currentPointsEl.innerText = newPoints;
-                    alert("تمت عملية الاستبدال بنجاح! قُدمت المكافأة للزبون 🎁");
+                    alert(`تمت عملية الاستبدال بنجاح! خصم (${storeRewardPoints}) نقاط مقابل (${storeRewardTitle}) 🎁`);
                     if (activeRole === 'manager') loadManagerDashboardData();
                 } catch (error) {
                     alert("فشل عملية الاستبدال.");
@@ -634,7 +741,6 @@
             }
         });
 
-        // ================= وظائف لوحة مدير المحل =================
         async function loadManagerDashboardData() {
             const mgrTableBody = document.getElementById('mgrTableBody');
             try {
@@ -648,10 +754,8 @@
                     }
                 });
 
-                // ترتيب تنازلي حسب النقاط
                 storeCustomersList.sort((a, b) => (b.points || 0) - (a.points || 0));
 
-                // حساب الإحصائيات الخاصة بالمتجر
                 let totalPts = 0;
                 let readyRewards = 0;
                 let birthdaysCount = 0;
@@ -659,7 +763,7 @@
                 storeCustomersList.forEach(c => {
                     const pts = c.points || 0;
                     totalPts += pts;
-                    if (pts >= 10) readyRewards++;
+                    if (pts >= storeRewardPoints) readyRewards++;
                     if (c.birthDate && isBirthdayToday(c.birthDate)) birthdaysCount++;
                 });
 
@@ -702,7 +806,6 @@
                 mgrTableBody.appendChild(tr);
             });
 
-            // زر فتح الزبون في الكاشير مباشرة بدون كتابة الكود
             document.querySelectorAll('.select-cust-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
@@ -711,7 +814,6 @@
                 });
             });
 
-            // زر حذف الزبون من قبل مدير المحل
             document.querySelectorAll('.delete-cust-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
@@ -724,7 +826,6 @@
             });
         }
 
-        // البحث الفوري داخل جدول المدير
         document.getElementById('mgrSearchInput').addEventListener('input', (e) => {
             const q = e.target.value.trim().toLowerCase();
             const filtered = storeCustomersList.filter(c => 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,26 +18,36 @@
             padding: 20px;
             box-sizing: border-box;
         }
-        .hidden { display: none !important; }
+
+        .hidden {
+            display: none !important;
+        }
 
         .loader-box {
             background: #fff;
             padding: 40px 30px;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             text-align: center;
             font-weight: bold;
             color: #333;
         }
+
         .spinner {
-            width: 40px; height: 40px;
+            width: 40px;
+            height: 40px;
             border: 4px solid #ddd;
             border-top-color: #111;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin: 0 auto 15px auto;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         .card-wrapper {
             width: 100%;
@@ -50,7 +61,7 @@
             color: #fff;
             border-radius: 18px;
             padding: 22px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
             position: relative;
             overflow: hidden;
             text-align: right;
@@ -75,7 +86,7 @@
             height: 52px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid rgba(255,255,255,0.8);
+            border: 2px solid rgba(255, 255, 255, 0.8);
             background: #fff;
         }
 
@@ -87,14 +98,14 @@
 
         .brand-badge {
             font-size: 10px;
-            background: rgba(255,255,255,0.18);
+            background: rgba(255, 255, 255, 0.18);
             padding: 4px 8px;
             border-radius: 10px;
             letter-spacing: 1px;
         }
 
         .points-box {
-            background: rgba(255,255,255,0.12);
+            background: rgba(255, 255, 255, 0.12);
             border-radius: 12px;
             padding: 15px;
             text-align: center;
@@ -118,7 +129,7 @@
             justify-content: space-between;
             align-items: flex-end;
             font-size: 14px;
-            border-top: 1px solid rgba(255,255,255,0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
             padding-top: 12px;
         }
 
@@ -143,13 +154,21 @@
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
             transition: 0.3s;
         }
-        .wallet-btn:hover { opacity: 0.9; }
-        .wallet-btn:disabled { background: #666; cursor: not-allowed; }
+
+        .wallet-btn:hover {
+            opacity: 0.9;
+        }
+
+        .wallet-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
     </style>
 </head>
+
 <body>
 
     <!-- شاشة التحميل حتى لا يظهر أي شعار خاطئ -->
@@ -199,12 +218,12 @@
         import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
-          apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
-          authDomain: "cafe-system-24331.firebaseapp.com",
-          projectId: "cafe-system-24331",
-          storageBucket: "cafe-system-24331.firebasestorage.app",
-          messagingSenderId: "845856227747",
-          appId: "1:845856227747:web:378c6d02fc89410df41a16"
+            apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
+            authDomain: "cafe-system-24331.firebaseapp.com",
+            projectId: "cafe-system-24331",
+            storageBucket: "cafe-system-24331.firebasestorage.app",
+            messagingSenderId: "845856227747",
+            appId: "1:845856227747:web:378c6d02fc89410df41a16"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -259,11 +278,9 @@
                         cafeDataGlobal = cafeSnap.data();
                         cardStoreName.innerText = cafeDataGlobal.name || cafeId.toUpperCase();
 
-                        if (cafeDataGlobal.category === 'gaming') {
-                            rewardHint.innerText = "ساعة لعب مجانية عند 10 نقاط 🎮";
-                        } else {
-                            rewardHint.innerText = "كوب قهوة مجاني عند 10 نقاط ☕";
-                        }
+                        const reqPts = cafeDataGlobal.rewardPoints || 10;
+                        const reqTitle = cafeDataGlobal.rewardTitle || (cafeDataGlobal.category === 'gaming' ? 'ساعة لعب مجانية 🎮' : 'كوب قهوة مجاني ☕');
+                        rewardHint.innerText = `${reqTitle} عند ${reqPts} نقاط`;
 
                         if (cafeDataGlobal.logoUrl) {
                             cardLogo.src = cafeDataGlobal.logoUrl;
@@ -337,4 +354,5 @@
         });
     </script>
 </body>
+
 </html>
