@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الكاشير - نظام الولاء</title>
+    <title>لوحة الكاشير - SHABTEN CARD</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        h1 { margin-top: 0; color: #111; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        .store-badge { display: inline-block; background: #1e7041; color: white; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; margin-bottom: 10px; }
+        h1 { margin-top: 0; font-size: 22px; color: #111; }
         .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-box input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        .search-box button { padding: 10px 20px; background: #1e7041; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .search-box input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 15px; text-transform: uppercase; }
+        .search-box button { padding: 10px 20px; background: #1e7041; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .hidden { display: none; }
         
         .customer-info { font-size: 15px; color: #444; margin-bottom: 10px; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
@@ -23,23 +24,21 @@
         .add-points-box { display: flex; gap: 10px; margin-bottom: 10px; }
         .add-points-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; text-align: center; }
         .add-points-box button { flex: 2; padding: 12px; background: #000; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        .add-points-box button:hover { background: #333; }
         
         .deduct-points-box { display: flex; gap: 10px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #eee; }
         .deduct-points-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; text-align: center; }
         .deduct-points-box button { flex: 2; padding: 12px; background: #fd7e14; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        .deduct-points-box button:hover { background: #e8590c; }
         
         #redeemBtn { background-color: #dc3545; color: white; padding: 12px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        #redeemBtn:hover { background-color: #c82333; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>لوحة الكاشير</h1>
+        <span id="storeBadge" class="store-badge">جاري التحميل...</span>
+        <h1 id="cashierTitle">لوحة الكاشير</h1>
         
         <div class="search-box">
-            <input type="text" id="customerId" placeholder="أدخل رقم البطاقة (مثال: CAF-X7K9)" />
+            <input type="text" id="customerId" placeholder="أدخل رقم البطاقة (مثال: MAN-12)" />
             <button id="searchBtn">بحث</button>
         </div>
 
@@ -51,35 +50,36 @@
                 <div style="margin-top:4px;">تاريخ الميلاد: <strong id="custBirthDisplay">-</strong></div>
             </div>
 
-            <!-- تنبيه عيد الميلاد -->
             <div id="birthdayAlert" class="birthday-banner hidden">
                 <span id="birthdayText">🎂 اليوم عيد ميلاد هذا الزبون! يستحق خصم الميلاد</span>
                 <button id="sendBirthdayBtn" class="birthday-btn">إرسال إشعار هدية الميلاد لمحفظة الزبون 🎁</button>
             </div>
 
-            <div class="points-display">
-                النقاط الحالية: <span id="currentPoints">0</span>
-            </div>
-            
-            <div class="add-points-box">
-                <input type="number" id="pointsToAdd" placeholder="عدد" min="1" value="1" />
-                <button id="addMultiplePointsBtn">إضافة نقاط (+)</button>
-            </div>
+            <div id="actionsArea">
+                <div class="points-display">
+                    النقاط الحالية: <span id="currentPoints">0</span>
+                </div>
+                
+                <div class="add-points-box">
+                    <input type="number" id="pointsToAdd" placeholder="عدد" min="1" value="1" />
+                    <button id="addMultiplePointsBtn">إضافة نقاط (+)</button>
+                </div>
 
-            <div class="deduct-points-box">
-                <input type="number" id="pointsToDeduct" placeholder="عدد" min="1" value="1" />
-                <button id="deductMultiplePointsBtn">خصم نقاط (-)</button>
-            </div>
+                <div class="deduct-points-box">
+                    <input type="number" id="pointsToDeduct" placeholder="عدد" min="1" value="1" />
+                    <button id="deductMultiplePointsBtn">خصم نقاط (-)</button>
+                </div>
 
-            <button id="redeemBtn">
-                استبدال كوب مجاني (-10 نقاط) ☕
-            </button>
+                <button id="redeemBtn">
+                    استبدال المكافأة (-10 نقاط) ☕
+                </button>
+            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
@@ -93,9 +93,16 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // قراءة كود المحل الخاص بهذا الكاشير من الرابط
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentCafeId = (urlParams.get('cafe') || 'mandel').toLowerCase();
+        const expectedPrefix = currentCafeId.substring(0, 3).toUpperCase();
+
+        const storeBadge = document.getElementById('storeBadge');
         const searchBtn = document.getElementById('searchBtn');
         const customerIdInput = document.getElementById('customerId');
         const resultArea = document.getElementById('resultArea');
+        const actionsArea = document.getElementById('actionsArea');
         const statusMessage = document.getElementById('statusMessage');
         const currentPointsEl = document.getElementById('currentPoints');
         
@@ -108,14 +115,37 @@
 
         const pointsToAddInput = document.getElementById('pointsToAdd');
         const addMultiplePointsBtn = document.getElementById('addMultiplePointsBtn');
-        
         const pointsToDeductInput = document.getElementById('pointsToDeduct');
         const deductMultiplePointsBtn = document.getElementById('deductMultiplePointsBtn');
-        
         const redeemBtn = document.getElementById('redeemBtn');
 
         let currentCustomerId = "";
         let currentCustomerName = "";
+
+        // ضبط مثال رقم البطاقة حسب المحل
+        customerIdInput.placeholder = `أدخل رقم البطاقة (مثال: ${expectedPrefix}-12)`;
+        storeBadge.innerText = `متجر: ${currentCafeId.toUpperCase()}`;
+
+        // جلب إعدادات المحل (الاسم، اللون، ونوع النشاط: كافيه أو بلايستيشن)
+        async function loadStoreConfig() {
+            try {
+                const cafeSnap = await getDoc(doc(db, "cafes", currentCafeId));
+                if (cafeSnap.exists()) {
+                    const data = cafeSnap.data();
+                    if (data.name) storeBadge.innerText = data.name;
+                    if (data.primaryColor) {
+                        storeBadge.style.backgroundColor = data.primaryColor;
+                        searchBtn.style.backgroundColor = data.primaryColor;
+                    }
+                    if (data.category === 'gaming') {
+                        redeemBtn.innerText = "استبدال ساعة لعب مجانية (-10 نقاط) 🎮";
+                    }
+                }
+            } catch (e) {
+                console.error("خطأ في تحميل بيانات المتجر:", e);
+            }
+        }
+        loadStoreConfig();
 
         async function syncPointsWithServer(customerId, newPoints) {
             try {
@@ -129,33 +159,42 @@
             }
         }
 
-        // فحص ما إذا كان تاريخ اليوم يطابق يوم وشهر ميلاد الزبون
         function isBirthdayToday(birthDateStr) {
             if (!birthDateStr) return false;
-            const parts = birthDateStr.split('-'); // YYYY-MM-DD
+            const parts = birthDateStr.split('-');
             if (parts.length !== 3) return false;
             const today = new Date();
-            const birthMonth = parseInt(parts[1], 10);
-            const birthDay = parseInt(parts[2], 10);
-            return (today.getMonth() + 1 === birthMonth) && (today.getDate() === birthDay);
+            return (today.getMonth() + 1 === parseInt(parts[1], 10)) && (today.getDate() === parseInt(parts[2], 10));
         }
 
-        // 1. البحث عن الزبون
+        // 1. البحث عن الزبون مع التحقق من تبعيته لنفس المتجر
         searchBtn.addEventListener('click', async () => {
             const id = customerIdInput.value.trim().toUpperCase();
             if (!id) return alert("الرجاء إدخال رقم البطاقة");
 
-            currentCustomerId = id;
             const docRef = doc(db, "customers", id);
             const docSnap = await getDoc(docRef);
 
             resultArea.classList.remove('hidden');
-            pointsToAddInput.value = "1"; 
-            pointsToDeductInput.value = "1";
             birthdayAlert.classList.add('hidden');
+            customerDetails.classList.add('hidden');
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
+                const customerCafe = (data.cafeId || 'mandel').toLowerCase();
+
+                // التحقق الصارم: هل الزبون تابع لهذا المحل؟
+                if (customerCafe !== currentCafeId) {
+                    currentCustomerId = "";
+                    statusMessage.innerText = "⛔ عفواً، هذه البطاقة تابعة لمتجر آخر!";
+                    statusMessage.style.color = "#dc3545";
+                    actionsArea.classList.add('hidden');
+                    return;
+                }
+
+                // الزبون صحيح وتابع لنفس المحل
+                currentCustomerId = id;
+                actionsArea.classList.remove('hidden');
                 statusMessage.innerText = "الزبون موجود!";
                 statusMessage.style.color = "green";
                 currentPointsEl.innerText = data.points;
@@ -165,26 +204,19 @@
                 custNameDisplay.innerText = currentCustomerName;
                 custBirthDisplay.innerText = data.birthDate || "غير مسجل";
 
-                if (data.birthDate) {
+                if (data.birthDate && isBirthdayToday(data.birthDate)) {
                     birthdayAlert.classList.remove('hidden');
-                    if (isBirthdayToday(data.birthDate)) {
-                        birthdayText.innerText = `🎂 اليوم عيد ميلاد ${currentCustomerName}! يستحق هدية الميلاد`;
-                        birthdayAlert.style.backgroundColor = "#fff3cd";
-                    } else {
-                        birthdayText.innerText = `تاريخ ميلاد الزبون: ${data.birthDate}`;
-                        birthdayAlert.style.backgroundColor = "#eef2f5";
-                    }
+                    birthdayText.innerText = `🎂 اليوم عيد ميلاد ${currentCustomerName}! يستحق هدية الميلاد`;
                 }
             } else {
-                statusMessage.innerText = "بطاقة جديدة! سيتم تسجيلها.";
-                statusMessage.style.color = "orange";
-                currentPointsEl.innerText = "0";
-                customerDetails.classList.add('hidden');
-                await setDoc(docRef, { points: 0, createdAt: new Date() });
+                currentCustomerId = "";
+                statusMessage.innerText = "❌ رقم البطاقة غير مسجل في هذا المتجر.";
+                statusMessage.style.color = "#dc3545";
+                actionsArea.classList.add('hidden');
             }
         });
 
-        // إرسال إشعار هدية الميلاد إلى Google Wallet
+        // إرسال إشعار هدية الميلاد
         sendBirthdayBtn.addEventListener('click', async () => {
             if (!currentCustomerId) return;
             sendBirthdayBtn.disabled = true;
@@ -211,8 +243,7 @@
 
         // 2. إضافة نقاط
         addMultiplePointsBtn.addEventListener('click', async () => {
-            if (!currentCustomerId) return alert("الرجاء البحث عن بطاقة زبون أولاً.");
-            
+            if (!currentCustomerId) return;
             const pointsVal = parseInt(pointsToAddInput.value);
             if (isNaN(pointsVal) || pointsVal <= 0) return alert("الرجاء إدخال عدد صحيح.");
 
@@ -224,14 +255,12 @@
                     addMultiplePointsBtn.disabled = true;
                     const newPoints = docSnap.data().points + pointsVal;
                     await updateDoc(docRef, { points: newPoints });
-                    
                     await syncPointsWithServer(currentCustomerId, newPoints);
 
                     currentPointsEl.innerText = newPoints;
                     alert(`تمت إضافة ${pointsVal} نقطة بنجاح!`);
                     pointsToAddInput.value = "1"; 
                 } catch (error) {
-                    console.error("خطأ:", error);
                     alert("حدث خطأ أثناء الإضافة.");
                 } finally {
                     addMultiplePointsBtn.disabled = false;
@@ -241,8 +270,7 @@
 
         // 3. خصم نقاط
         deductMultiplePointsBtn.addEventListener('click', async () => {
-            if (!currentCustomerId) return alert("الرجاء البحث عن بطاقة زبون أولاً.");
-            
+            if (!currentCustomerId) return;
             const pointsVal = parseInt(pointsToDeductInput.value);
             if (isNaN(pointsVal) || pointsVal <= 0) return alert("الرجاء إدخال عدد صحيح للخصم.");
 
@@ -251,23 +279,20 @@
             
             if (docSnap.exists()) {
                 const currentPoints = docSnap.data().points;
-                
                 if (currentPoints < pointsVal) {
-                    return alert(`لا يمكن الخصم! رصيد الزبون الحالي (${currentPoints}) أقل من المراد خصمه (${pointsVal}).`);
+                    return alert(`لا يمكن الخصم! رصيد الزبون (${currentPoints}) أقل من (${pointsVal}).`);
                 }
 
                 try {
                     deductMultiplePointsBtn.disabled = true;
                     const newPoints = currentPoints - pointsVal;
                     await updateDoc(docRef, { points: newPoints });
-                    
                     await syncPointsWithServer(currentCustomerId, newPoints);
 
                     currentPointsEl.innerText = newPoints;
                     alert(`تم خصم ${pointsVal} نقطة بنجاح!`);
                     pointsToDeductInput.value = "1"; 
                 } catch (error) {
-                    console.error("خطأ:", error);
                     alert("حدث خطأ أثناء الخصم.");
                 } finally {
                     deductMultiplePointsBtn.disabled = false;
@@ -275,16 +300,14 @@
             }
         });
 
-        // 4. استبدال كوب مجاني (10 نقاط)
+        // 4. استبدال المكافأة (10 نقاط)
         redeemBtn.addEventListener('click', async () => {
-            if (!currentCustomerId) return alert("الرجاء البحث عن بطاقة زبون أولاً.");
-            
+            if (!currentCustomerId) return;
             const docRef = doc(db, "customers", currentCustomerId);
             const docSnap = await getDoc(docRef);
             
             if (docSnap.exists()) {
                 const currentPoints = docSnap.data().points;
-
                 if (currentPoints < 10) {
                     return alert("رصيد الزبون غير كافٍ. يجب أن يصل إلى 10 نقاط.");
                 }
@@ -293,13 +316,11 @@
                     redeemBtn.disabled = true;
                     const newPoints = currentPoints - 10;
                     await updateDoc(docRef, { points: newPoints });
-                    
                     await syncPointsWithServer(currentCustomerId, newPoints);
 
                     currentPointsEl.innerText = newPoints;
-                    alert("تمت عملية الاستبدال بنجاح! قُدمت المكافأة للزبون ☕");
+                    alert("تمت عملية الاستبدال بنجاح! قُدمت المكافأة للزبون 🎁");
                 } catch (error) {
-                    console.error("حدث خطأ:", error);
                     alert("فشل عملية الاستبدال.");
                 } finally {
                     redeemBtn.disabled = false;

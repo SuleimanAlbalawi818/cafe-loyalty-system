@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إصدار بطاقة ولاء</title>
+    <title>إصدار بطاقة ولاء - SHABTEN CARD</title>
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -55,9 +55,9 @@
 <body>
 
     <div class="register-container">
-        <img id="displayCafeLogo" class="logo" src="Mandel.jpg" alt="شعار الكافيه">
+        <img id="displayCafeLogo" class="logo" src="Mandel.jpg" alt="شعار المتجر">
         <h1 id="cafeTitle">انضم لبرنامج الولاء</h1>
-        <p>سجل معنا واجمع النقاط مع كل كوب قهوة. احصل على قهوتك المجانية بعد 10 نقاط ☕</p>
+        <p id="cafeDesc">سجل معنا واجمع النقاط مع كل كوب قهوة. احصل على قهوتك المجانية بعد 10 نقاط ☕</p>
 
         <input type="text" id="custName" placeholder="الاسم الكريم">
         <input type="tel" id="custPhone" placeholder="رقم الهاتف">
@@ -90,12 +90,12 @@
         const registerBtn = document.getElementById('registerBtn');
         const logoEl = document.getElementById('displayCafeLogo');
         const titleEl = document.getElementById('cafeTitle');
+        const descEl = document.getElementById('cafeDesc');
 
         if (cafeId === 'solaf') {
             logoEl.src = 'solaf.jpg';
         }
 
-        // جلب بيانات الكافيه لتلوين الصفحة
         const fetchCafeData = async () => {
             try {
                 const cafeRef = doc(db, "cafes", cafeId);
@@ -105,6 +105,12 @@
                     const cafeData = cafeSnap.data();
                     titleEl.innerText = `انضم لبرنامج ولاء ${cafeData.name}`;
                     
+                    if (cafeData.category === 'gaming') {
+                        descEl.innerText = 'سجل معنا واجمع النقاط مع كل ساعة لعب. احصل على ساعتك المجانية بعد 10 نقاط 🎮';
+                    } else {
+                        descEl.innerText = 'سجل معنا واجمع النقاط مع كل كوب قهوة. احصل على قهوتك المجانية بعد 10 نقاط ☕';
+                    }
+
                     if (cafeData.logoUrl && cafeData.logoUrl !== "logo.jpg") {
                         logoEl.src = cafeData.logoUrl;
                     }
@@ -115,37 +121,30 @@
                     }
                 }
             } catch (error) {
-                console.error("خطأ في جلب بيانات الكافيه:", error);
+                console.error("خطأ في جلب بيانات المتجر:", error);
             }
         };
 
         fetchCafeData();
 
-        // دالة لتوليد رقم بطاقة قصير وفريد (مثل MAN-12 أو SOL-32)
         async function generateShortCardId(cafeCode) {
-            // نأخذ أول 3 حروف من اسم الكافيه بالأحرف الكبيرة (MAN أو SOL)
             const prefix = cafeCode.substring(0, 3).toUpperCase();
-            
-            // نحاول توليد رقم قصير من خانتين (بين 10 و 99)، وإذا امتلأت ينتقل لـ 3 خانات تلقائياً
             for (let attempt = 0; attempt < 20; attempt++) {
                 const randomNum = attempt < 15 
-                    ? Math.floor(10 + Math.random() * 90)   // رقم من خانتين (10 - 99)
-                    : Math.floor(100 + Math.random() * 900); // احتياط من 3 خانات إذا امتلأت الأرقام
+                    ? Math.floor(10 + Math.random() * 90)
+                    : Math.floor(100 + Math.random() * 900);
                 
                 const candidateId = `${prefix}-${randomNum}`;
                 const checkRef = doc(db, "customers", candidateId);
                 const checkSnap = await getDoc(checkRef);
                 
-                // إذا لم يكن الرقم مستخدماً من قبل، نعتمده فوراً
                 if (!checkSnap.exists()) {
                     return candidateId;
                 }
             }
-            // حل احتياطي أخير في حال ازدحام الأرقام
             return `${prefix}-${Date.now().toString().slice(-3)}`;
         }
 
-        // عملية التسجيل
         registerBtn.addEventListener('click', async () => {
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
@@ -159,7 +158,6 @@
             registerBtn.innerText = "جاري إنشاء بطاقتك...";
 
             try {
-                // توليد الـ ID القصير (مثلاً MAN-12 أو SOL-32)
                 const newCardId = await generateShortCardId(cafeId);
 
                 const newDocRef = doc(db, "customers", newCardId);

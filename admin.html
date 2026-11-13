@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الإدارة - Mandel Coffee</title>
+    <title>لوحة الإدارة الشاملة - SHABTEN CARD</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -27,14 +27,136 @@
         .navbar h2 {
             margin: 0;
             font-size: 20px;
-            color: #1e7041;
+            color: #d4af37;
+            letter-spacing: 1px;
         }
 
-        /* الحاوية الرئيسية */
         .container {
             padding: 30px;
             max-width: 1200px;
             margin: auto;
+        }
+
+        .hidden { display: none !important; }
+
+        /* صندوق تسجيل الدخول */
+        .login-box {
+            background: white;
+            max-width: 400px;
+            margin: 60px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        /* الشبكة العلوية: إضافة متجر + قائمة المتاجر */
+        .management-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .panel-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .panel-card h3 {
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            color: #111;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 5px;
+            margin-top: 12px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .color-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .color-box { flex: 1; }
+
+        input[type="color"] {
+            height: 42px;
+            padding: 4px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 13px;
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 18px;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover { background: #333; }
+
+        .links-box {
+            margin-top: 15px;
+            background: #f8f9fa;
+            border: 2px dashed #1e7041;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .link-item {
+            background: #fff;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            word-break: break-all;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .store-card {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge-type {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #e2e8f0;
+            font-weight: bold;
         }
 
         /* بطاقات الإحصائيات */
@@ -55,10 +177,9 @@
         }
 
         .stat-card h3 {
-            margin: 0;
+            margin: 0 0 10px 0;
             font-size: 16px;
             color: #666;
-            margin-bottom: 10px;
         }
 
         .stat-card .value {
@@ -73,14 +194,26 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow-x: auto;
         }
 
-        .table-container h3 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: #111;
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .table-header h3 { margin: 0; color: #111; }
+
+        .filter-select {
+            width: auto;
+            min-width: 200px;
+            padding: 8px 12px;
         }
 
         table {
@@ -89,7 +222,7 @@
         }
 
         th, td {
-            padding: 15px;
+            padding: 14px;
             text-align: right;
             border-bottom: 1px solid #eee;
         }
@@ -100,9 +233,7 @@
             font-weight: 600;
         }
 
-        tr:hover {
-            background-color: #f1f1f1;
-        }
+        tr:hover { background-color: #f1f1f1; }
 
         .vip-tag {
             background-color: #d4af37;
@@ -117,12 +248,70 @@
 <body>
 
     <div class="navbar">
-        <h2>MANDEL COFFEE | نظام الولاء</h2>
+        <h2>SHABTEN CARD | لوحة الإدارة الشاملة</h2>
         <span>مرحباً، مدير النظام 👋</span>
     </div>
 
-    <div class="container">
-        <!-- قسم الإحصائيات -->
+    <!-- شاشة الحماية بكلمة مرور -->
+    <div id="loginSection" class="login-box">
+        <h3 style="margin-top:0;">تسجيل دخول الإدارة 🔒</h3>
+        <label style="text-align:right;">أدخل الرمز السري:</label>
+        <input type="password" id="adminPin" placeholder="الرمز السري (2026)" />
+        <button id="loginBtn" class="btn-primary">دخول للوحة التحكم</button>
+    </div>
+
+    <!-- لوحة التحكم الكاملة -->
+    <div id="dashboardSection" class="container hidden">
+        
+        <!-- القسم الأول: إضافة متجر جديد + قائمة المتاجر -->
+        <div class="management-grid">
+            <div class="panel-card">
+                <h3>➕ إضافة متجر / عميل جديد</h3>
+                
+                <label>كود المتجر بالإنجليزية (بدون مسافات - يحدد بادئة البطاقة):</label>
+                <input type="text" id="storeId" placeholder="مثال: ps5 أو gamezone أو solaf" />
+
+                <label>الاسم التجاري للمتجر (يظهر على البطاقة):</label>
+                <input type="text" id="storeName" placeholder="مثال: GAME ZONE PS5" />
+
+                <label>نوع النشاط التجاري:</label>
+                <select id="storeCategory">
+                    <option value="cafe">كافيه / قهوة ☕ (مكافأة: كوب مجاني)</option>
+                    <option value="gaming">محل بلايستيشن وألعاب 🎮 (مكافأة: ساعة لعب مجانية)</option>
+                </select>
+
+                <label>اسم ملف الشعار أو رابط الصورة:</label>
+                <input type="text" id="storeLogo" placeholder="مثال: ps5.jpg أو Mandel.jpg" />
+
+                <div class="color-row">
+                    <div class="color-box">
+                        <label>اللون الرئيسي للبطاقة:</label>
+                        <input type="color" id="primaryColor" value="#00439c" />
+                    </div>
+                    <div class="color-box">
+                        <label>اللون الثانوي (التدرج):</label>
+                        <input type="color" id="secondaryColor" value="#111111" />
+                    </div>
+                </div>
+
+                <button id="saveStoreBtn" class="btn-primary">حفظ المتجر وتوليد الروابط ✨</button>
+
+                <div id="generatedLinks" class="links-box hidden">
+                    <h4 style="margin:0 0 10px 0; color:#1e7041;">✅ تم حفظ المتجر! إليك الروابط:</h4>
+                    <label>1. رابط تسجيل الزبائن (QR Code للمحل):</label>
+                    <div id="regLinkText" class="link-item"></div>
+                    <label>2. رابط شاشة الكاشير الخاصة بالمحل:</label>
+                    <div id="cashierLinkText" class="link-item"></div>
+                </div>
+            </div>
+
+            <div class="panel-card">
+                <h3>🏢 المتاجر والعملاء المسجلين</h3>
+                <div id="storesContainer">جاري التحميل...</div>
+            </div>
+        </div>
+
+        <!-- القسم الثاني: بطاقات الإحصائيات -->
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>إجمالي الزبائن المسجلين</h3>
@@ -138,32 +327,37 @@
             </div>
         </div>
 
-        <!-- جدول أفضل الزبائن -->
+        <!-- القسم الثالث: جدول الزبائن مع فلتر المتاجر -->
         <div class="table-container">
-            <h3>قائمة الزبائن (الأعلى نقاطاً)</h3>
+            <div class="table-header">
+                <h3>📋 قائمة الزبائن (الأعلى نقاطاً)</h3>
+                <select id="cafeFilter" class="filter-select">
+                    <option value="all">عرض جميع المتاجر</option>
+                </select>
+            </div>
             <table>
                 <thead>
                     <tr>
                         <th>الترتيب</th>
                         <th>اسم الزبون</th>
+                        <th>المتجر</th>
                         <th>رقم الهاتف</th>
+                        <th>تاريخ الميلاد</th>
                         <th>رقم البطاقة</th>
                         <th>النقاط الحالية</th>
                     </tr>
                 </thead>
                 <tbody id="customersTableBody">
-                    <tr><td colspan="5" style="text-align: center;">جاري تحميل البيانات...</td></tr>
+                    <tr><td colspan="7" style="text-align: center;">جاري تحميل البيانات...</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- استدعاء مكتبات Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-        // إعدادات قاعدة البيانات
         const firebaseConfig = {
           apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
           authDomain: "cafe-system-24331.firebaseapp.com",
@@ -176,56 +370,173 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        async function loadAdminData() {
+        const SECRET_PIN = "2026";
+        let allCustomers = [];
+
+        const loginSection = document.getElementById('loginSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const loginBtn = document.getElementById('loginBtn');
+        const saveStoreBtn = document.getElementById('saveStoreBtn');
+        const storesContainer = document.getElementById('storesContainer');
+        const cafeFilter = document.getElementById('cafeFilter');
+
+        // 1. تسجيل الدخول
+        loginBtn.addEventListener('click', () => {
+            const pin = document.getElementById('adminPin').value.trim();
+            if (pin === SECRET_PIN) {
+                loginSection.classList.add('hidden');
+                dashboardSection.classList.remove('hidden');
+                loadAllStores();
+                loadAdminData();
+            } else {
+                alert("❌ الرمز السري غير صحيح!");
+            }
+        });
+
+        // 2. جلب المتاجر وتعبئة الفلتر
+        async function loadAllStores() {
+            storesContainer.innerHTML = "جاري جلب المتاجر...";
             try {
-                const querySnapshot = await getDocs(collection(db, "customers"));
-                
-                let customers = [];
-                let totalPts = 0;
+                const snap = await getDocs(collection(db, "cafes"));
+                storesContainer.innerHTML = "";
+                cafeFilter.innerHTML = '<option value="all">عرض جميع المتاجر</option>';
 
-                // تجميع البيانات من قاعدة البيانات
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    customers.push({ id: doc.id, ...data });
-                    totalPts += (data.points || 0);
-                });
+                const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', '');
 
-                // ترتيب الزبائن من الأعلى نقاطاً إلى الأقل
-                customers.sort((a, b) => (b.points || 0) - (a.points || 0));
+                snap.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    const typeLabel = data.category === 'gaming' ? '🎮 بلايستيشن' : '☕ كافيه';
+                    const prefix = id.substring(0, 3).toUpperCase();
 
-                // تحديث الإحصائيات العلوية
-                document.getElementById('totalCustomers').innerText = customers.length;
-                document.getElementById('totalPoints').innerText = totalPts;
-                document.getElementById('topPoints').innerText = customers.length > 0 ? customers[0].points : 0;
+                    // إضافة للفلتر
+                    const opt = document.createElement('option');
+                    opt.value = id.toLowerCase();
+                    opt.innerText = `${data.name || id} (${id})`;
+                    cafeFilter.appendChild(opt);
 
-                // رسم الجدول
-                const tableBody = document.getElementById('customersTableBody');
-                tableBody.innerHTML = ""; // تفريغ رسالة "جاري التحميل"
-
-                customers.forEach((cust, index) => {
-                    const tr = document.createElement('tr');
-                    
-                    // تمييز أول 3 زبائن كـ VIP
-                    const rankDisplay = index < 3 ? `<span class="vip-tag">#${index + 1}</span>` : `#${index + 1}`;
-
-                    tr.innerHTML = `
-                        <td>${rankDisplay}</td>
-                        <td style="font-weight: bold;">${cust.name || 'غير معروف'}</td>
-                        <td dir="ltr" style="text-align: right;">${cust.phone || '---'}</td>
-                        <td>${cust.id}</td>
-                        <td style="color: #1e7041; font-weight: bold; font-size: 16px;">${cust.points || 0}</td>
+                    // إضافة لقائمة المتاجر مع روابط سريعة
+                    const div = document.createElement('div');
+                    div.className = 'store-card';
+                    div.innerHTML = `
+                        <div>
+                            <strong style="color:${data.primaryColor || '#111'}">${data.name || id}</strong>
+                            <div style="font-size:12px; color:#666; margin-top:3px;">الكود: <b>${id}</b> | البادئة: <b>${prefix}-XX</b></div>
+                            <div style="font-size:12px; margin-top:5px;">
+                                <a href="${baseUrl}register.html?cafe=${id}" target="_blank" style="color:#00439c;">رابط التسجيل</a> | 
+                                <a href="${baseUrl}index.html?cafe=${id}" target="_blank" style="color:#1e7041;">رابط الكاشير</a>
+                            </div>
+                        </div>
+                        <span class="badge-type">${typeLabel}</span>
                     `;
-                    tableBody.appendChild(tr);
+                    storesContainer.appendChild(div);
                 });
-
-            } catch (error) {
-                console.error("خطأ في جلب البيانات: ", error);
-                document.getElementById('customersTableBody').innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">فشل في تحميل البيانات!</td></tr>`;
+            } catch (e) {
+                storesContainer.innerHTML = "حدث خطأ أثناء تحميل القائمة.";
             }
         }
 
-        // تشغيل الدالة عند فتح الصفحة
-        loadAdminData();
+        // 3. حفظ متجر جديد
+        saveStoreBtn.addEventListener('click', async () => {
+            const storeId = document.getElementById('storeId').value.trim().toLowerCase().replace(/\s+/g, '');
+            const storeName = document.getElementById('storeName').value.trim();
+            const category = document.getElementById('storeCategory').value;
+            const logoUrl = document.getElementById('storeLogo').value.trim() || 'Mandel.jpg';
+            const primaryColor = document.getElementById('primaryColor').value;
+            const secondaryColor = document.getElementById('secondaryColor').value;
+
+            if (!storeId || !storeName) {
+                return alert("الرجاء إدخال كود المتجر والاسم التجاري!");
+            }
+
+            saveStoreBtn.disabled = true;
+            saveStoreBtn.innerText = "جاري الحفظ... ⏳";
+
+            try {
+                await setDoc(doc(db, "cafes", storeId), {
+                    name: storeName,
+                    category: category,
+                    logoUrl: logoUrl,
+                    primaryColor: primaryColor,
+                    secondaryColor: secondaryColor,
+                    updatedAt: new Date()
+                });
+
+                const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', '');
+                document.getElementById('regLinkText').innerText = `${baseUrl}register.html?cafe=${storeId}`;
+                document.getElementById('cashierLinkText').innerText = `${baseUrl}index.html?cafe=${storeId}`;
+                document.getElementById('generatedLinks').classList.remove('hidden');
+
+                loadAllStores();
+            } catch (error) {
+                console.error(error);
+                alert("حدث خطأ أثناء حفظ المتجر.");
+            } finally {
+                saveStoreBtn.disabled = false;
+                saveStoreBtn.innerText = "حفظ المتجر وتوليد الروابط ✨";
+            }
+        });
+
+        // 4. جلب الزبائن وعرض الإحصائيات
+        async function loadAdminData() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "customers"));
+                allCustomers = [];
+
+                querySnapshot.forEach((docSnap) => {
+                    allCustomers.push({ id: docSnap.id, ...docSnap.data() });
+                });
+
+                renderTableAndStats('all');
+            } catch (error) {
+                console.error("خطأ في جلب البيانات: ", error);
+                document.getElementById('customersTableBody').innerHTML = `<tr><td colspan="7" style="text-align: center; color: red;">فشل في تحميل البيانات!</td></tr>`;
+            }
+        }
+
+        function renderTableAndStats(selectedCafe) {
+            const filtered = selectedCafe === 'all' 
+                ? [...allCustomers] 
+                : allCustomers.filter(c => (c.cafeId || 'mandel').toLowerCase() === selectedCafe);
+
+            filtered.sort((a, b) => (b.points || 0) - (a.points || 0));
+
+            let totalPts = 0;
+            filtered.forEach(c => totalPts += (c.points || 0));
+
+            document.getElementById('totalCustomers').innerText = filtered.length;
+            document.getElementById('totalPoints').innerText = totalPts;
+            document.getElementById('topPoints').innerText = filtered.length > 0 ? (filtered[0].points || 0) : 0;
+
+            const tableBody = document.getElementById('customersTableBody');
+            tableBody.innerHTML = "";
+
+            if (filtered.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center;">لا يوجد زبائن مسجلين في هذا المتجر بعد.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach((cust, index) => {
+                const tr = document.createElement('tr');
+                const rankDisplay = index < 3 ? `<span class="vip-tag">#${index + 1}</span>` : `#${index + 1}`;
+                const storeCode = (cust.cafeId || 'mandel').toUpperCase();
+
+                tr.innerHTML = `
+                    <td>${rankDisplay}</td>
+                    <td style="font-weight: bold;">${cust.name || 'غير معروف'}</td>
+                    <td><span class="badge-type">${storeCode}</span></td>
+                    <td dir="ltr" style="text-align: right;">${cust.phone || '---'}</td>
+                    <td>${cust.birthDate || '---'}</td>
+                    <td><b>${cust.id}</b></td>
+                    <td style="color: #1e7041; font-weight: bold; font-size: 16px;">${cust.points || 0}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        cafeFilter.addEventListener('change', (e) => {
+            renderTableAndStats(e.target.value);
+        });
     </script>
 </body>
 </html>
