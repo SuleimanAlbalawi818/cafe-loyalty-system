@@ -127,9 +127,24 @@
             font-weight: bold;
             cursor: pointer;
             transition: 0.2s;
+            width: 100%;
         }
 
         .btn-delete:hover { background: #c82333; }
+
+        .btn-qr {
+            background: #00439c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+        }
+        .btn-qr:hover { background: #003070; }
 
         .btn-toggle-status {
             border: none;
@@ -140,6 +155,7 @@
             cursor: pointer;
             color: white;
             transition: 0.2s;
+            width: 100%;
         }
         .btn-suspend { background: #fd7e14; }
         .btn-activate { background: #1e7041; }
@@ -195,8 +211,9 @@
         .store-actions {
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
+            align-items: stretch;
             gap: 6px;
+            min-width: 130px;
         }
 
         .badge-type {
@@ -205,6 +222,7 @@
             border-radius: 6px;
             background: #e2e8f0;
             font-weight: bold;
+            text-align: center;
         }
 
         .stats-grid {
@@ -289,6 +307,110 @@
             font-size: 12px;
             font-weight: bold;
         }
+
+        /* نافذة معاينة وطباعة الـ QR Code الاحترافية */
+        .qr-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.65);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .qr-modal-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        /* تصميم البطاقة القابلة للطباعة (Stand Poster) */
+        .printable-poster {
+            border: 3px solid #111;
+            border-radius: 18px;
+            padding: 25px 20px;
+            background: #fff;
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .poster-logo {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #111;
+            margin-bottom: 8px;
+            background: #fff;
+        }
+
+        .poster-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 0 0 6px 0;
+            color: #111;
+        }
+
+        .poster-subtitle {
+            font-size: 14px;
+            color: #444;
+            margin: 0 0 16px 0;
+            font-weight: 600;
+        }
+
+        .qr-frame {
+            display: inline-block;
+            padding: 12px;
+            background: #fff;
+            border: 2px dashed #111;
+            border-radius: 14px;
+            margin-bottom: 12px;
+        }
+
+        .qr-frame img {
+            width: 210px;
+            height: 210px;
+            display: block;
+        }
+
+        .poster-steps {
+            font-size: 13px;
+            color: #222;
+            font-weight: bold;
+            background: #f4f6f8;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 8px;
+        }
+
+        .poster-footer {
+            margin-top: 14px;
+            font-size: 11px;
+            color: #777;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .modal-btn-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -348,14 +470,15 @@
                     </div>
                 </div>
 
-                <button id="saveStoreBtn" class="btn-primary">حفظ المتجر وتوليد الروابط ✨</button>
+                <button id="saveStoreBtn" class="btn-primary">حفظ المتجر وتوليد الروابط ورمز الـ QR ✨</button>
 
                 <div id="generatedLinks" class="links-box hidden">
-                    <h4 style="margin:0 0 10px 0; color:#1e7041;">✅ تم حفظ المتجر! إليك الروابط:</h4>
+                    <h4 style="margin:0 0 10px 0; color:#1e7041;">✅ تم حفظ المتجر! إليك الروابط والـ QR:</h4>
                     <label>1. رابط تسجيل الزبائن (QR Code للمحل):</label>
                     <div id="regLinkText" class="link-item"></div>
                     <label>2. رابط شاشة الكاشير الخاصة بالمحل:</label>
                     <div id="cashierLinkText" class="link-item"></div>
+                    <button id="openNewlyCreatedQrBtn" class="btn-qr" style="margin-top:10px; padding:10px;">🖨️ معاينة وطباعة ملصق الـ QR لهذا المتجر</button>
                 </div>
             </div>
 
@@ -407,6 +530,32 @@
         </div>
     </div>
 
+    <!-- نافذة معاينة وطباعة ملصق الـ QR Code للمتجر -->
+    <div id="qrModal" class="qr-modal-overlay hidden">
+        <div class="qr-modal-box">
+            <div id="printableArea" class="printable-poster">
+                <img id="posterLogo" class="poster-logo" src="" alt="شعار المتجر" onerror="this.style.display='none'">
+                <h2 id="posterStoreName" class="poster-title">اسم المتجر</h2>
+                <p id="posterSubText" class="poster-subtitle">انضم لبرنامج الولاء واجمع النقاط مع كل زيارة! 🎁</p>
+                
+                <div id="posterQrFrame" class="qr-frame">
+                    <img id="posterQrImg" src="" alt="QR Code">
+                </div>
+
+                <div class="poster-steps">
+                    📷 وجّه كاميرا هاتفك نحو الرمز لإصدار بطاقتك الرقمية في ثوانٍ!
+                </div>
+                <div class="poster-footer">POWERED BY SHABTEN CARD</div>
+            </div>
+
+            <div class="modal-btn-row">
+                <button id="printPosterBtn" class="modal-btn" style="background:#1e7041; color:#fff;">🖨️ طباعة الملصق الآن</button>
+                <a id="downloadQrLink" class="modal-btn" style="background:#00439c; color:#fff; text-decoration:none; display:flex; align-items:center; justify-content:center;" target="_blank">⬇️ فتح صورة QR</a>
+                <button id="closeQrModalBtn" class="modal-btn" style="background:#eee; color:#333;">إغلاق ✖</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
@@ -425,6 +574,8 @@
 
         const SECRET_PIN = "2026";
         let allCustomers = [];
+        let storesMap = {};
+        let lastCreatedStoreId = "";
 
         const loginSection = document.getElementById('loginSection');
         const dashboardSection = document.getElementById('dashboardSection');
@@ -432,6 +583,19 @@
         const saveStoreBtn = document.getElementById('saveStoreBtn');
         const storesContainer = document.getElementById('storesContainer');
         const cafeFilter = document.getElementById('cafeFilter');
+
+        // عناصر نافذة الـ QR Code
+        const qrModal = document.getElementById('qrModal');
+        const printableArea = document.getElementById('printableArea');
+        const posterLogo = document.getElementById('posterLogo');
+        const posterStoreName = document.getElementById('posterStoreName');
+        const posterSubText = document.getElementById('posterSubText');
+        const posterQrFrame = document.getElementById('posterQrFrame');
+        const posterQrImg = document.getElementById('posterQrImg');
+        const printPosterBtn = document.getElementById('printPosterBtn');
+        const downloadQrLink = document.getElementById('downloadQrLink');
+        const closeQrModalBtn = document.getElementById('closeQrModalBtn');
+        const openNewlyCreatedQrBtn = document.getElementById('openNewlyCreatedQrBtn');
 
         loginBtn.addEventListener('click', () => {
             const pin = document.getElementById('adminPin').value.trim();
@@ -445,12 +609,153 @@
             }
         });
 
+        // دالة فتح نافذة ملصق الـ QR Code لأي متجر
+        function openStoreQrModal(storeId) {
+            const store = storesMap[storeId];
+            if (!store) return;
+
+            const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', '');
+            const regUrl = `${baseUrl}register.html?cafe=${storeId}`;
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=10&data=${encodeURIComponent(regUrl)}`;
+
+            const mainColor = store.primaryColor || '#111111';
+            printableArea.style.borderColor = mainColor;
+            posterQrFrame.style.borderColor = mainColor;
+            posterStoreName.style.color = mainColor;
+            posterStoreName.innerText = store.name || storeId.toUpperCase();
+
+            if (store.category === 'gaming') {
+                posterSubText.innerText = "امسح الرمز وسجل بياناتك لربح ساعات لعب مجانية! 🎮";
+            } else {
+                posterSubText.innerText = "امسح الرمز وسجل بياناتك لربح قهوتك المجانية! ☕";
+            }
+
+            if (store.logoUrl) {
+                posterLogo.src = store.logoUrl;
+                posterLogo.style.display = 'inline-block';
+                posterLogo.style.borderColor = mainColor;
+            } else {
+                posterLogo.style.display = 'none';
+            }
+
+            posterQrImg.src = qrApiUrl;
+            downloadQrLink.href = qrApiUrl;
+            qrModal.classList.remove('hidden');
+        }
+
+        closeQrModalBtn.addEventListener('click', () => {
+            qrModal.classList.add('hidden');
+        });
+
+        openNewlyCreatedQrBtn.addEventListener('click', () => {
+            if (lastCreatedStoreId) openStoreQrModal(lastCreatedStoreId);
+        });
+
+        // طباعة ملصق المتجر مباشرة بحجم ورقة أنيق وجاهز للطابعة
+        printPosterBtn.addEventListener('click', () => {
+            const printWindow = window.open('', '_blank', 'width=600,height=750');
+            const posterHtml = printableArea.outerHTML;
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="ar" dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>طباعة ملصق QR - ${posterStoreName.innerText}</title>
+                    <style>
+                        body {
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 95vh;
+                            margin: 0;
+                            background: #fff;
+                        }
+                        .printable-poster {
+                            border: 4px solid ${printableArea.style.borderColor || '#111'};
+                            border-radius: 24px;
+                            padding: 40px 30px;
+                            text-align: center;
+                            max-width: 420px;
+                            width: 100%;
+                            box-sizing: border-box;
+                        }
+                        .poster-logo {
+                            width: 95px;
+                            height: 95px;
+                            border-radius: 50%;
+                            object-fit: cover;
+                            border: 3px solid ${printableArea.style.borderColor || '#111'};
+                            margin-bottom: 12px;
+                        }
+                        .poster-title {
+                            font-size: 28px;
+                            font-weight: bold;
+                            margin: 0 0 8px 0;
+                            color: ${posterStoreName.style.color || '#111'};
+                        }
+                        .poster-subtitle {
+                            font-size: 16px;
+                            color: #333;
+                            margin: 0 0 22px 0;
+                            font-weight: bold;
+                        }
+                        .qr-frame {
+                            display: inline-block;
+                            padding: 15px;
+                            border: 3px dashed ${printableArea.style.borderColor || '#111'};
+                            border-radius: 18px;
+                            margin-bottom: 18px;
+                        }
+                        .qr-frame img {
+                            width: 260px;
+                            height: 260px;
+                            display: block;
+                        }
+                        .poster-steps {
+                            font-size: 15px;
+                            color: #111;
+                            font-weight: bold;
+                            background: #f4f6f8;
+                            padding: 14px;
+                            border-radius: 12px;
+                            margin-top: 10px;
+                            border: 1px solid #ddd;
+                        }
+                        .poster-footer {
+                            margin-top: 18px;
+                            font-size: 12px;
+                            color: #666;
+                            letter-spacing: 1.5px;
+                            font-weight: bold;
+                        }
+                        @media print {
+                            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${posterHtml}
+                    <script>
+                        window.onload = function() {
+                            setTimeout(function() {
+                                window.print();
+                            }, 500);
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        });
+
         async function loadAllStores() {
             storesContainer.innerHTML = "جاري جلب المتاجر...";
             try {
                 const snap = await getDocs(collection(db, "cafes"));
                 storesContainer.innerHTML = "";
                 cafeFilter.innerHTML = '<option value="all">عرض جميع المتاجر</option>';
+                storesMap = {};
 
                 const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', '');
 
@@ -462,9 +767,11 @@
                 snap.forEach((docSnap) => {
                     const data = docSnap.data();
                     const id = docSnap.id;
+                    storesMap[id] = data;
+
                     const typeLabel = data.category === 'gaming' ? '🎮 بلايستيشن' : '☕ كافيه';
                     const prefix = id.substring(0, 3).toUpperCase();
-                    const isActive = data.isActive !== false; // افتراضياً المتجر نشط ما لم يكن false
+                    const isActive = data.isActive !== false;
 
                     const statusBadge = isActive 
                         ? `<span class="status-pill status-active">🟢 نشط</span>`
@@ -493,11 +800,20 @@
                         </div>
                         <div class="store-actions">
                             <span class="badge-type">${typeLabel}</span>
+                            <button class="btn-qr show-qr-btn" data-id="${id}">🖨️ طباعة ملصق QR</button>
                             ${toggleBtnHtml}
                             <button class="btn-delete delete-store-btn" data-id="${id}" data-name="${data.name || id}">🗑️ حذف المتجر</button>
                         </div>
                     `;
                     storesContainer.appendChild(div);
+                });
+
+                // ربط أزرار معاينة وطباعة الـ QR
+                document.querySelectorAll('.show-qr-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const storeId = e.currentTarget.getAttribute('data-id');
+                        openStoreQrModal(storeId);
+                    });
                 });
 
                 // ربط أزرار تجميد / تفعيل الاشتراك
@@ -524,7 +840,6 @@
             }
         }
 
-        // دالة تجميد أو تفعيل اشتراك المتجر
         async function handleToggleStoreStatus(storeId, storeName, currentlyActive) {
             const actionText = currentlyActive ? "تجميد وإيقاف" : "إعادة تفعيل";
             if (!confirm(`هل أنت متأكد من ${actionText} اشتراك متجر "${storeName}"؟`)) return;
@@ -600,17 +915,18 @@
                     updatedAt: new Date()
                 }, { merge: true });
 
+                lastCreatedStoreId = storeId;
                 document.getElementById('regLinkText').innerText = `${baseUrl}register.html?cafe=${storeId}`;
                 document.getElementById('cashierLinkText').innerText = `${baseUrl}index.html?cafe=${storeId}`;
                 document.getElementById('generatedLinks').classList.remove('hidden');
 
-                loadAllStores();
+                await loadAllStores();
             } catch (error) {
                 console.error(error);
                 alert("حدث خطأ أثناء حفظ المتجر.");
             } finally {
                 saveStoreBtn.disabled = false;
-                saveStoreBtn.innerText = "حفظ المتجر وتوليد الروابط ✨";
+                saveStoreBtn.innerText = "حفظ المتجر وتوليد الروابط ورمز الـ QR ✨";
             }
         });
 
