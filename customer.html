@@ -40,7 +40,7 @@
 
         .card-wrapper {
             width: 100%;
-            max-width: 400px;
+            max-width: 410px;
             text-align: center;
         }
 
@@ -93,7 +93,6 @@
             font-weight: bold;
         }
 
-        /* صندوق النقاط وشريط التقدم والأختام */
         .points-box {
             background: rgba(255,255,255,0.12);
             border-radius: 14px;
@@ -116,7 +115,6 @@
             line-height: 1.2;
         }
 
-        /* شريط التقدم البصري */
         .progress-track {
             width: 100%;
             height: 10px;
@@ -134,7 +132,6 @@
             transition: width 0.5s ease-in-out;
         }
 
-        /* شبكة الأختام التفاعلية */
         .stamps-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -152,8 +149,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 18px;
-            color: rgba(255,255,255,0.4);
+            font-size: 16px;
+            color: rgba(255,255,255,0.5);
             transition: all 0.35s ease;
         }
 
@@ -165,26 +162,54 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.25);
         }
 
+        /* قائمة الجوائز المتعددة داخل بطاقة الزبون */
+        .tiers-list {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: right;
+        }
+        .tier-item {
+            background: rgba(0,0,0,0.25);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .tier-item.unlocked {
+            background: rgba(40, 167, 69, 0.45);
+            border-color: #ffd700;
+            font-weight: bold;
+        }
+        .tier-status {
+            font-size: 11px;
+            padding: 3px 7px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.15);
+        }
+        .tier-item.unlocked .tier-status {
+            background: #ffd700;
+            color: #111;
+            font-weight: bold;
+        }
+
         .motivation-text {
             font-size: 13px;
             font-weight: bold;
-            margin-top: 8px;
+            margin-top: 10px;
             padding: 8px 10px;
             border-radius: 8px;
-            background: rgba(0,0,0,0.25);
+            background: rgba(0,0,0,0.3);
             color: #fff;
         }
 
         .motivation-ready {
             background: rgba(40, 167, 69, 0.85);
             color: #fff;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
         }
 
         .card-footer {
@@ -238,7 +263,7 @@
                     <img id="cardLogo" class="store-logo hidden" src="" alt="Logo">
                     <div>
                         <div id="cardStoreName" class="store-name">بطاقة الولاء</div>
-                        <div id="rewardHint" style="font-size:11px; opacity:0.85;">مكافأة مجانية عند 10 نقاط</div>
+                        <div id="rewardHint" style="font-size:11px; opacity:0.85;">اجمع النقاط واستبدلها بمكافآت فورية</div>
                     </div>
                 </div>
                 <span class="brand-badge">SHABTEN CARD</span>
@@ -248,13 +273,16 @@
                 <div class="points-label">رصيد النقاط الحالي</div>
                 <div id="cardPoints" class="points-value">0</div>
 
-                <!-- شريط التقدم -->
+                <!-- شريط التقدم نحو الهدف القادم -->
                 <div class="progress-track">
                     <div id="progressFill" class="progress-fill"></div>
                 </div>
 
-                <!-- شبكة الأختام التفاعلية -->
+                <!-- شبكة الأختام أو المحطات -->
                 <div id="stampsGrid" class="stamps-grid"></div>
+
+                <!-- قائمة جميع جوائز المتجر (مثل 100 نقطة و 150 نقطة) -->
+                <div id="tiersList" class="tiers-list"></div>
 
                 <!-- الرسالة التحفيزية -->
                 <div id="motivationText" class="motivation-text">اجمع النقاط للحصول على مكافأتك!</div>
@@ -307,6 +335,7 @@
         const cardPoints = document.getElementById('cardPoints');
         const progressFill = document.getElementById('progressFill');
         const stampsGrid = document.getElementById('stampsGrid');
+        const tiersList = document.getElementById('tiersList');
         const motivationText = document.getElementById('motivationText');
         const cardCustName = document.getElementById('cardCustName');
         const cardIdDisplay = document.getElementById('cardIdDisplay');
@@ -314,61 +343,92 @@
 
         let customerDataGlobal = null;
         let cafeDataGlobal = {};
-        let targetPoints = 10;
-        let rewardTitleText = "كوب قهوة مجاني ☕";
+        let storeRewards = [];
         let stampIcon = "☕";
 
-        // دالة لتحديث شريط التقدم والأختام التفاعلية والرسالة التحفيزية
-        // دالة ذكية تتكيف مع الأرقام الصغيرة (أختام) والأرقام الكبيرة مثل 500 نقطة (محطات وشريط مئوي)
         function updateStampsAndProgress(currentPts) {
-            // حساب النسبة المئوية لشريط التقدم (بحد أقصى 100%)
-            const percentage = Math.min(100, Math.round((currentPts / targetPoints) * 100));
+            // ترتيب الجوائز من الأقل نقاطاً إلى الأعلى (مثلاً 100 ثم 150)
+            storeRewards.sort((a, b) => Number(a.points) - Number(b.points));
+
+            const maxTarget = Number(storeRewards[storeRewards.length - 1].points) || 10;
+            // إيجاد الجائزة القادمة التي لم يصل إليها الزبون بعد، أو أعلى جائزة إذا وصل للكل
+            const nextTier = storeRewards.find(r => currentPts < Number(r.points)) || storeRewards[storeRewards.length - 1];
+            const activeTarget = Number(nextTier.points);
+
+            const percentage = Math.min(100, Math.round((currentPts / activeTarget) * 100));
             progressFill.style.width = `${percentage}%`;
 
-            // عرض الرقم بصيغة (النقاط الحالية / الهدف) إذا كان الرقم كبيراً
-            if (targetPoints > 15) {
-                cardPoints.innerHTML = `${currentPts} <span style="font-size:18px; opacity:0.75;">/ ${targetPoints}</span>`;
+            if (maxTarget > 15 || storeRewards.length > 1) {
+                cardPoints.innerHTML = `${currentPts} <span style="font-size:18px; opacity:0.75;">/ ${activeTarget}</span>`;
             } else {
                 cardPoints.innerText = currentPts;
             }
 
+            // 1. رسم الدوائر (الأختام أو محطات الجوائز)
             stampsGrid.innerHTML = "";
-
-            if (targetPoints <= 15) {
-                // الحالة 1: الهدف 15 نقطة أو أقل -> نعرض دوائر الأختام العادية
+            if (storeRewards.length === 1 && maxTarget <= 15) {
                 stampsGrid.style.gridTemplateColumns = "repeat(5, 1fr)";
-                for (let i = 1; i <= targetPoints; i++) {
+                for (let i = 1; i <= maxTarget; i++) {
                     const circle = document.createElement('div');
                     const isStamped = currentPts >= i;
                     circle.className = `stamp-circle ${isStamped ? 'active' : ''}`;
                     circle.innerText = isStamped ? stampIcon : i;
                     stampsGrid.appendChild(circle);
                 }
+            } else if (storeRewards.length > 1) {
+                // إذا كان هناك أكثر من جائزة (مثلاً 100 و 150)، نعرض دوائر تمثل محطات الجوائز نفسها
+                stampsGrid.style.gridTemplateColumns = `repeat(${Math.min(storeRewards.length, 5)}, 1fr)`;
+                storeRewards.forEach((tier) => {
+                    const reached = currentPts >= Number(tier.points);
+                    const circle = document.createElement('div');
+                    circle.className = `stamp-circle ${reached ? 'active' : ''}`;
+                    circle.style.fontSize = "12px";
+                    circle.style.fontWeight = "bold";
+                    circle.innerText = reached ? "🎁" : tier.points;
+                    stampsGrid.appendChild(circle);
+                });
             } else {
-                // الحالة 2: الهدف كبير (مثل 100 أو 500 نقطة) -> نعرض 5 محطات رئيسية فقط بدل 50 ختم!
+                // جائزة واحدة كبيرة (مثل 500 نقطة) -> 5 محطات مئوية
                 stampsGrid.style.gridTemplateColumns = "repeat(5, 1fr)";
                 for (let step = 1; step <= 5; step++) {
-                    const milestoneValue = Math.round((targetPoints / 5) * step);
+                    const milestoneValue = Math.round((maxTarget / 5) * step);
                     const isReached = currentPts >= milestoneValue;
                     const circle = document.createElement('div');
                     circle.className = `stamp-circle ${isReached ? 'active' : ''}`;
                     circle.style.fontSize = "12px";
                     circle.style.fontWeight = "bold";
-                    // المحطة الأخيرة تأخذ شكل الهدية أو أيقونة المتجر عند الوصول إليها
                     circle.innerText = isReached ? (step === 5 ? "🎁" : stampIcon) : milestoneValue;
                     stampsGrid.appendChild(circle);
                 }
             }
 
-            // تحديث الرسالة التحفيزية
-            if (currentPts >= targetPoints) {
-                const rewardsCount = Math.floor(currentPts / targetPoints);
+            // 2. عرض قائمة جميع الجوائز المتاحة وحالة كل جائزة بدون تجاهل أي جائزة
+            tiersList.innerHTML = "";
+            storeRewards.forEach((tier) => {
+                const ptsNeeded = Number(tier.points);
+                const unlocked = currentPts >= ptsNeeded;
+                const item = document.createElement('div');
+                item.className = `tier-item ${unlocked ? 'unlocked' : ''}`;
+                item.innerHTML = `
+                    <div>🎁 <b>${ptsNeeded} نقطة:</b> ${tier.title}</div>
+                    <span class="tier-status">${unlocked ? '✅ متاحة للاستبدال' : `باقي ${ptsNeeded - currentPts} نقطة`}</span>
+                `;
+                tiersList.appendChild(item);
+            });
+
+            // 3. تحديث الرسالة التحفيزية الذكية
+            const unlockedRewards = storeRewards.filter(r => currentPts >= Number(r.points));
+            if (unlockedRewards.length > 0 && currentPts < maxTarget) {
+                const remNext = activeTarget - currentPts;
                 motivationText.className = "motivation-text motivation-ready";
-                motivationText.innerText = `🎉 مبروك! لديك (${rewardsCount}) مكافأة جاهزة للاستبدال (${rewardTitleText})!`;
+                motivationText.innerText = `🎉 يمكنك استبدال (${unlockedRewards[unlockedRewards.length - 1].title}) الآن! أو اجمع ${remNext} نقطة إضافية لـ (${nextTier.title})`;
+            } else if (currentPts >= maxTarget) {
+                motivationText.className = "motivation-text motivation-ready";
+                motivationText.innerText = `🎉 مبروك! وصلت لأعلى مكافأة (${nextTier.title})! اطلبها من الكاشير الآن`;
             } else {
-                const remaining = targetPoints - currentPts;
+                const rem = activeTarget - currentPts;
                 motivationText.className = "motivation-text";
-                motivationText.innerText = `أنجزت ${percentage}% — باقي لك ${remaining} نقطة للحصول على ${rewardTitleText}`;
+                motivationText.innerText = `باقي لك ${rem} نقطة للحصول على (${nextTier.title})`;
             }
         }
 
@@ -399,12 +459,18 @@
                         cafeDataGlobal = cafeSnap.data();
                         cardStoreName.innerText = cafeDataGlobal.name || cafeId.toUpperCase();
 
-                        targetPoints = Number(cafeDataGlobal.rewardPoints) || 10;
                         const isGaming = cafeDataGlobal.category === 'gaming';
                         stampIcon = isGaming ? "🎮" : "☕";
-                        rewardTitleText = cafeDataGlobal.rewardTitle || (isGaming ? 'ساعة لعب مجانية 🎮' : 'كوب قهوة مجاني ☕');
 
-                        rewardHint.innerText = `${rewardTitleText} عند ${targetPoints} نقاط`;
+                        if (Array.isArray(cafeDataGlobal.rewards) && cafeDataGlobal.rewards.length > 0) {
+                            storeRewards = cafeDataGlobal.rewards;
+                        } else {
+                            const fallbackTitle = cafeDataGlobal.rewardTitle || (isGaming ? 'ساعة لعب مجانية 🎮' : 'كوب قهوة مجاني ☕');
+                            const fallbackPts = Number(cafeDataGlobal.rewardPoints) || 10;
+                            storeRewards = [{ points: fallbackPts, title: fallbackTitle }];
+                        }
+
+                        rewardHint.innerText = `متوفر (${storeRewards.length}) مستويات للمكافآت 🎁`;
 
                         if (cafeDataGlobal.logoUrl) {
                             cardLogo.src = cafeDataGlobal.logoUrl;
@@ -421,7 +487,6 @@
                 cardIdDisplay.innerText = cardId;
                 updateStampsAndProgress(customerDataGlobal.points || 0);
 
-                // تحديث فوري (Live) للأختام وشريط التقدم بمجرد أن يضيف الكاشير نقطة
                 onSnapshot(custRef, (liveSnap) => {
                     if (liveSnap.exists()) {
                         const liveData = liveSnap.data();
