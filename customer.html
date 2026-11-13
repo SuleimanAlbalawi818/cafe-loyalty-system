@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بطاقة الولاء - SHABTEN CARD</title>
+    <!-- إعدادات تجعل البطاقة تعمل كتطبيق كامل عند إضافتها لشاشة الآيفون الرئيسية -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SHABTEN CARD">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -162,7 +166,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.25);
         }
 
-        /* قائمة الجوائز المتعددة داخل بطاقة الزبون */
         .tiers-list {
             margin-top: 12px;
             display: flex;
@@ -247,6 +250,54 @@
         }
         .wallet-btn:hover { opacity: 0.9; }
         .wallet-btn:disabled { background: #666; cursor: not-allowed; }
+
+        /* نافذة إرشادات الآيفون (Modal) */
+        .ios-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+        .ios-modal-box {
+            background: #fff;
+            border-radius: 18px;
+            padding: 24px;
+            max-width: 350px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            animation: popIn 0.25s ease-out;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .ios-steps {
+            text-align: right;
+            background: #f8f9fa;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.8;
+            color: #333;
+            margin: 15px 0;
+            border: 1px solid #e9ecef;
+        }
+        .close-modal-btn {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -273,18 +324,14 @@
                 <div class="points-label">رصيد النقاط الحالي</div>
                 <div id="cardPoints" class="points-value">0</div>
 
-                <!-- شريط التقدم نحو الهدف القادم -->
                 <div class="progress-track">
                     <div id="progressFill" class="progress-fill"></div>
                 </div>
 
-                <!-- شبكة الأختام أو المحطات -->
                 <div id="stampsGrid" class="stamps-grid"></div>
 
-                <!-- قائمة جميع جوائز المتجر (مثل 100 نقطة و 150 نقطة) -->
                 <div id="tiersList" class="tiers-list"></div>
 
-                <!-- الرسالة التحفيزية -->
                 <div id="motivationText" class="motivation-text">اجمع النقاط للحصول على مكافأتك!</div>
             </div>
 
@@ -300,9 +347,26 @@
             </div>
         </div>
 
-        <button id="googleWalletBtn" class="wallet-btn">
+        <button id="walletBtn" class="wallet-btn">
             📲 إضافة البطاقة إلى Google Wallet
         </button>
+    </div>
+
+    <!-- نافذة تنبيه خاصة بمستخدمي الآيفون -->
+    <div id="iosModal" class="ios-modal-overlay hidden">
+        <div class="ios-modal-box">
+            <div style="font-size: 36px; margin-bottom: 8px;">🍎</div>
+            <h3 style="margin: 0 0 8px 0; color: #111;">إضافة إلى Apple Wallet (قريباً!)</h3>
+            <p style="font-size: 13px; color: #555; margin: 0;">
+                سيتم تفعيل الربط المباشر مع Apple Wallet قريباً جداً! يمكنك الآن حفظ بطاقتك كتطبيق مباشر على شاشة الآيفون الرئيسية لفتحها بلمسة واحدة:
+            </p>
+            <div class="ios-steps">
+                1️⃣ اضغط على زر <b>المشاركة (Share)</b> في أسفل متصفح سفاري ⬆️.<br>
+                2️⃣ اختر <b>"إضافة إلى الشاشة الرئيسية"</b> (Add to Home Screen) ➕.<br>
+                3️⃣ اضغط <b>"إضافة" (Add)</b> في أعلى الشاشة.
+            </div>
+            <button id="closeIosModalBtn" class="close-modal-btn">حسناً، فهمت ✨</button>
+        </div>
     </div>
 
     <script type="module">
@@ -339,7 +403,23 @@
         const motivationText = document.getElementById('motivationText');
         const cardCustName = document.getElementById('cardCustName');
         const cardIdDisplay = document.getElementById('cardIdDisplay');
-        const googleWalletBtn = document.getElementById('googleWalletBtn');
+        const walletBtn = document.getElementById('walletBtn');
+        const iosModal = document.getElementById('iosModal');
+        const closeIosModalBtn = document.getElementById('closeIosModalBtn');
+
+        // فحص تلقائي إذا كان جهاز الزبون آيفون أو آيباد
+        const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        if (isIOSDevice) {
+            walletBtn.innerText = "📲 إضافة البطاقة إلى Apple Wallet";
+        } else {
+            walletBtn.innerText = "📲 إضافة البطاقة إلى Google Wallet";
+        }
+
+        closeIosModalBtn.addEventListener('click', () => {
+            iosModal.classList.add('hidden');
+        });
 
         let customerDataGlobal = null;
         let cafeDataGlobal = {};
@@ -347,11 +427,9 @@
         let stampIcon = "☕";
 
         function updateStampsAndProgress(currentPts) {
-            // ترتيب الجوائز من الأقل نقاطاً إلى الأعلى (مثلاً 100 ثم 150)
             storeRewards.sort((a, b) => Number(a.points) - Number(b.points));
 
             const maxTarget = Number(storeRewards[storeRewards.length - 1].points) || 10;
-            // إيجاد الجائزة القادمة التي لم يصل إليها الزبون بعد، أو أعلى جائزة إذا وصل للكل
             const nextTier = storeRewards.find(r => currentPts < Number(r.points)) || storeRewards[storeRewards.length - 1];
             const activeTarget = Number(nextTier.points);
 
@@ -364,7 +442,6 @@
                 cardPoints.innerText = currentPts;
             }
 
-            // 1. رسم الدوائر (الأختام أو محطات الجوائز)
             stampsGrid.innerHTML = "";
             if (storeRewards.length === 1 && maxTarget <= 15) {
                 stampsGrid.style.gridTemplateColumns = "repeat(5, 1fr)";
@@ -376,7 +453,6 @@
                     stampsGrid.appendChild(circle);
                 }
             } else if (storeRewards.length > 1) {
-                // إذا كان هناك أكثر من جائزة (مثلاً 100 و 150)، نعرض دوائر تمثل محطات الجوائز نفسها
                 stampsGrid.style.gridTemplateColumns = `repeat(${Math.min(storeRewards.length, 5)}, 1fr)`;
                 storeRewards.forEach((tier) => {
                     const reached = currentPts >= Number(tier.points);
@@ -388,7 +464,6 @@
                     stampsGrid.appendChild(circle);
                 });
             } else {
-                // جائزة واحدة كبيرة (مثل 500 نقطة) -> 5 محطات مئوية
                 stampsGrid.style.gridTemplateColumns = "repeat(5, 1fr)";
                 for (let step = 1; step <= 5; step++) {
                     const milestoneValue = Math.round((maxTarget / 5) * step);
@@ -402,7 +477,6 @@
                 }
             }
 
-            // 2. عرض قائمة جميع الجوائز المتاحة وحالة كل جائزة بدون تجاهل أي جائزة
             tiersList.innerHTML = "";
             storeRewards.forEach((tier) => {
                 const ptsNeeded = Number(tier.points);
@@ -416,7 +490,6 @@
                 tiersList.appendChild(item);
             });
 
-            // 3. تحديث الرسالة التحفيزية الذكية
             const unlockedRewards = storeRewards.filter(r => currentPts >= Number(r.points));
             if (unlockedRewards.length > 0 && currentPts < maxTarget) {
                 const remNext = activeTarget - currentPts;
@@ -507,10 +580,17 @@
 
         initCardPage();
 
-        googleWalletBtn.addEventListener('click', async () => {
+        // عند الضغط على زر المحفظة: إذا كان آيفون يعرض نافذة الإرشادات، وإذا كان أندرويد يرسل لـ Google Wallet
+        walletBtn.addEventListener('click', async () => {
             if (!customerDataGlobal) return;
-            googleWalletBtn.disabled = true;
-            googleWalletBtn.innerText = "جاري تجهيز بطاقة Google Wallet... ⏳";
+
+            if (isIOSDevice) {
+                iosModal.classList.remove('hidden');
+                return;
+            }
+
+            walletBtn.disabled = true;
+            walletBtn.innerText = "جاري تجهيز بطاقة Google Wallet... ⏳";
 
             try {
                 const res = await fetch('https://cafe-loyalty-system-oow4.onrender.com/create-pass', {
@@ -536,8 +616,8 @@
             } catch (err) {
                 alert("تعذر الاتصال بالسيرفر، يرجى المحاولة بعد قليل.");
             } finally {
-                googleWalletBtn.disabled = false;
-                googleWalletBtn.innerText = "📲 إضافة البطاقة إلى Google Wallet";
+                walletBtn.disabled = false;
+                walletBtn.innerText = "📲 إضافة البطاقة إلى Google Wallet";
             }
         });
     </script>
