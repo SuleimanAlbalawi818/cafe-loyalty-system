@@ -319,22 +319,45 @@
         let stampIcon = "☕";
 
         // دالة لتحديث شريط التقدم والأختام التفاعلية والرسالة التحفيزية
+        // دالة ذكية تتكيف مع الأرقام الصغيرة (أختام) والأرقام الكبيرة مثل 500 نقطة (محطات وشريط مئوي)
         function updateStampsAndProgress(currentPts) {
-            cardPoints.innerText = currentPts;
-
             // حساب النسبة المئوية لشريط التقدم (بحد أقصى 100%)
             const percentage = Math.min(100, Math.round((currentPts / targetPoints) * 100));
             progressFill.style.width = `${percentage}%`;
 
-            // رسم الأختام (بحد أقصى 15 ختماً للحفاظ على جمالية التصميم)
-            const stampsCount = Math.min(targetPoints, 15);
+            // عرض الرقم بصيغة (النقاط الحالية / الهدف) إذا كان الرقم كبيراً
+            if (targetPoints > 15) {
+                cardPoints.innerHTML = `${currentPts} <span style="font-size:18px; opacity:0.75;">/ ${targetPoints}</span>`;
+            } else {
+                cardPoints.innerText = currentPts;
+            }
+
             stampsGrid.innerHTML = "";
-            for (let i = 1; i <= stampsCount; i++) {
-                const circle = document.createElement('div');
-                const isStamped = currentPts >= i;
-                circle.className = `stamp-circle ${isStamped ? 'active' : ''}`;
-                circle.innerText = isStamped ? stampIcon : i;
-                stampsGrid.appendChild(circle);
+
+            if (targetPoints <= 15) {
+                // الحالة 1: الهدف 15 نقطة أو أقل -> نعرض دوائر الأختام العادية
+                stampsGrid.style.gridTemplateColumns = "repeat(5, 1fr)";
+                for (let i = 1; i <= targetPoints; i++) {
+                    const circle = document.createElement('div');
+                    const isStamped = currentPts >= i;
+                    circle.className = `stamp-circle ${isStamped ? 'active' : ''}`;
+                    circle.innerText = isStamped ? stampIcon : i;
+                    stampsGrid.appendChild(circle);
+                }
+            } else {
+                // الحالة 2: الهدف كبير (مثل 100 أو 500 نقطة) -> نعرض 5 محطات رئيسية فقط بدل 50 ختم!
+                stampsGrid.style.gridTemplateColumns = "repeat(5, 1fr)";
+                for (let step = 1; step <= 5; step++) {
+                    const milestoneValue = Math.round((targetPoints / 5) * step);
+                    const isReached = currentPts >= milestoneValue;
+                    const circle = document.createElement('div');
+                    circle.className = `stamp-circle ${isReached ? 'active' : ''}`;
+                    circle.style.fontSize = "12px";
+                    circle.style.fontWeight = "bold";
+                    // المحطة الأخيرة تأخذ شكل الهدية أو أيقونة المتجر عند الوصول إليها
+                    circle.innerText = isReached ? (step === 5 ? "🎁" : stampIcon) : milestoneValue;
+                    stampsGrid.appendChild(circle);
+                }
             }
 
             // تحديث الرسالة التحفيزية
@@ -345,7 +368,7 @@
             } else {
                 const remaining = targetPoints - currentPts;
                 motivationText.className = "motivation-text";
-                motivationText.innerText = `باقي لك ${remaining} نقاط فقط للحصول على ${rewardTitleText}`;
+                motivationText.innerText = `أنجزت ${percentage}% — باقي لك ${remaining} نقطة للحصول على ${rewardTitleText}`;
             }
         }
 
