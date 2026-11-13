@@ -279,6 +279,16 @@
 <body>
     <div class="main-wrapper">
         
+        <!-- 0. شاشة إيقاف الاشتراك (تظهر فوراً إذا تم تجميد المتجر من الإدارة) -->
+        <div id="suspendedScreen" class="container hidden">
+            <div style="font-size:48px; margin-bottom:10px;">⛔</div>
+            <h2 style="color:#dc3545; margin:0 0 10px 0;">الاشتراك متوقف مؤقتاً</h2>
+            <p style="color:#555; font-size:14px; line-height:1.7;">
+                عذراً، تم إيقاف حساب متجر <b id="suspendedStoreName"></b> مؤقتاً.<br>
+                يرجى التواصل مع إدارة <b>SHABTEN CARD</b> لتجديد الاشتراك وإعادة تفعيل النظام فوراً.
+            </p>
+        </div>
+
         <!-- 1. صندوق تسجيل الدخول -->
         <div id="authContainer" class="container">
             <span id="loginStoreBadge" class="store-badge">جاري التحميل...</span>
@@ -348,7 +358,7 @@
         <div id="managerDashboard" class="manager-container hidden">
             <h2 style="margin-top:0; border-bottom:2px solid #eee; padding-bottom:10px;">👑 لوحة تقارير وإدارة المتجر (خاصة بالمدير)</h2>
             
-            <!-- الميزة الرابعة: قسم إرسال العروض التسويقية اللحظية لبطاقات الزبائن -->
+            <!-- نشر العروض التسويقية اللحظية -->
             <div class="reward-settings-box" style="border-color: #d4af37; background: #fffdf5;">
                 <h3 style="margin:0; font-size:16px; color:#111;">📢 نشر عرض تسويقي مباشر على بطاقات جميع زبائن المتجر</h3>
                 <p style="margin:5px 0 0 0; font-size:12px; color:#666;">يظهر هذا العرض فوراً كشريط إعلاني بارز داخل بطاقة كل زبون يفتح بطاقته.</p>
@@ -366,7 +376,7 @@
                 </div>
             </div>
 
-            <!-- قسم إدارة الجوائز المتعددة -->
+            <!-- إدارة الجوائز المتعددة -->
             <div class="reward-settings-box">
                 <h3 style="margin:0; font-size:16px; color:#111;">🎁 إدارة جوائز ومكافآت المتجر (يمكنك إضافة أكثر من جائزة)</h3>
                 <div class="reward-settings-grid">
@@ -385,7 +395,22 @@
                 <div id="managerRewardsList" class="rewards-list-manager"></div>
             </div>
 
-            <!-- قسم الرموز السرية -->
+            <!-- نقاط الترحيب التلقائية -->
+            <div class="reward-settings-box" style="border-color: #1e7041; background: #f4fbf7;">
+                <h3 style="margin:0; font-size:16px; color:#111;">🎉 نقاط الترحيب التلقائية للزبون الجديد (Welcome Bonus)</h3>
+                <p style="margin:5px 0 0 0; font-size:12px; color:#666;">تُضاف هذه النقاط تلقائياً لرصيد أي زبون ينشئ بطاقة لأول مرة لتشجيعه على التسجيل (ضع 0 لإلغائها).</p>
+                <div class="reward-settings-grid">
+                    <div class="reward-field" style="grid-column: span 2;">
+                        <label>عدد نقاط الهدية عند التسجيل لأول مرة:</label>
+                        <input type="number" id="welcomePointsInput" min="0" value="0" placeholder="مثال: 1 أو 5 أو 10" />
+                    </div>
+                    <div class="reward-field">
+                        <button id="saveWelcomePtsBtn" class="save-reward-btn" style="background:#1e7041;">حفظ نقاط الترحيب 🎁</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الرموز السرية -->
             <div class="reward-settings-box">
                 <h3 style="margin:0; font-size:16px; color:#111;">🔐 إعدادات الرموز السرية للدخول</h3>
                 <div class="reward-settings-grid">
@@ -399,21 +424,6 @@
                     </div>
                     <div class="reward-field">
                         <button id="savePinsBtn" class="save-reward-btn">حفظ الرموز السرية 💾</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- الميزة الخامسة: قسم نقاط الترحيب التلقائية للزبائن الجدد -->
-            <div class="reward-settings-box" style="border-color: #1e7041; background: #f4fbf7;">
-                <h3 style="margin:0; font-size:16px; color:#111;">🎉 نقاط الترحيب التلقائية للزبون الجديد (Welcome Bonus)</h3>
-                <p style="margin:5px 0 0 0; font-size:12px; color:#666;">تُضاف هذه النقاط تلقائياً لرصيد أي زبون ينشئ بطاقة لأول مرة لتشجيعه على التسجيل (ضع 0 لإلغائها).</p>
-                <div class="reward-settings-grid">
-                    <div class="reward-field" style="grid-column: span 2;">
-                        <label>عدد نقاط الهدية عند التسجيل لأول مرة:</label>
-                        <input type="number" id="welcomePointsInput" min="0" value="0" placeholder="مثال: 1 أو 5 أو 10" />
-                    </div>
-                    <div class="reward-field">
-                        <button id="saveWelcomePtsBtn" class="save-reward-btn" style="background:#1e7041;">حفظ نقاط الترحيب 🎁</button>
                     </div>
                 </div>
             </div>
@@ -490,7 +500,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, deleteDoc, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
@@ -505,9 +515,11 @@
         const db = getFirestore(app);
 
         const urlParams = new URLSearchParams(window.location.search);
-        const currentCafeId = (urlParams.get('cafe') || 'mandel').toLowerCase();
+        const currentCafeId = (urlParams.get('cafe') || 'mandel').toLowerCase().trim();
         const expectedPrefix = currentCafeId.substring(0, 3).toUpperCase();
 
+        const suspendedScreen = document.getElementById('suspendedScreen');
+        const suspendedStoreName = document.getElementById('suspendedStoreName');
         const authContainer = document.getElementById('authContainer');
         const loginStoreBadge = document.getElementById('loginStoreBadge');
         const tabCashier = document.getElementById('tabCashier');
@@ -550,6 +562,8 @@
         const newRewardTitleInput = document.getElementById('newRewardTitleInput');
         const addRewardTierBtn = document.getElementById('addRewardTierBtn');
         const managerRewardsList = document.getElementById('managerRewardsList');
+        const welcomePointsInput = document.getElementById('welcomePointsInput');
+        const saveWelcomePtsBtn = document.getElementById('saveWelcomePtsBtn');
         const mgrCashierPinInput = document.getElementById('mgrCashierPinInput');
         const mgrManagerPinInput = document.getElementById('mgrManagerPinInput');
         const savePinsBtn = document.getElementById('savePinsBtn');
@@ -557,6 +571,7 @@
 
         let selectedRole = 'cashier';
         let activeRole = null;
+        let isStoreSuspended = false;
         let storeCashierPin = "1111";
         let storeManagerPin = "9999";
         let storeDisplayName = currentCafeId.toUpperCase();
@@ -624,16 +639,36 @@
             pinInput.placeholder = "أدخل الرمز السري لمدير المحل";
         });
 
-        async function loadStoreConfig() {
-            try {
-                const cafeSnap = await getDoc(doc(db, "cafes", currentCafeId));
+        // مراقبة حية ومباشرة لحالة اشتراك المتجر وإعداداته
+        function watchStoreConfigLive() {
+            const cafeRef = doc(db, "cafes", currentCafeId);
+            onSnapshot(cafeRef, (cafeSnap) => {
                 if (cafeSnap.exists()) {
                     const data = cafeSnap.data();
-                    if (data.name) {
-                        storeDisplayName = data.name;
-                        storeBadge.innerText = data.name;
-                        loginStoreBadge.innerText = data.name;
+                    storeDisplayName = data.name || currentCafeId.toUpperCase();
+
+                    // فحص فوري إذا تم إيقاف المتجر من لوحة الإدارة الشاملة
+                    if (data.isActive === false) {
+                        isStoreSuspended = true;
+                        activeRole = null;
+                        suspendedStoreName.innerText = `(${storeDisplayName})`;
+                        suspendedScreen.classList.remove('hidden');
+                        authContainer.classList.add('hidden');
+                        cashierContainer.classList.add('hidden');
+                        managerDashboard.classList.add('hidden');
+                        return;
+                    } else {
+                        // إذا تم إعادة تفعيله، نخفي شاشة الإيقاف ونظهر شاشة الدخول إذا لم يكن مسجلاً
+                        isStoreSuspended = false;
+                        suspendedScreen.classList.add('hidden');
+                        if (!activeRole) {
+                            authContainer.classList.remove('hidden');
+                        }
                     }
+
+                    storeBadge.innerText = storeDisplayName;
+                    loginStoreBadge.innerText = storeDisplayName;
+
                     if (data.primaryColor) {
                         storeBadge.style.backgroundColor = data.primaryColor;
                         loginStoreBadge.style.backgroundColor = data.primaryColor;
@@ -649,25 +684,20 @@
                         storeRewardsList = [{ points: fallbackPoints, title: fallbackTitle }];
                     }
 
-                    if (data.promoMessage) {
-                        promoMessageInput.value = data.promoMessage;
-                    }
+                    promoMessageInput.value = data.promoMessage || "";
+                    welcomePointsInput.value = Number(data.welcomePoints) || 0;
 
                     if (data.cashierPin) storeCashierPin = String(data.cashierPin).trim();
                     if (data.managerPin) storeManagerPin = String(data.managerPin).trim();
 
                     mgrCashierPinInput.value = storeCashierPin;
                     mgrManagerPinInput.value = storeManagerPin;
-                    document.getElementById('welcomePointsInput').value = Number(data.welcomePoints) || 0;
                     renderRewardsUI();
                 }
-            } catch (e) {
-                console.error("خطأ في تحميل بيانات المتجر:", e);
-            }
+            });
         }
-        loadStoreConfig();
+        watchStoreConfigLive();
 
-        // نشر العرض التسويقي المباشر على بطاقات الزبائن
         publishPromoBtn.addEventListener('click', async () => {
             const msg = promoMessageInput.value.trim();
             if (!msg) return alert("الرجاء كتابة نص العرض أولاً!");
@@ -689,7 +719,6 @@
             }
         });
 
-        // إيقاف / مسح العرض التسويقي
         clearPromoBtn.addEventListener('click', async () => {
             if (!confirm("هل تريد إيقاف العرض الحالي وإخفاءه من بطاقات الزبائن؟")) return;
             try {
@@ -770,6 +799,31 @@
             }
         }
 
+        saveWelcomePtsBtn.addEventListener('click', async () => {
+            const welcomePts = parseInt(welcomePointsInput.value);
+            if (isNaN(welcomePts) || welcomePts < 0) {
+                return alert("الرجاء إدخال رقم صحيح (0 أو أكثر)!");
+            }
+
+            saveWelcomePtsBtn.disabled = true;
+            saveWelcomePtsBtn.innerText = "جاري الحفظ...";
+
+            try {
+                await updateDoc(doc(db, "cafes", currentCafeId), {
+                    welcomePoints: welcomePts
+                });
+                alert(welcomePts > 0 
+                    ? `🎉 تم التفعيل! سيحصل كل زبون جديد على (${welcomePts}) نقاط مجانية فور تسجيله.` 
+                    : `✅ تم إيقاف نقاط الترحيب التلقائية (يبدأ الزبون الجديد من 0).`);
+            } catch (err) {
+                console.error(err);
+                alert("حدث خطأ أثناء حفظ نقاط الترحيب.");
+            } finally {
+                saveWelcomePtsBtn.disabled = false;
+                saveWelcomePtsBtn.innerText = "حفظ نقاط الترحيب 🎁";
+            }
+        });
+
         savePinsBtn.addEventListener('click', async () => {
             const newCashierPin = mgrCashierPinInput.value.trim();
             const newManagerPin = mgrManagerPinInput.value.trim();
@@ -797,36 +851,11 @@
             }
         });
 
-        // حفظ نقاط الترحيب التلقائية
-        const saveWelcomePtsBtn = document.getElementById('saveWelcomePtsBtn');
-        const welcomePointsInput = document.getElementById('welcomePointsInput');
-
-        saveWelcomePtsBtn.addEventListener('click', async () => {
-            const welcomePts = parseInt(welcomePointsInput.value);
-            if (isNaN(welcomePts) || welcomePts < 0) {
-                return alert("الرجاء إدخال رقم صحيح (0 أو أكثر)!");
-            }
-
-            saveWelcomePtsBtn.disabled = true;
-            saveWelcomePtsBtn.innerText = "جاري الحفظ...";
-
-            try {
-                await updateDoc(doc(db, "cafes", currentCafeId), {
-                    welcomePoints: welcomePts
-                });
-                alert(welcomePts > 0 
-                    ? `🎉 تم التفعيل! سيحصل كل زبون جديد على (${welcomePts}) نقاط مجانية فور تسجيله.` 
-                    : `✅ تم إيقاف نقاط الترحيب التلقائية (يبدأ الزبون الجديد من 0).`);
-            } catch (err) {
-                console.error(err);
-                alert("حدث خطأ أثناء حفظ نقاط الترحيب.");
-            } finally {
-                saveWelcomePtsBtn.disabled = false;
-                saveWelcomePtsBtn.innerText = "حفظ نقاط الترحيب 🎁";
-            }
-        });
-
         loginSubmitBtn.addEventListener('click', async () => {
+            if (isStoreSuspended) {
+                return alert("⛔ عذراً، اشتراك هذا المتجر موقوف مؤقتاً!");
+            }
+
             const enteredPin = pinInput.value.trim();
             if (!enteredPin) return alert("الرجاء إدخال الرمز السري");
 
@@ -907,6 +936,7 @@
         }
 
         async function searchCustomerById(id) {
+            if (isStoreSuspended) return;
             customerIdInput.value = id;
             const docRef = doc(db, "customers", id);
             const docSnap = await getDoc(docRef);
@@ -982,7 +1012,7 @@
         });
 
         addMultiplePointsBtn.addEventListener('click', async () => {
-            if (!currentCustomerId) return;
+            if (!currentCustomerId || isStoreSuspended) return;
             const pointsVal = parseInt(pointsToAddInput.value);
             if (isNaN(pointsVal) || pointsVal <= 0) return alert("الرجاء إدخال عدد صحيح.");
 
@@ -1010,7 +1040,7 @@
         });
 
         deductMultiplePointsBtn.addEventListener('click', async () => {
-            if (!currentCustomerId) return;
+            if (!currentCustomerId || isStoreSuspended) return;
             const pointsVal = parseInt(pointsToDeductInput.value);
             if (isNaN(pointsVal) || pointsVal <= 0) return alert("الرجاء إدخال عدد صحيح للخصم.");
 
@@ -1043,7 +1073,7 @@
         });
 
         async function handleRedeemSpecificReward(reqPoints, reqTitle) {
-            if (!currentCustomerId) return;
+            if (!currentCustomerId || isStoreSuspended) return;
             const docRef = doc(db, "customers", currentCustomerId);
             const docSnap = await getDoc(docRef);
             
@@ -1070,7 +1100,6 @@
             }
         }
 
-        // دالة تنسيق رقم الهاتف وفتح محادثة واتساب برسالة ذكية
         function sendWhatsAppToCustomer(cust) {
             if (!cust.phone) return alert("لا يوجد رقم هاتف مسجل لهذا الزبون!");
             let cleanPhone = cust.phone.replace(/\D/g, '');
