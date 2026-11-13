@@ -13,7 +13,6 @@
             color: #333;
         }
 
-        /* شريط التنقل العلوي */
         .navbar {
             background-color: #111;
             color: white;
@@ -39,7 +38,6 @@
 
         .hidden { display: none !important; }
 
-        /* صندوق تسجيل الدخول */
         .login-box {
             background: white;
             max-width: 400px;
@@ -50,7 +48,6 @@
             text-align: center;
         }
 
-        /* الشبكة العلوية: إضافة متجر + قائمة المتاجر */
         .management-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -120,6 +117,20 @@
 
         .btn-primary:hover { background: #333; }
 
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-delete:hover { background: #c82333; }
+
         .links-box {
             margin-top: 15px;
             background: #f8f9fa;
@@ -149,6 +160,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
+        }
+
+        .store-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
         }
 
         .badge-type {
@@ -159,7 +178,6 @@
             font-weight: bold;
         }
 
-        /* بطاقات الإحصائيات */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -188,7 +206,6 @@
             color: #111;
         }
 
-        /* جدول الزبائن */
         .table-container {
             background: white;
             padding: 20px;
@@ -266,7 +283,7 @@
         <!-- القسم الأول: إضافة متجر جديد + قائمة المتاجر -->
         <div class="management-grid">
             <div class="panel-card">
-                <h3>➕ إضافة متجر / عميل جديد</h3>
+                <h3>➕ إضافة / تعديل متجر</h3>
                 
                 <label>كود المتجر بالإنجليزية (بدون مسافات - يحدد بادئة البطاقة):</label>
                 <input type="text" id="storeId" placeholder="مثال: ps5 أو gamezone أو solaf" />
@@ -281,7 +298,7 @@
                 </select>
 
                 <label>اسم ملف الشعار أو رابط الصورة:</label>
-                <input type="text" id="storeLogo" placeholder="مثال: ps5.jpg أو Mandel.jpg" />
+                <input type="text" id="storeLogo" placeholder="مثال: ikgamecenter.jpg أو Mandel.jpg" />
 
                 <div class="color-row">
                     <div class="color-box">
@@ -327,10 +344,10 @@
             </div>
         </div>
 
-        <!-- القسم الثالث: جدول الزبائن مع فلتر المتاجر -->
+        <!-- القسم الثالث: جدول الزبائن مع فلتر المتاجر وزر الحذف -->
         <div class="table-container">
             <div class="table-header">
-                <h3>📋 قائمة الزبائن (الأعلى نقاطاً)</h3>
+                <h3>📋 قائمة الزبائن المسجلين</h3>
                 <select id="cafeFilter" class="filter-select">
                     <option value="all">عرض جميع المتاجر</option>
                 </select>
@@ -345,10 +362,11 @@
                         <th>تاريخ الميلاد</th>
                         <th>رقم البطاقة</th>
                         <th>النقاط الحالية</th>
+                        <th>إجراء</th>
                     </tr>
                 </thead>
                 <tbody id="customersTableBody">
-                    <tr><td colspan="7" style="text-align: center;">جاري تحميل البيانات...</td></tr>
+                    <tr><td colspan="8" style="text-align: center;">جاري تحميل البيانات...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -356,7 +374,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
@@ -393,7 +411,7 @@
             }
         });
 
-        // 2. جلب المتاجر وتعبئة الفلتر
+        // 2. جلب المتاجر وتعبئة الفلتر مع زر الحذف
         async function loadAllStores() {
             storesContainer.innerHTML = "جاري جلب المتاجر...";
             try {
@@ -403,19 +421,22 @@
 
                 const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', '');
 
+                if (snap.empty) {
+                    storesContainer.innerHTML = "لا توجد متاجر مسجلة حالياً.";
+                    return;
+                }
+
                 snap.forEach((docSnap) => {
                     const data = docSnap.data();
                     const id = docSnap.id;
                     const typeLabel = data.category === 'gaming' ? '🎮 بلايستيشن' : '☕ كافيه';
                     const prefix = id.substring(0, 3).toUpperCase();
 
-                    // إضافة للفلتر
                     const opt = document.createElement('option');
                     opt.value = id.toLowerCase();
                     opt.innerText = `${data.name || id} (${id})`;
                     cafeFilter.appendChild(opt);
 
-                    // إضافة لقائمة المتاجر مع روابط سريعة
                     const div = document.createElement('div');
                     div.className = 'store-card';
                     div.innerHTML = `
@@ -427,12 +448,53 @@
                                 <a href="${baseUrl}index.html?cafe=${id}" target="_blank" style="color:#1e7041;">رابط الكاشير</a>
                             </div>
                         </div>
-                        <span class="badge-type">${typeLabel}</span>
+                        <div class="store-actions">
+                            <span class="badge-type">${typeLabel}</span>
+                            <button class="btn-delete delete-store-btn" data-id="${id}" data-name="${data.name || id}">🗑️ حذف المتجر</button>
+                        </div>
                     `;
                     storesContainer.appendChild(div);
                 });
+
+                // ربط أزرار حذف المتاجر
+                document.querySelectorAll('.delete-store-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const storeId = e.currentTarget.getAttribute('data-id');
+                        const storeName = e.currentTarget.getAttribute('data-name');
+                        await handleDeleteStore(storeId, storeName);
+                    });
+                });
+
             } catch (e) {
                 storesContainer.innerHTML = "حدث خطأ أثناء تحميل القائمة.";
+            }
+        }
+
+        // دالة حذف متجر (مع خيار حذف زبائنه أيضاً)
+        async function handleDeleteStore(storeId, storeName) {
+            const confirmStore = confirm(`⚠️ هل أنت متأكد من حذف متجر "${storeName}" (${storeId}) نهائياً؟`);
+            if (!confirmStore) return;
+
+            const deleteCustomersToo = confirm(`هل تريد أيضاً حذف جميع الزبائن والبطاقات التابعة لمتجر "${storeName}"؟\n\nاضغط (موافق / OK) لحذف المتجر مع زبائنه.\nاضغط (إلغاء / Cancel) لحذف المتجر فقط مع إبقاء الزبائن.`);
+
+            try {
+                // حذف المتجر من مجموعة cafes
+                await deleteDoc(doc(db, "cafes", storeId));
+
+                // إذا اختار حذف زبائن المتجر أيضاً
+                if (deleteCustomersToo) {
+                    const storeCustomers = allCustomers.filter(c => (c.cafeId || '').toLowerCase() === storeId.toLowerCase());
+                    for (const cust of storeCustomers) {
+                        await deleteDoc(doc(db, "customers", cust.id));
+                    }
+                }
+
+                alert(`✅ تم حذف متجر "${storeName}" بنجاح.`);
+                await loadAllStores();
+                await loadAdminData();
+            } catch (err) {
+                console.error(err);
+                alert("❌ حدث خطأ أثناء حذف المتجر.");
             }
         }
 
@@ -449,10 +511,7 @@
                 return alert("الرجاء إدخال كود المتجر والاسم التجاري!");
             }
 
-            // استخراج الرابط الأساسي للموقع تلقائياً
             const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', '');
-
-            // إذا كتب المدير اسم الصورة فقط (بدون http)، يحولها النظام تلقائياً لرابط كامل يناسب Google Wallet
             const finalLogoUrl = logoInput.startsWith('http') 
                 ? logoInput 
                 : `${baseUrl}${logoInput.replace(/^\//, '')}`;
@@ -464,7 +523,7 @@
                 await setDoc(doc(db, "cafes", storeId), {
                     name: storeName,
                     category: category,
-                    logoUrl: finalLogoUrl, // حفظ الرابط الكامل الجاهز لمحفظة جوجل
+                    logoUrl: finalLogoUrl,
                     primaryColor: primaryColor,
                     secondaryColor: secondaryColor,
                     updatedAt: new Date()
@@ -494,10 +553,10 @@
                     allCustomers.push({ id: docSnap.id, ...docSnap.data() });
                 });
 
-                renderTableAndStats('all');
+                renderTableAndStats(cafeFilter.value || 'all');
             } catch (error) {
                 console.error("خطأ في جلب البيانات: ", error);
-                document.getElementById('customersTableBody').innerHTML = `<tr><td colspan="7" style="text-align: center; color: red;">فشل في تحميل البيانات!</td></tr>`;
+                document.getElementById('customersTableBody').innerHTML = `<tr><td colspan="8" style="text-align: center; color: red;">فشل في تحميل البيانات!</td></tr>`;
             }
         }
 
@@ -519,7 +578,7 @@
             tableBody.innerHTML = "";
 
             if (filtered.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center;">لا يوجد زبائن مسجلين في هذا المتجر بعد.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center;">لا يوجد زبائن مسجلين في هذا المتجر بعد.</td></tr>`;
                 return;
             }
 
@@ -536,9 +595,36 @@
                     <td>${cust.birthDate || '---'}</td>
                     <td><b>${cust.id}</b></td>
                     <td style="color: #1e7041; font-weight: bold; font-size: 16px;">${cust.points || 0}</td>
+                    <td>
+                        <button class="btn-delete delete-cust-btn" data-id="${cust.id}" data-name="${cust.name || cust.id}">🗑️ حذف</button>
+                    </td>
                 `;
                 tableBody.appendChild(tr);
             });
+
+            // ربط أزرار حذف الزبائن
+            document.querySelectorAll('.delete-cust-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const custId = e.currentTarget.getAttribute('data-id');
+                    const custName = e.currentTarget.getAttribute('data-name');
+                    await handleDeleteCustomer(custId, custName);
+                });
+            });
+        }
+
+        // دالة حذف زبون مفرد
+        async function handleDeleteCustomer(custId, custName) {
+            const confirmed = confirm(`⚠️ هل أنت متأكد من حذف بطاقة الزبون "${custName}" (${custId}) نهائياً؟`);
+            if (!confirmed) return;
+
+            try {
+                await deleteDoc(doc(db, "customers", custId));
+                allCustomers = allCustomers.filter(c => c.id !== custId);
+                renderTableAndStats(cafeFilter.value || 'all');
+            } catch (err) {
+                console.error(err);
+                alert("❌ حدث خطأ أثناء حذف الزبون.");
+            }
         }
 
         cafeFilter.addEventListener('change', (e) => {
