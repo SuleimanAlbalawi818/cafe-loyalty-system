@@ -44,7 +44,6 @@
         h1 { color: #111; font-size: 20px; margin-top: 0; margin-bottom: 6px; }
         p { color: #666; font-size: 13px; margin-bottom: 14px; line-height: 1.5; }
         
-        /* شريط هدية الترحيب التشويقي */
         .welcome-bonus-banner {
             background: linear-gradient(135deg, #fff3cd, #ffeeba);
             color: #856404;
@@ -121,7 +120,6 @@
             <h1 id="cafeTitle">برنامج الولاء</h1>
             <p id="cafeDesc">سجل معنا واجمع النقاط مع كل زيارة للحصول على مكافأتك المجانية ✨</p>
 
-            <!-- شريط نقاط الترحيب المجانية (يظهر تلقائياً إذا فعّله مدير المحل) -->
             <div id="welcomeBanner" class="welcome-bonus-banner hidden"></div>
 
             <div class="mode-tabs">
@@ -149,7 +147,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
@@ -208,10 +206,12 @@
                 
                 if (cafeSnap.exists()) {
                     const cafeData = cafeSnap.data();
+
                     if (cafeData.isActive === false) {
                         loadingScreen.innerHTML = "⏸️ نظام الولاء لهذا المتجر متوقف مؤقتاً للتحديث. يرجى مراجعة إدارة المتجر.";
                         return;
                     }
+
                     titleEl.innerText = `برنامج ولاء ${cafeData.name}`;
                     
                     let reqPts = cafeData.rewardPoints || 10;
@@ -222,7 +222,6 @@
                     }
                     descEl.innerText = `اجمع النقاط في كل زيارة واحصل على ${reqTitle} عند ${reqPts} نقاط!`;
 
-                    // قراءة نقاط الترحيب المجانية وعرضها للزبون الجديد
                     storeWelcomePoints = Number(cafeData.welcomePoints) || 0;
                     if (storeWelcomePoints > 0) {
                         welcomeBanner.innerText = `🎁 هدية ترحيبية: سجل الآن واحصل على (${storeWelcomePoints}) نقاط مجانية في بطاقتك فوراً!`;
@@ -253,26 +252,28 @@
 
         fetchCafeData();
 
-        async function findExistingCustomerInStore(phoneOrId) {
+        // دالة بحث فائقة السرعة تستخدم الاستعلام المفلتر بدلاً من تحميل كل الزبائن
+        async function findExistingCustomerInStoreFast(phoneOrId) {
             const cleanInput = phoneOrId.trim().toUpperCase();
             const cleanPhone = phoneOrId.replace(/\s+/g, '');
 
-            const directRef = doc(db, "customers", cleanInput);
-            const directSnap = await getDoc(directRef);
-            if (directSnap.exists()) {
-                const data = directSnap.data();
-                if ((data.cafeId || '').toLowerCase() === cafeId) {
+            // 1. إذا أدخل كود بطاقة (يحتوي على شرطة مثل MAN-12)، نفحصه مباشرة بطلب واحد فقط
+            if (cleanInput.includes('-')) {
+                const directSnap = await getDoc(doc(db, "customers", cleanInput));
+                if (directSnap.exists() && (directSnap.data().cafeId || '').toLowerCase() === cafeId) {
                     return cleanInput;
                 }
             }
 
-            const snap = await getDocs(collection(db, "customers"));
+            // 2. استعلام سريع ومباشر عن زبائن هذا المتجر فقط
+            const q = query(collection(db, "customers"), where("cafeId", "==", cafeId));
+            const snap = await getDocs(q);
             let matchedId = null;
+
             snap.forEach((docSnap) => {
                 const data = docSnap.data();
-                const custCafe = (data.cafeId || '').toLowerCase();
                 const custPhone = (data.phone || '').replace(/\s+/g, '');
-                if (custCafe === cafeId && custPhone === cleanPhone && cleanPhone !== '') {
+                if (custPhone === cleanPhone && cleanPhone !== '') {
                     matchedId = docSnap.id;
                 }
             });
@@ -280,16 +281,15 @@
             return matchedId;
         }
 
-        async function generateShortCardId(cafeCode) {
+        async function generateShortCardIdFast(cafeCode) {
             const prefix = cafeCode.substring(0, 3).toUpperCase();
-            for (let attempt = 0; attempt < 20; attempt++) {
-                const randomNum = attempt < 15 
+            for (let attempt = 0; attempt < 10; attempt++) {
+                const randomNum = attempt < 5 
                     ? Math.floor(10 + Math.random() * 90)
                     : Math.floor(100 + Math.random() * 900);
                 
                 const candidateId = `${prefix}-${randomNum}`;
-                const checkRef = doc(db, "customers", candidateId);
-                const checkSnap = await getDoc(checkRef);
+                const checkSnap = await getDoc(doc(db, "customers", candidateId));
                 
                 if (!checkSnap.exists()) {
                     return candidateId;
@@ -308,43 +308,47 @@
             }
 
             registerBtn.disabled = true;
-            registerBtn.innerText = "جاري التحقق وإنشاء البطاقة...";
+            registerBtn.innerText = "جاري إصدار البطاقة... ⚡";
 
             try {
-                const existingCardId = await findExistingCustomerInStore(phone);
+                const existingCardId = await findExistingCustomerInStoreFast(phone);
                 if (existingCardId) {
                     alert("أهلاً بك مجدداً! رقم هاتفك مسجل لدينا مسبقاً، سيتم فتح بطاقتك الحالية الآن 🎉");
                     window.location.href = `customer.html?cafe=${cafeId}&id=${existingCardId}`;
                     return;
                 }
 
-                const newCardId = await generateShortCardId(cafeId);
+                const newCardId = await generateShortCardIdFast(cafeId);
                 const initialPoints = storeWelcomePoints > 0 ? storeWelcomePoints : 0;
 
-                const newDocRef = doc(db, "customers", newCardId);
-                await setDoc(newDocRef, {
-                    name: name,
-                    phone: phone,
-                    birthDate: birthDate,
-                    points: initialPoints,
-                    cafeId: cafeId,
-                    createdAt: new Date()
-                });
-
-                // إذا حصل الزبون على نقاط ترحيبية، نسجلها في سجل الرقابة المالية للمتجر
-                if (initialPoints > 0) {
-                    await addDoc(collection(db, "logs"), {
+                // حفظ البطاقة وسجل الترحيب في نفس اللحظة (Parallel) لتوفير الوقت
+                const savePromises = [
+                    setDoc(doc(db, "customers", newCardId), {
+                        name: name,
+                        phone: phone,
+                        birthDate: birthDate,
+                        points: initialPoints,
                         cafeId: cafeId,
-                        customerId: newCardId,
-                        customerName: name,
-                        actionType: 'add',
-                        pointsChange: `+${initialPoints} (ترحيب)`,
-                        newBalance: initialPoints,
-                        performedBy: '🎁 هدية تسجيل تلقائية',
-                        timestamp: Date.now()
-                    });
+                        createdAt: new Date()
+                    })
+                ];
+
+                if (initialPoints > 0) {
+                    savePromises.push(
+                        addDoc(collection(db, "logs"), {
+                            cafeId: cafeId,
+                            customerId: newCardId,
+                            customerName: name,
+                            actionType: 'add',
+                            pointsChange: `+${initialPoints} (ترحيب)`,
+                            newBalance: initialPoints,
+                            performedBy: '🎁 هدية تسجيل تلقائية',
+                            timestamp: Date.now()
+                        })
+                    );
                 }
 
+                await Promise.all(savePromises);
                 window.location.href = `customer.html?cafe=${cafeId}&id=${newCardId}`;
                 
             } catch (error) {
@@ -362,10 +366,10 @@
             }
 
             loginCustBtn.disabled = true;
-            loginCustBtn.innerText = "جاري البحث عن بطاقتك... ⏳";
+            loginCustBtn.innerText = "جاري الفتح... ⚡";
 
             try {
-                const foundCardId = await findExistingCustomerInStore(identifier);
+                const foundCardId = await findExistingCustomerInStoreFast(identifier);
                 if (foundCardId) {
                     window.location.href = `customer.html?cafe=${cafeId}&id=${foundCardId}`;
                 } else {
