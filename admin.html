@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -94,7 +95,9 @@
             margin: auto;
         }
 
-        .hidden { display: none !important; }
+        .hidden {
+            display: none !important;
+        }
 
         /* صندوق تسجيل دخول الأدمن */
         .login-box {
@@ -113,7 +116,9 @@
         .login-box::before {
             content: "";
             position: absolute;
-            top: 0; left: 0; right: 0;
+            top: 0;
+            left: 0;
+            right: 0;
             height: 6px;
             background: linear-gradient(90deg, var(--dark-navy), var(--gold));
         }
@@ -139,9 +144,17 @@
             transition: transform 0.2s;
         }
 
-        .stat-card:hover { transform: translateY(-3px); }
-        .stat-card:nth-child(2) { border-right-color: var(--emerald); }
-        .stat-card:nth-child(3) { border-right-color: var(--gold); }
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-card:nth-child(2) {
+            border-right-color: var(--emerald);
+        }
+
+        .stat-card:nth-child(3) {
+            border-right-color: var(--gold);
+        }
 
         .stat-card h3 {
             margin: 0 0 6px 0;
@@ -177,7 +190,9 @@
         }
 
         @media (max-width: 960px) {
-            .management-grid { grid-template-columns: 1fr; }
+            .management-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .panel-card {
@@ -206,7 +221,8 @@
             margin-top: 14px;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 12px 14px;
             border: 1.5px solid #cbd5e1;
@@ -217,7 +233,8 @@
             transition: 0.2s;
         }
 
-        input:focus, select:focus {
+        input:focus,
+        select:focus {
             outline: none;
             border-color: var(--dark-navy);
             background: #fff;
@@ -229,7 +246,9 @@
             gap: 15px;
         }
 
-        .color-box { flex: 1; }
+        .color-box {
+            flex: 1;
+        }
 
         input[type="color"] {
             height: 46px;
@@ -273,7 +292,9 @@
             transition: 0.2s;
         }
 
-        .store-card:hover { box-shadow: 0 8px 20px rgba(15, 23, 42, 0.07); }
+        .store-card:hover {
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.07);
+        }
 
         .store-card.suspended-card {
             background: #fff5f5;
@@ -307,10 +328,20 @@
             display: inline-block;
             margin-right: 6px;
         }
-        .status-active { background: #dcfce7; color: #166534; }
-        .status-suspended { background: #fee2e2; color: #991b1b; }
 
-        .btn-qr, .btn-toggle-status, .btn-delete {
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-suspended {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-qr,
+        .btn-toggle-status,
+        .btn-delete {
             border: none;
             padding: 8px 12px;
             border-radius: 8px;
@@ -322,11 +353,27 @@
             width: 100%;
         }
 
-        .btn-qr { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-        .btn-suspend { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .btn-activate { background: linear-gradient(135deg, #10b981, #059669); }
-        .btn-delete { background: #fee2e2; color: #dc2626; }
-        .btn-delete:hover { background: #dc2626; color: #fff; }
+        .btn-qr {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        .btn-suspend {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .btn-activate {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            color: #fff;
+        }
 
         .links-box {
             margin-top: 18px;
@@ -370,7 +417,12 @@
             gap: 12px;
         }
 
-        .table-header h3 { margin: 0; color: var(--dark-navy); font-size: 18px; font-weight: 800; }
+        .table-header h3 {
+            margin: 0;
+            color: var(--dark-navy);
+            font-size: 18px;
+            font-weight: 800;
+        }
 
         .filter-select {
             width: auto;
@@ -383,7 +435,8 @@
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             padding: 14px 16px;
             text-align: right;
             border-bottom: 1px solid #f1f5f9;
@@ -397,7 +450,9 @@
             font-size: 12px;
         }
 
-        tr:hover td { background-color: #f8fafc; }
+        tr:hover td {
+            background-color: #f8fafc;
+        }
 
         .vip-tag {
             background: linear-gradient(135deg, #d4af37, #b48a1e);
@@ -411,7 +466,10 @@
         /* نافذة معاينة وطباعة الـ QR Code */
         .qr-modal-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: rgba(15, 23, 42, 0.72);
             backdrop-filter: blur(4px);
             display: flex;
@@ -428,7 +486,7 @@
             max-width: 430px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
         }
 
         .printable-poster {
@@ -513,15 +571,25 @@
         }
 
         @media print {
-            body * { visibility: hidden; }
-            #qrModal, #printableArea, #printableArea * { visibility: visible; }
+            body * {
+                visibility: hidden;
+            }
+
+            #qrModal,
+            #printableArea,
+            #printableArea * {
+                visibility: visible;
+            }
+
             #qrModal {
                 position: absolute;
-                left: 0; top: 0;
+                left: 0;
+                top: 0;
                 width: 100%;
                 background: #fff;
                 padding: 0;
             }
+
             .qr-modal-box {
                 box-shadow: none;
                 max-width: 100%;
@@ -530,16 +598,21 @@
                 justify-content: center;
                 padding: 20px;
             }
+
             .printable-poster {
                 width: 420px;
                 padding: 35px 25px;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
-            .modal-btn-row { display: none !important; }
+
+            .modal-btn-row {
+                display: none !important;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="navbar">
@@ -553,8 +626,10 @@
     <div id="loginSection" class="login-box">
         <div style="font-size:42px; margin-bottom:8px;">🛡️</div>
         <h3 style="margin:0 0 6px 0; font-size:22px; font-weight:800; color:#0f172a;">بوابة الإدارة العليا</h3>
-        <p style="font-size:13px; color:#64748b; margin-top:0; margin-bottom:20px;">أدخل رمز الحماية الخاص بمالك النظام للمتابعة</p>
-        <input type="password" id="adminPin" placeholder="الرمز السري (2026)" style="text-align:center; font-size:18px; letter-spacing:3px;" />
+        <p style="font-size:13px; color:#64748b; margin-top:0; margin-bottom:20px;">أدخل رمز الحماية الخاص بمالك النظام
+            للمتابعة</p>
+        <input type="password" id="adminPin" placeholder="الرمز السري (2026)"
+            style="text-align:center; font-size:18px; letter-spacing:3px;" />
         <button id="loginBtn" class="btn-primary">دخول لوحة التحكم 🚀</button>
     </div>
 
@@ -584,11 +659,11 @@
                 <div class="stat-icon">🏆</div>
             </div>
         </div>
-        
+
         <div class="management-grid">
             <div class="panel-card">
                 <h3>➕ إضافة / تحديث بيانات متجر</h3>
-                
+
                 <label>كود المتجر بالإنجليزية (بدون مسافات - يحدد بادئة البطاقة):</label>
                 <input type="text" id="storeId" placeholder="مثال: ps5 أو gamezone أو solaf" />
 
@@ -634,7 +709,8 @@
                     <div id="regLinkText" class="link-item"></div>
                     <label>2. رابط شاشة الكاشير الخاصة بالمحل:</label>
                     <div id="cashierLinkText" class="link-item"></div>
-                    <button id="openNewlyCreatedQrBtn" class="btn-qr" style="margin-top:10px; padding:11px;">🖨️ معاينة وطباعة ملصق الـ QR لهذا المتجر</button>
+                    <button id="openNewlyCreatedQrBtn" class="btn-qr" style="margin-top:10px; padding:11px;">🖨️ معاينة
+                        وطباعة ملصق الـ QR لهذا المتجر</button>
                 </div>
             </div>
 
@@ -665,7 +741,9 @@
                     </tr>
                 </thead>
                 <tbody id="customersTableBody">
-                    <tr><td colspan="8" style="text-align: center;">جاري تحميل البيانات...</td></tr>
+                    <tr>
+                        <td colspan="8" style="text-align: center;">جاري تحميل البيانات...</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -678,7 +756,7 @@
                 <img id="posterLogo" class="poster-logo" src="" alt="شعار المتجر" onerror="this.style.display='none'">
                 <h2 id="posterStoreName" class="poster-title">اسم المتجر</h2>
                 <p id="posterSubText" class="poster-subtitle">انضم لبرنامج الولاء واجمع النقاط مع كل زيارة! 🎁</p>
-                
+
                 <div id="posterQrFrame" class="qr-frame">
                     <img id="posterQrImg" src="" alt="QR Code">
                 </div>
@@ -690,9 +768,13 @@
             </div>
 
             <div class="modal-btn-row">
-                <button id="printPosterBtn" class="modal-btn" style="background:#10b981; color:#fff;">🖨️ طباعة الملصق الآن</button>
-                <a id="downloadQrLink" class="modal-btn" style="background:#2563eb; color:#fff; text-decoration:none; display:flex; align-items:center; justify-content:center;" target="_blank">⬇️ فتح صورة QR</a>
-                <button id="closeQrModalBtn" class="modal-btn" style="background:#f1f5f9; color:#334155;">إغلاق ✖</button>
+                <button id="printPosterBtn" class="modal-btn" style="background:#10b981; color:#fff;">🖨️ طباعة الملصق
+                    الآن</button>
+                <a id="downloadQrLink" class="modal-btn"
+                    style="background:#2563eb; color:#fff; text-decoration:none; display:flex; align-items:center; justify-content:center;"
+                    target="_blank">⬇️ فتح صورة QR</a>
+                <button id="closeQrModalBtn" class="modal-btn" style="background:#f1f5f9; color:#334155;">إغلاق
+                    ✖</button>
             </div>
         </div>
     </div>
@@ -702,18 +784,18 @@
         import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
-          apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
-          authDomain: "cafe-system-24331.firebaseapp.com",
-          projectId: "cafe-system-24331",
-          storageBucket: "cafe-system-24331.firebasestorage.app",
-          messagingSenderId: "845856227747",
-          appId: "1:845856227747:web:378c6d02fc89410df41a16"
+            apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
+            authDomain: "cafe-system-24331.firebaseapp.com",
+            projectId: "cafe-system-24331",
+            storageBucket: "cafe-system-24331.firebasestorage.app",
+            messagingSenderId: "845856227747",
+            appId: "1:845856227747:web:378c6d02fc89410df41a16"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const SECRET_PIN = "2026";
+
         let allCustomers = [];
         let storesMap = {};
         let lastCreatedStoreId = "";
@@ -737,15 +819,40 @@
         const closeQrModalBtn = document.getElementById('closeQrModalBtn');
         const openNewlyCreatedQrBtn = document.getElementById('openNewlyCreatedQrBtn');
 
-        loginBtn.addEventListener('click', () => {
+        loginBtn.addEventListener('click', async () => {
             const pin = document.getElementById('adminPin').value.trim();
-            if (pin === SECRET_PIN) {
-                loginSection.classList.add('hidden');
-                dashboardSection.classList.remove('hidden');
-                loadAllStores();
-                loadAdminData();
-            } else {
-                alert("❌ الرمز السري غير صحيح!");
+            if (!pin) return alert("الرجاء إدخال الرمز السري!");
+
+            loginBtn.disabled = true;
+            loginBtn.innerText = "جاري التحقق من الصلاحيات... 🔒";
+
+            try {
+                const res = await fetch('https://cafe-loyalty-system-oow4.onrender.com/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        role: 'super_admin',
+                        pin: pin
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    sessionStorage.setItem('shabten_admin_token', data.token);
+                    loginSection.classList.add('hidden');
+                    dashboardSection.classList.remove('hidden');
+                    loadAllStores();
+                    loadAdminData();
+                } else {
+                    alert(data.message || "❌ الرمز السري غير صحيح!");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("تعذر الاتصال بالسيرفر للتحقق من الرمز.");
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerText = "دخول لوحة التحكم 🚀";
             }
         });
 
@@ -818,7 +925,7 @@
                     const prefix = id.substring(0, 3).toUpperCase();
                     const isActive = data.isActive !== false;
 
-                    const statusBadge = isActive 
+                    const statusBadge = isActive
                         ? `<span class="status-pill status-active">🟢 نشط</span>`
                         : `<span class="status-pill status-suspended">🔴 موقوف</span>`;
 
@@ -937,8 +1044,8 @@
             }
 
             const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', '');
-            const finalLogoUrl = logoInput.startsWith('http') 
-                ? logoInput 
+            const finalLogoUrl = logoInput.startsWith('http')
+                ? logoInput
                 : `${baseUrl}${logoInput.replace(/^\//, '')}`;
 
             saveStoreBtn.disabled = true;
@@ -989,8 +1096,8 @@
         }
 
         function renderTableAndStats(selectedCafe) {
-            const filtered = selectedCafe === 'all' 
-                ? [...allCustomers] 
+            const filtered = selectedCafe === 'all'
+                ? [...allCustomers]
                 : allCustomers.filter(c => (c.cafeId || 'mandel').toLowerCase() === selectedCafe);
 
             filtered.sort((a, b) => (b.points || 0) - (a.points || 0));
@@ -1058,4 +1165,5 @@
         });
     </script>
 </body>
+
 </html>
