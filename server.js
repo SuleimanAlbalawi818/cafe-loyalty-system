@@ -440,6 +440,72 @@ app.post('/send-birthday-offer', async (req, res) => {
     }
 });
 
+// ============================================================================
+// مسارات المرحلة 8: حماية إعدادات المتاجر وإدارة المنصة عبر السيرفر
+// ============================================================================
+
+// 1. تحديث الرموز السرية أو المكافآت (خاص بمدير المتجر فقط)
+app.post('/api/manager/update-settings', verifyStaffToken, async (req, res) => {
+    if (req.user.role !== 'manager') {
+        return res.status(403).json({ success: false, message: '⛔ هذه الصلاحية لمدير المتجر فقط!' });
+    }
+
+    const { cashierPin, managerPin, rewardsList } = req.body;
+    const cafeRef = db.collection('cafes').doc(req.user.cafeId);
+    const updateData = {};
+
+    if (cashierPin && String(cashierPin).trim().length >= 4) {
+        updateData.cashierPin = String(cashierPin).trim();
+    }
+    if (managerPin && String(managerPin).trim().length >= 4) {
+        updateData.managerPin = String(managerPin).trim();
+    }
+    if (Array.isArray(rewardsList)) {
+        updateData.rewardsList = rewardsList;
+    }
+
+    try {
+        await cafeRef.update(updateData);
+        return res.status(200).json({ success: true, message: '✅ تم حفظ إعدادات المتجر بنجاح!' });
+    } catch (err) {
+        console.error('Update Settings Error:', err.message);
+        return res.status(500).json({ success: false, message: 'حدث خطأ أثناء حفظ الإعدادات' });
+    }
+});
+
+// 2. إدارة المتاجر (إنشاء متجر جديد / تفعيل وإيقاف / حذف) - خاص بالـ Super Admin فقط
+app.post('/api/admin/manage-store', verifyStaffToken, async (req, res) => {
+    if (req.user.role !== 'super_admin') {
+        return res.status(403).json({ success: false, message: '⛔ غير مصرح! هذه الصلاحية للإدارة العليا فقط.' });
+    }
+
+    const { action, cafeId, storeData } = req.body;
+    if (!action || !cafeId) {
+        return res.status(400).json({ success: false, message: 'البيانات ناقصة' });
+    }
+
+    const cleanId = String(cafeId).toLowerCase().trim();
+    const cafeRef = db.collection('cafes').doc(cleanId);
+
+    try {
+        if (action === 'create') {
+            await cafeRef.set(storeData, { merge: true });
+            return res.status(200).json({ success: true, message: '✅ تم إنشاء/تحديث المتجر بنجاح!' });
+        } else if (action === 'toggle_status') {
+            await cafeRef.update({ isActive: Boolean(storeData.isActive) });
+            return res.status(200).json({ success: true, message: '✅ تم تحديث حالة اشتراك المتجر!' });
+        } else if (action === 'delete') {
+            await cafeRef.delete();
+            return res.status(200).json({ success: true, message: '🗑️ تم حذف المتجر بنجاح!' });
+        } else {
+            return res.status(400).json({ success: false, message: 'إجراء غير معروف' });
+        }
+    } catch (err) {
+        console.error('Admin Store Action Error:', err.message);
+        return res.status(500).json({ success: false, message: 'حدث خطأ في السيرفر أثناء تنفيذ الإجراء' });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 سيرفر SHABTEN CARD الآمن يعمل الآن على المنفذ ${PORT}...`);
