@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,7 +52,9 @@
             align-items: center;
         }
 
-        .hidden { display: none !important; }
+        .hidden {
+            display: none !important;
+        }
 
         /* بطاقة تسجيل الدخول والكاشير */
         .container {
@@ -70,7 +73,9 @@
         .container::before {
             content: "";
             position: absolute;
-            top: 0; left: 0; right: 0;
+            top: 0;
+            left: 0;
+            right: 0;
             height: 6px;
             background: linear-gradient(90deg, var(--dark-navy), var(--accent-gold), var(--emerald));
         }
@@ -200,7 +205,9 @@
             transition: 0.2s;
         }
 
-        .logout-btn:hover { background: #fecaca; }
+        .logout-btn:hover {
+            background: #fecaca;
+        }
 
         /* مربع البحث عن البطاقة */
         .search-box {
@@ -239,7 +246,10 @@
             transition: 0.2s;
         }
 
-        .search-box button:hover { opacity: 0.92; transform: translateY(-1px); }
+        .search-box button:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
 
         /* بطاقة معلومات الزبون داخل الكاشير */
         .customer-info {
@@ -298,7 +308,8 @@
             margin-right: 6px;
         }
 
-        .add-points-box, .deduct-points-box {
+        .add-points-box,
+        .deduct-points-box {
             display: flex;
             gap: 10px;
             margin-bottom: 12px;
@@ -310,7 +321,8 @@
             border-bottom: 2px dashed var(--border-color);
         }
 
-        .add-points-box input, .deduct-points-box input {
+        .add-points-box input,
+        .deduct-points-box input {
             flex: 1;
             padding: 12px;
             border: 2px solid var(--border-color);
@@ -368,7 +380,10 @@
             transition: 0.2s;
         }
 
-        .redeem-tier-btn:hover { transform: translateY(-1px); opacity: 0.95; }
+        .redeem-tier-btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.95;
+        }
 
         /* بطاقات الإحصائيات الفاخرة في لوحة المدير */
         .stats-grid {
@@ -389,10 +404,21 @@
             transition: transform 0.2s;
         }
 
-        .stat-box:hover { transform: translateY(-3px); }
-        .stat-box:nth-child(2) { border-right-color: var(--emerald); }
-        .stat-box:nth-child(3) { border-right-color: var(--accent-gold); }
-        .stat-box:nth-child(4) { border-right-color: #8b5cf6; }
+        .stat-box:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-box:nth-child(2) {
+            border-right-color: var(--emerald);
+        }
+
+        .stat-box:nth-child(3) {
+            border-right-color: var(--accent-gold);
+        }
+
+        .stat-box:nth-child(4) {
+            border-right-color: #8b5cf6;
+        }
 
         .stat-box h4 {
             margin: 0 0 8px 0;
@@ -434,7 +460,8 @@
             color: var(--slate-600);
         }
 
-        .reward-field input, .reward-field select {
+        .reward-field input,
+        .reward-field select {
             width: 100%;
             padding: 11px 14px;
             border: 1.5px solid #cbd5e1;
@@ -445,7 +472,8 @@
             transition: 0.2s;
         }
 
-        .reward-field input:focus, .reward-field select:focus {
+        .reward-field input:focus,
+        .reward-field select:focus {
             outline: none;
             border-color: var(--dark-navy);
             box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.06);
@@ -465,7 +493,10 @@
             transition: 0.2s;
         }
 
-        .save-reward-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+        .save-reward-btn:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
 
         /* شريط حملة الواتساب الجماعية */
         .wa-queue-bar {
@@ -496,8 +527,15 @@
             transition: 0.2s;
         }
 
-        .wa-next-btn:hover { transform: translateY(-1px); }
-        .wa-next-btn:disabled { background: #94a3b8; box-shadow: none; cursor: not-allowed; }
+        .wa-next-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .wa-next-btn:disabled {
+            background: #94a3b8;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
 
         .wa-util-btn {
             background: var(--dark-navy);
@@ -526,7 +564,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
         }
 
         .delete-reward-btn {
@@ -541,7 +579,10 @@
             transition: 0.2s;
         }
 
-        .delete-reward-btn:hover { background: #dc2626; color: #fff; }
+        .delete-reward-btn:hover {
+            background: #dc2626;
+            color: #fff;
+        }
 
         /* الجداول الاحترافية */
         .table-wrapper {
@@ -558,7 +599,8 @@
             font-size: 14px;
         }
 
-        th, td {
+        th,
+        td {
             padding: 14px 16px;
             text-align: right;
             border-bottom: 1px solid #f1f5f9;
@@ -572,8 +614,13 @@
             white-space: nowrap;
         }
 
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background: #f8fafc; }
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
 
         .action-btn {
             padding: 6px 12px;
@@ -588,10 +635,22 @@
             transition: 0.2s;
         }
 
-        .action-btn:hover { transform: translateY(-1px); opacity: 0.92; }
-        .select-cust-btn { background: var(--info); }
-        .whatsapp-cust-btn { background: #16a34a; }
-        .delete-cust-btn { background: var(--danger); }
+        .action-btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.92;
+        }
+
+        .select-cust-btn {
+            background: var(--info);
+        }
+
+        .whatsapp-cust-btn {
+            background: #16a34a;
+        }
+
+        .delete-cust-btn {
+            background: var(--danger);
+        }
 
         .log-badge {
             display: inline-block;
@@ -600,9 +659,22 @@
             font-size: 11px;
             font-weight: 700;
         }
-        .log-add { background: #dcfce7; color: #166534; }
-        .log-deduct { background: #fef3c7; color: #92400e; }
-        .log-redeem { background: #fee2e2; color: #991b1b; }
+
+        .log-add {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .log-deduct {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .log-redeem {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
         .actor-tag {
             font-size: 12px;
             padding: 4px 10px;
@@ -613,9 +685,10 @@
         }
     </style>
 </head>
+
 <body>
     <div class="main-wrapper">
-        
+
         <!-- 0. شاشة إيقاف الاشتراك -->
         <div id="suspendedScreen" class="container hidden">
             <div style="font-size:52px; margin-bottom:10px;">⛔</div>
@@ -630,7 +703,8 @@
         <div id="authContainer" class="container">
             <span id="loginStoreBadge" class="store-badge">جاري التحميل...</span>
             <h1>بوابة الدخول للمتجر</h1>
-            <p style="font-size:13px; color:#64748b; margin:4px 0 18px 0;">اختر صلاحية الدخول وأدخل الرمز السري للمتابعة</p>
+            <p style="font-size:13px; color:#64748b; margin:4px 0 18px 0;">اختر صلاحية الدخول وأدخل الرمز السري للمتابعة
+            </p>
 
             <div class="role-tabs">
                 <div id="tabCashier" class="role-tab active">👨‍💼 موظف الكاشير</div>
@@ -650,8 +724,9 @@
 
             <span id="storeBadge" class="store-badge">المتجر</span>
             <h1 id="cashierTitle">نقطة كاشير الولاء</h1>
-            <p style="font-size:12px; color:#64748b; margin-top:0; margin-bottom:16px;">ابحث برقم بطاقة العميل لإضافة أو استبدال النقاط فوراً</p>
-            
+            <p style="font-size:12px; color:#64748b; margin-top:0; margin-bottom:16px;">ابحث برقم بطاقة العميل لإضافة أو
+                استبدال النقاط فوراً</p>
+
             <div class="search-box">
                 <input type="text" id="customerId" placeholder="أدخل رقم البطاقة" />
                 <button id="searchBtn">بحث 🔍</button>
@@ -659,7 +734,7 @@
 
             <div id="resultArea" class="hidden">
                 <h3 id="statusMessage" style="margin-top:0; font-size:15px;"></h3>
-                
+
                 <div id="customerDetails" class="customer-info hidden">
                     <div>👤 الاسم: <strong id="custNameDisplay">-</strong></div>
                     <div>📱 رقم الهاتف: <strong id="custPhoneDisplay" dir="ltr">-</strong></div>
@@ -675,7 +750,7 @@
                     <div class="points-display">
                         رصيد النقاط الحالي: <span id="currentPoints">0</span>
                     </div>
-                    
+
                     <div class="add-points-box">
                         <input type="number" id="pointsToAdd" placeholder="عدد" min="1" value="1" />
                         <button id="addMultiplePointsBtn">➕ إضافة نقاط</button>
@@ -686,7 +761,8 @@
                         <button id="deductMultiplePointsBtn">➖ خصم نقاط</button>
                     </div>
 
-                    <div style="text-align:right; font-size:13px; font-weight:800; margin-bottom:8px; color:#1e293b;">🎁 استبدال المكافآت المتاحة:</div>
+                    <div style="text-align:right; font-size:13px; font-weight:800; margin-bottom:8px; color:#1e293b;">🎁
+                        استبدال المكافآت المتاحة:</div>
                     <div id="redeemButtonsContainer" class="redeem-buttons-container"></div>
                 </div>
             </div>
@@ -694,10 +770,13 @@
 
         <!-- 3. لوحة الإدارة الكاملة الخاصة بمدير المحل فقط -->
         <div id="managerDashboard" class="manager-container hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:14px; margin-bottom:22px; flex-wrap:wrap; gap:10px;">
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:14px; margin-bottom:22px; flex-wrap:wrap; gap:10px;">
                 <div>
-                    <h2 style="margin:0; font-size:22px; color:#0f172a; font-weight:800;">👑 مركز إدارة وتقارير المتجر</h2>
-                    <span style="font-size:13px; color:#64748b;">تحكم كامل بالعروض، الجوائز، الرقابة المالية، والتسويق عبر واتساب</span>
+                    <h2 style="margin:0; font-size:22px; color:#0f172a; font-weight:800;">👑 مركز إدارة وتقارير المتجر
+                    </h2>
+                    <span style="font-size:13px; color:#64748b;">تحكم كامل بالعروض، الجوائز، الرقابة المالية، والتسويق
+                        عبر واتساب</span>
                 </div>
             </div>
 
@@ -720,30 +799,40 @@
                     <div class="num" id="mgrBirthdaysToday">0</div>
                 </div>
             </div>
-            
+
             <!-- نشر العروض التسويقية اللحظية -->
-            <div class="reward-settings-box" style="border-right: 5px solid #d4af37; background: linear-gradient(135deg, #fffbeb, #ffffff);">
-                <h3 style="margin:0; font-size:16px; color:#0f172a; font-weight:800;">📢 نشر عرض تسويقي مباشر على بطاقات جميع الزبائن</h3>
-                <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">يظهر هذا الإعلان فوراً كشريط ذهبي بارز داخل بطاقة كل زبون يفتح بطاقته الرقمية.</p>
+            <div class="reward-settings-box"
+                style="border-right: 5px solid #d4af37; background: linear-gradient(135deg, #fffbeb, #ffffff);">
+                <h3 style="margin:0; font-size:16px; color:#0f172a; font-weight:800;">📢 نشر عرض تسويقي مباشر على بطاقات
+                    جميع الزبائن</h3>
+                <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">يظهر هذا الإعلان فوراً كشريط ذهبي بارز داخل
+                    بطاقة كل زبون يفتح بطاقته الرقمية.</p>
                 <div class="reward-settings-grid">
                     <div class="reward-field" style="grid-column: span 2;">
                         <label>نص العرض أو الإعلان الترويجي:</label>
-                        <input type="text" id="promoMessageInput" placeholder="مثال: 🔥 عرض اليوم فقط: نقطتان بدل نقطة على كل طلب!" />
+                        <input type="text" id="promoMessageInput"
+                            placeholder="مثال: 🔥 عرض اليوم فقط: نقطتان بدل نقطة على كل طلب!" />
                     </div>
                     <div class="reward-field">
-                        <button id="publishPromoBtn" class="save-reward-btn" style="background:linear-gradient(135deg, #d4af37, #b48a1e); color:#111;">📢 نشر العرض الآن</button>
+                        <button id="publishPromoBtn" class="save-reward-btn"
+                            style="background:linear-gradient(135deg, #d4af37, #b48a1e); color:#111;">📢 نشر العرض
+                            الآن</button>
                     </div>
                     <div class="reward-field">
-                        <button id="clearPromoBtn" class="save-reward-btn" style="background:#ef4444;">🗑️ إيقاف / مسح العرض</button>
+                        <button id="clearPromoBtn" class="save-reward-btn" style="background:#ef4444;">🗑️ إيقاف / مسح
+                            العرض</button>
                     </div>
                 </div>
             </div>
 
             <!-- قسم حملات الواتساب الجماعية وطابور الإرسال السريع -->
-            <div class="reward-settings-box" style="border-right: 5px solid #25D366; background: linear-gradient(135deg, #f0fdf4, #ffffff);">
-                <h3 style="margin:0; font-size:16px; color:#0f172a; font-weight:800;">💬 حملات الواتساب الذكية وطابور الإرسال السريع</h3>
-                <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">اختر الفئة المستهدفة وأرسل لهم بالتتابع بضغطة زر (يدرج النظام اسم الزبون ونقاطه تلقائياً)، أو انسخ جميع الأرقام دفعة واحدة.</p>
-                
+            <div class="reward-settings-box"
+                style="border-right: 5px solid #25D366; background: linear-gradient(135deg, #f0fdf4, #ffffff);">
+                <h3 style="margin:0; font-size:16px; color:#0f172a; font-weight:800;">💬 حملات الواتساب الذكية وطابور
+                    الإرسال السريع</h3>
+                <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">اختر الفئة المستهدفة وأرسل لهم بالتتابع
+                    بضغطة زر (يدرج النظام اسم الزبون ونقاطه تلقائياً)، أو انسخ جميع الأرقام دفعة واحدة.</p>
+
                 <div class="reward-settings-grid">
                     <div class="reward-field">
                         <label>🎯 الفئة المستهدفة بالحملة:</label>
@@ -755,7 +844,8 @@
                     </div>
                     <div class="reward-field" style="grid-column: span 2;">
                         <label>✍️ نص رسالة الحملة (اتركه فارغاً لاستخدام الرسالة الذكية التلقائية):</label>
-                        <input type="text" id="waCustomMessage" placeholder="مثال: 🔥 خصم 20% اليوم فقط لحاملي بطاقة الولاء! ننتظركم" />
+                        <input type="text" id="waCustomMessage"
+                            placeholder="مثال: 🔥 خصم 20% اليوم فقط لحاملي بطاقة الولاء! ننتظركم" />
                     </div>
                 </div>
 
@@ -765,15 +855,18 @@
                     </div>
                     <div style="display:flex; gap:8px; flex-wrap:wrap; flex:1; justify-content:flex-end;">
                         <button id="waSendNextBtn" class="wa-next-btn">📲 إرسال للزبون التالي</button>
-                        <button id="waResetQueueBtn" class="wa-util-btn" style="background:#475569;">🔄 البدء من الأول</button>
-                        <button id="waCopyNumbersBtn" class="wa-util-btn" style="background:#2563eb;">📋 نسخ جميع الأرقام</button>
+                        <button id="waResetQueueBtn" class="wa-util-btn" style="background:#475569;">🔄 البدء من
+                            الأول</button>
+                        <button id="waCopyNumbersBtn" class="wa-util-btn" style="background:#2563eb;">📋 نسخ جميع
+                            الأرقام</button>
                     </div>
                 </div>
             </div>
 
             <!-- إدارة الجوائز المتعددة -->
             <div class="reward-settings-box" style="border-right: 5px solid #0f172a;">
-                <h3 style="margin:0; font-size:16px; color:#0f172a; font-weight:800;">🎁 مستويات الجوائز والمكافآت (Multiple Tiers)</h3>
+                <h3 style="margin:0; font-size:16px; color:#0f172a; font-weight:800;">🎁 مستويات الجوائز والمكافآت
+                    (Multiple Tiers)</h3>
                 <div class="reward-settings-grid">
                     <div class="reward-field">
                         <label>النقاط المطلوبة:</label>
@@ -781,34 +874,41 @@
                     </div>
                     <div class="reward-field" style="grid-column: span 2;">
                         <label>اسم/وصف المكافأة:</label>
-                        <input type="text" id="newRewardTitleInput" placeholder="مثال: ساعة لعب مجانية 🎮 أو مشروب مجاني ☕" />
+                        <input type="text" id="newRewardTitleInput"
+                            placeholder="مثال: ساعة لعب مجانية 🎮 أو مشروب مجاني ☕" />
                     </div>
                     <div class="reward-field">
-                        <button id="addRewardTierBtn" class="save-reward-btn" style="background:#10b981;">➕ إضافة الجائزة</button>
+                        <button id="addRewardTierBtn" class="save-reward-btn" style="background:#10b981;">➕ إضافة
+                            الجائزة</button>
                     </div>
                 </div>
                 <div id="managerRewardsList" class="rewards-list-manager"></div>
             </div>
 
             <!-- صف مزدوج: نقاط الترحيب + الرموز السرية -->
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:22px;">
+            <div
+                style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:22px;">
                 <div class="reward-settings-box" style="margin-bottom:0; border-right: 5px solid #10b981;">
-                    <h3 style="margin:0; font-size:15px; color:#0f172a; font-weight:800;">🎉 نقاط الترحيب للزبون الجديد</h3>
-                    <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">تُمنح تلقائياً عند التسجيل لأول مرة (ضع 0 لإلغائها).</p>
+                    <h3 style="margin:0; font-size:15px; color:#0f172a; font-weight:800;">🎉 نقاط الترحيب للزبون الجديد
+                    </h3>
+                    <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">تُمنح تلقائياً عند التسجيل لأول مرة (ضع
+                        0 لإلغائها).</p>
                     <div class="reward-settings-grid">
                         <div class="reward-field">
                             <label>عدد نقاط الهدية:</label>
                             <input type="number" id="welcomePointsInput" min="0" value="0" placeholder="0" />
                         </div>
                         <div class="reward-field">
-                            <button id="saveWelcomePtsBtn" class="save-reward-btn" style="background:#059669;">حفظ الهدية 🎁</button>
+                            <button id="saveWelcomePtsBtn" class="save-reward-btn" style="background:#059669;">حفظ
+                                الهدية 🎁</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="reward-settings-box" style="margin-bottom:0; border-right: 5px solid #6366f1;">
                     <h3 style="margin:0; font-size:15px; color:#0f172a; font-weight:800;">🔐 الرموز السرية للدخول</h3>
-                    <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">تخصيص رمز الكاشير ورمز المدير الخاص بالمتجر.</p>
+                    <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">تخصيص رمز الكاشير ورمز المدير الخاص
+                        بالمتجر.</p>
                     <div class="reward-settings-grid">
                         <div class="reward-field">
                             <label>رمز الكاشير:</label>
@@ -826,9 +926,11 @@
             </div>
 
             <!-- جدول زبائن المتجر -->
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
                 <h3 style="margin:0; font-size:17px; font-weight:800; color:#0f172a;">📋 قاعدة بيانات زبائن المتجر</h3>
-                <input type="text" id="mgrSearchInput" placeholder="🔍 ابحث بالاسم أو الهاتف أو رقم البطاقة..." style="padding:10px 14px; border:1.5px solid #cbd5e1; border-radius:10px; width:280px; font-size:13px;" />
+                <input type="text" id="mgrSearchInput" placeholder="🔍 ابحث بالاسم أو الهاتف أو رقم البطاقة..."
+                    style="padding:10px 14px; border:1.5px solid #cbd5e1; border-radius:10px; width:280px; font-size:13px;" />
             </div>
 
             <div class="table-wrapper">
@@ -845,14 +947,17 @@
                         </tr>
                     </thead>
                     <tbody id="mgrTableBody">
-                        <tr><td colspan="7" style="text-align:center;">جاري تحميل بيانات الزبائن...</td></tr>
+                        <tr>
+                            <td colspan="7" style="text-align:center;">جاري تحميل بيانات الزبائن...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
 
             <!-- سجل الرقابة المالية وآخر الحركات -->
             <div style="border-top:2px solid #f1f5f9; padding-top:22px;">
-                <h3 style="margin:0 0 14px 0; font-size:17px; font-weight:800; color:#0f172a;">🕵️‍♂️ سجل الرقابة المالية وحركات الكاشير (آخر 30 حركة)</h3>
+                <h3 style="margin:0 0 14px 0; font-size:17px; font-weight:800; color:#0f172a;">🕵️‍♂️ سجل الرقابة
+                    المالية وحركات الكاشير (آخر 30 حركة)</h3>
                 <div class="table-wrapper" style="margin-bottom:0;">
                     <table>
                         <thead>
@@ -866,7 +971,9 @@
                             </tr>
                         </thead>
                         <tbody id="auditLogTableBody">
-                            <tr><td colspan="6" style="text-align:center;">جاري تحميل سجل الحركات...</td></tr>
+                            <tr>
+                                <td colspan="6" style="text-align:center;">جاري تحميل سجل الحركات...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -881,12 +988,12 @@
         import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, deleteDoc, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
-          apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
-          authDomain: "cafe-system-24331.firebaseapp.com",
-          projectId: "cafe-system-24331",
-          storageBucket: "cafe-system-24331.firebasestorage.app",
-          messagingSenderId: "845856227747",
-          appId: "1:845856227747:web:378c6d02fc89410df41a16"
+            apiKey: "AIzaSyA6BpW0hlP6EUycPPkrk6pR-3Z0FRawWwc",
+            authDomain: "cafe-system-24331.firebaseapp.com",
+            projectId: "cafe-system-24331",
+            storageBucket: "cafe-system-24331.firebasestorage.app",
+            messagingSenderId: "845856227747",
+            appId: "1:845856227747:web:378c6d02fc89410df41a16"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -917,7 +1024,7 @@
         const actionsArea = document.getElementById('actionsArea');
         const statusMessage = document.getElementById('statusMessage');
         const currentPointsEl = document.getElementById('currentPoints');
-        
+
         const customerDetails = document.getElementById('customerDetails');
         const custNameDisplay = document.getElementById('custNameDisplay');
         const custPhoneDisplay = document.getElementById('custPhoneDisplay');
@@ -1167,7 +1274,7 @@
                         loginStoreBadge.style.backgroundColor = data.primaryColor;
                         searchBtn.style.backgroundColor = data.primaryColor;
                     }
-                    
+
                     if (Array.isArray(data.rewards) && data.rewards.length > 0) {
                         storeRewardsList = data.rewards;
                     } else {
@@ -1304,8 +1411,8 @@
                 await updateDoc(doc(db, "cafes", currentCafeId), {
                     welcomePoints: welcomePts
                 });
-                alert(welcomePts > 0 
-                    ? `🎉 تم التفعيل! سيحصل كل زبون جديد على (${welcomePts}) نقاط مجانية فور تسجيله.` 
+                alert(welcomePts > 0
+                    ? `🎉 تم التفعيل! سيحصل كل زبون جديد على (${welcomePts}) نقاط مجانية فور تسجيله.`
                     : `✅ تم إيقاف نقاط الترحيب التلقائية (يبدأ الزبون الجديد من 0).`);
             } catch (err) {
                 console.error(err);
@@ -1351,34 +1458,55 @@
             const enteredPin = pinInput.value.trim();
             if (!enteredPin) return alert("الرجاء إدخال الرمز السري");
 
-            if (selectedRole === 'cashier') {
-                if (enteredPin === storeCashierPin || enteredPin === storeManagerPin) {
-                    activeRole = 'cashier';
+            loginSubmitBtn.disabled = true;
+            loginSubmitBtn.innerText = "جاري التحقق... 🔒";
+
+            try {
+                const response = await fetch('https://cafe-loyalty-system-oow4.onrender.com/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        cafeId: currentCafeId,
+                        role: selectedRole,
+                        pin: enteredPin
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // حفظ التوكن الأمني في الجلسة
+                    sessionStorage.setItem('shabten_token', data.token);
+                    activeRole = data.role;
+
                     authContainer.classList.add('hidden');
                     cashierContainer.classList.remove('hidden');
-                    managerDashboard.classList.add('hidden');
-                    roleIndicator.innerText = "👨‍💼 وضع الموظف (الكاشير)";
-                    roleIndicator.style.color = "#059669";
+
+                    if (activeRole === 'manager') {
+                        managerDashboard.classList.remove('hidden');
+                        roleIndicator.innerText = "👑 وضع مدير المتجر (صلاحيات كاملة)";
+                        roleIndicator.style.color = "#b48a1e";
+                        await loadManagerDashboardData();
+                        await loadStoreAuditLogs();
+                    } else {
+                        managerDashboard.classList.add('hidden');
+                        roleIndicator.innerText = "👨‍💼 وضع الموظف (الكاشير)";
+                        roleIndicator.style.color = "#059669";
+                    }
                 } else {
-                    alert("❌ الرمز السري للموظف غير صحيح!");
+                    alert(data.message || "❌ الرمز السري غير صحيح!");
                 }
-            } else if (selectedRole === 'manager') {
-                if (enteredPin === storeManagerPin) {
-                    activeRole = 'manager';
-                    authContainer.classList.add('hidden');
-                    cashierContainer.classList.remove('hidden');
-                    managerDashboard.classList.remove('hidden');
-                    roleIndicator.innerText = "👑 وضع مدير المتجر (صلاحيات كاملة)";
-                    roleIndicator.style.color = "#b48a1e";
-                    await loadManagerDashboardData();
-                    await loadStoreAuditLogs();
-                } else {
-                    alert("❌ الرمز السري لمدير المحل غير صحيح!");
-                }
+            } catch (err) {
+                console.error(err);
+                alert("تعذر الاتصال بالخادم للتحقق من الرمز.");
+            } finally {
+                loginSubmitBtn.disabled = false;
+                loginSubmitBtn.innerText = "تسجيل الدخول الآمن 🔒";
             }
         });
 
         logoutBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('shabten_token');
             activeRole = null;
             pinInput.value = "";
             resultArea.classList.add('hidden');
@@ -1503,92 +1631,89 @@
             }
         });
 
+        // دالة موحدة لتنفيذ حركات النقاط والمكافآت بأمان عبر السيرفر
+        async function executeServerPointsTransaction(actionType, amount, rewardTitle = "") {
+            if (!currentCustomerId || isStoreSuspended) return false;
+
+            const token = sessionStorage.getItem('shabten_token');
+            if (!token) {
+                alert("⚠️ انتهت جلسة الدخول، يرجى تسجيل الدخول مجدداً.");
+                logoutBtn.click();
+                return false;
+            }
+
+            try {
+                const res = await fetch('https://cafe-loyalty-system-oow4.onrender.com/api/points-transaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        customerId: currentCustomerId,
+                        actionType: actionType,
+                        amount: amount,
+                        rewardTitle: rewardTitle
+                    })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok || !data.success) {
+                    if (res.status === 401) {
+                        alert("⚠️ انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً.");
+                        logoutBtn.click();
+                        return false;
+                    }
+                    alert(data.message || "❌ تعذر إتمام العملية.");
+                    return false;
+                }
+
+                currentPointsEl.innerText = data.newBalance;
+                if (activeRole === 'manager') {
+                    await loadManagerDashboardData();
+                    await loadStoreAuditLogs();
+                }
+                return true;
+            } catch (err) {
+                console.error(err);
+                alert("تعذر الاتصال بالسيرفر لتنفيذ العملية.");
+                return false;
+            }
+        }
+
         addMultiplePointsBtn.addEventListener('click', async () => {
-            if (!currentCustomerId || isStoreSuspended) return;
             const pointsVal = parseInt(pointsToAddInput.value);
             if (isNaN(pointsVal) || pointsVal <= 0) return alert("الرجاء إدخال عدد صحيح.");
 
-            const docRef = doc(db, "customers", currentCustomerId);
-            const docSnap = await getDoc(docRef);
-            
-            if (docSnap.exists()) {
-                try {
-                    addMultiplePointsBtn.disabled = true;
-                    const newPoints = (docSnap.data().points || 0) + pointsVal;
-                    await updateDoc(docRef, { points: newPoints });
-                    await recordAuditLog('add', `+${pointsVal}`, newPoints);
-                    await syncPointsWithServer(currentCustomerId, newPoints);
-
-                    currentPointsEl.innerText = newPoints;
-                    alert(`تمت إضافة ${pointsVal} نقطة بنجاح!`);
-                    pointsToAddInput.value = "1";
-                    if (activeRole === 'manager') loadManagerDashboardData();
-                } catch (error) {
-                    alert("حدث خطأ أثناء الإضافة.");
-                } finally {
-                    addMultiplePointsBtn.disabled = false;
-                }
+            addMultiplePointsBtn.disabled = true;
+            const ok = await executeServerPointsTransaction('add', pointsVal);
+            if (ok) {
+                alert(`✅ تمت إضافة ${pointsVal} نقطة بنجاح!`);
+                pointsToAddInput.value = "1";
             }
+            addMultiplePointsBtn.disabled = false;
         });
 
         deductMultiplePointsBtn.addEventListener('click', async () => {
-            if (!currentCustomerId || isStoreSuspended) return;
             const pointsVal = parseInt(pointsToDeductInput.value);
             if (isNaN(pointsVal) || pointsVal <= 0) return alert("الرجاء إدخال عدد صحيح للخصم.");
 
-            const docRef = doc(db, "customers", currentCustomerId);
-            const docSnap = await getDoc(docRef);
-            
-            if (docSnap.exists()) {
-                const currentPoints = docSnap.data().points || 0;
-                if (currentPoints < pointsVal) {
-                    return alert(`لا يمكن الخصم! رصيد الزبون (${currentPoints}) أقل من (${pointsVal}).`);
-                }
-
-                try {
-                    deductMultiplePointsBtn.disabled = true;
-                    const newPoints = currentPoints - pointsVal;
-                    await updateDoc(docRef, { points: newPoints });
-                    await recordAuditLog('deduct', `-${pointsVal}`, newPoints);
-                    await syncPointsWithServer(currentCustomerId, newPoints);
-
-                    currentPointsEl.innerText = newPoints;
-                    alert(`تم خصم ${pointsVal} نقطة بنجاح!`);
-                    pointsToDeductInput.value = "1";
-                    if (activeRole === 'manager') loadManagerDashboardData();
-                } catch (error) {
-                    alert("حدث خطأ أثناء الخصم.");
-                } finally {
-                    deductMultiplePointsBtn.disabled = false;
-                }
+            deductMultiplePointsBtn.disabled = true;
+            const ok = await executeServerPointsTransaction('deduct', pointsVal);
+            if (ok) {
+                alert(`✅ تم خصم ${pointsVal} نقطة بنجاح!`);
+                pointsToDeductInput.value = "1";
             }
+            deductMultiplePointsBtn.disabled = false;
         });
 
         async function handleRedeemSpecificReward(reqPoints, reqTitle) {
-            if (!currentCustomerId || isStoreSuspended) return;
-            const docRef = doc(db, "customers", currentCustomerId);
-            const docSnap = await getDoc(docRef);
-            
-            if (docSnap.exists()) {
-                const currentPoints = docSnap.data().points || 0;
-                if (currentPoints < reqPoints) {
-                    return alert(`رصيد الزبون (${currentPoints}) غير كافٍ. يحتاج إلى (${reqPoints}) نقطة لاستبدال (${reqTitle}).`);
-                }
+            if (!confirm(`تأكيد استبدال (${reqTitle}) وخصم (${reqPoints}) نقطة من رصيد الزبون؟`)) return;
 
-                if (!confirm(`تأكيد استبدال (${reqTitle}) وخصم (${reqPoints}) نقطة من رصيد الزبون؟`)) return;
-
-                try {
-                    const newPoints = currentPoints - reqPoints;
-                    await updateDoc(docRef, { points: newPoints });
-                    await recordAuditLog('redeem', `-${reqPoints} (${reqTitle})`, newPoints);
-                    await syncPointsWithServer(currentCustomerId, newPoints);
-
-                    currentPointsEl.innerText = newPoints;
-                    alert(`✅ تمت عملية الاستبدال بنجاح! خصم (${reqPoints}) نقطة مقابل (${reqTitle}) 🎁`);
-                    if (activeRole === 'manager') loadManagerDashboardData();
-                } catch (error) {
-                    alert("فشل عملية الاستبدال.");
-                }
+            const ok = await executeServerPointsTransaction('redeem', reqPoints, reqTitle);
+            if (ok) {
+                alert(`🎁 تمت عملية الاستبدال بنجاح! خصم (${reqPoints}) نقطة مقابل (${reqTitle})`);
             }
         }
 
@@ -1718,7 +1843,7 @@
                 }
 
                 recentLogs.forEach(log => {
-                    const dateStr = log.timestamp 
+                    const dateStr = log.timestamp
                         ? new Date(log.timestamp).toLocaleString('ar-JO', { dateStyle: 'short', timeStyle: 'short' })
                         : '---';
 
@@ -1750,7 +1875,7 @@
 
         document.getElementById('mgrSearchInput').addEventListener('input', (e) => {
             const q = e.target.value.trim().toLowerCase();
-            const filtered = storeCustomersList.filter(c => 
+            const filtered = storeCustomersList.filter(c =>
                 (c.name && c.name.toLowerCase().includes(q)) ||
                 (c.phone && c.phone.includes(q)) ||
                 (c.id && c.id.toLowerCase().includes(q))
@@ -1759,4 +1884,5 @@
         });
     </script>
 </body>
+
 </html>
