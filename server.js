@@ -2,20 +2,21 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { GoogleAuth } = require('google-auth-library');
-const admin = require('firebase-admin');
+const { initializeApp, cert, getApps } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
 
 const credentials = process.env.GOOGLE_CREDENTIALS 
     ? JSON.parse(process.env.GOOGLE_CREDENTIALS) 
     : require('./key.json');
 
-// تهيئة Firebase Admin SDK للتحكم الآمن بقاعدة البيانات من الخادم
-if (!admin.apps.length) {
-    admin.initializeApp({
-        credential: admin.credential.cert(credentials),
+// تهيئة Firebase Admin SDK بالطريقة الحديثة المتوافقة مع Node v24
+if (getApps().length === 0) {
+    initializeApp({
+        credential: cert(credentials),
         projectId: credentials.project_id || 'cafe-system-24331'
     });
 }
-const db = admin.firestore();
+const db = getFirestore();
 
 const app = express();
 app.use(cors());
