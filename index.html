@@ -3,319 +3,613 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة المتجر - SHABTEN CARD</title>
+    <title>بوابة المتجر الذكية - SHABTEN CARD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-main: #f0f4f8;
+            --surface: #ffffff;
+            --dark-navy: #0f172a;
+            --slate-800: #1e293b;
+            --slate-600: #475569;
+            --slate-400: #94a3b8;
+            --border-color: #e2e8f0;
+            --accent-gold: #d4af37;
+            --emerald: #10b981;
+            --emerald-dark: #059669;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #2563eb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --shadow-soft: 0 10px 30px -5px rgba(15, 23, 42, 0.07), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+            --shadow-glow: 0 15px 35px -5px rgba(15, 23, 42, 0.14);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+            background: radial-gradient(circle at top right, #e2e8f0 0%, #f8fafc 50%, #eef2f6 100%);
             margin: 0;
-            padding: 20px;
+            padding: 25px 15px;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            color: #333;
+            color: var(--slate-800);
         }
+
         .main-wrapper {
             width: 100%;
-            max-width: 980px;
+            max-width: 1120px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 14px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-            width: 100%;
-            max-width: 430px;
-            text-align: center;
-            box-sizing: border-box;
-        }
-        .manager-container {
-            background: white;
-            padding: 25px;
-            border-radius: 14px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-            width: 100%;
-            margin-top: 25px;
-            box-sizing: border-box;
-        }
-        .store-badge {
-            display: inline-block;
-            background: #111;
-            color: white;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-        h1 { margin-top: 0; font-size: 22px; color: #111; }
+
         .hidden { display: none !important; }
 
+        /* بطاقة تسجيل الدخول والكاشير */
+        .container {
+            background: var(--surface);
+            padding: 34px 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-glow);
+            width: 100%;
+            max-width: 470px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--dark-navy), var(--accent-gold), var(--emerald));
+        }
+
+        .manager-container {
+            background: var(--surface);
+            padding: 32px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            width: 100%;
+            margin-top: 28px;
+            border: 1px solid var(--border-color);
+        }
+
+        .store-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--dark-navy);
+            color: #fff;
+            padding: 6px 18px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+            letter-spacing: 0.4px;
+        }
+
+        h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--dark-navy);
+        }
+
+        /* تبويبات اختيار الدور */
         .role-tabs {
             display: flex;
             gap: 10px;
-            margin: 15px 0;
+            margin: 22px 0;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: 14px;
         }
+
         .role-tab {
             flex: 1;
-            padding: 12px;
-            border: 2px solid #ddd;
+            padding: 12px 10px;
             border-radius: 10px;
-            background: #f9f9f9;
+            background: transparent;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 14px;
-            transition: 0.2s;
+            color: var(--slate-600);
+            transition: all 0.25s ease;
         }
+
         .role-tab.active {
-            border-color: #111;
-            background: #111;
+            background: var(--dark-navy);
             color: #fff;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
         }
+
         .pin-input {
             width: 100%;
-            padding: 13px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 17px;
+            font-weight: 700;
             text-align: center;
-            box-sizing: border-box;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
+            background: #f8fafc;
+            transition: all 0.2s;
+            letter-spacing: 2px;
         }
+
+        .pin-input:focus {
+            outline: none;
+            border-color: var(--dark-navy);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.08);
+        }
+
         .login-btn {
             width: 100%;
             padding: 14px;
-            background: #1e7041;
+            background: linear-gradient(135deg, var(--emerald), var(--emerald-dark));
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 800;
             cursor: pointer;
+            box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.45);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -4px rgba(16, 185, 129, 0.55);
+        }
+
+        /* الشريط العلوي للكاشير */
         .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
+            margin-bottom: 18px;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
             font-size: 13px;
         }
+
         .logout-btn {
-            background: #eee;
-            color: #333;
+            background: #fee2e2;
+            color: #b91c1c;
             border: none;
-            padding: 5px 10px;
-            border-radius: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 12px;
+            transition: 0.2s;
         }
 
-        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-box input { flex: 1; padding: 11px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; text-transform: uppercase; }
-        .search-box button { padding: 11px 20px; background: #1e7041; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        
-        .customer-info { font-size: 15px; color: #444; margin-bottom: 10px; background: #f9f9f9; padding: 12px; border-radius: 8px; border: 1px solid #eee; }
-        .birthday-banner { background-color: #fff3cd; color: #856404; border: 2px solid #ffeeba; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; font-size: 14px; }
-        .birthday-btn { background-color: #6f42c1; color: white; padding: 10px; border: none; border-radius: 5px; width: 100%; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 8px; }
+        .logout-btn:hover { background: #fecaca; }
 
-        .points-display { font-size: 20px; font-weight: bold; margin: 15px 0; background: #eee; padding: 15px; border-radius: 8px; }
-        
-        .add-points-box { display: flex; gap: 10px; margin-bottom: 10px; }
-        .add-points-box input, .deduct-points-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; text-align: center; }
-        .add-points-box button { flex: 2; padding: 12px; background: #000; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold; }
-        
-        .deduct-points-box { display: flex; gap: 10px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #eee; }
-        .deduct-points-box button { flex: 2; padding: 12px; background: #fd7e14; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold; }
-        
+        /* مربع البحث عن البطاقة */
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 13px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: #f8fafc;
+            transition: 0.2s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--dark-navy);
+            background: #fff;
+        }
+
+        .search-box button {
+            padding: 13px 24px;
+            background: var(--dark-navy);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+        .search-box button:hover { opacity: 0.92; transform: translateY(-1px); }
+
+        /* بطاقة معلومات الزبون داخل الكاشير */
+        .customer-info {
+            font-size: 14px;
+            color: var(--slate-800);
+            margin-bottom: 14px;
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            text-align: right;
+            line-height: 1.8;
+        }
+
+        .birthday-banner {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            border: 1px solid #f59e0b;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .birthday-btn {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        /* شاشة عرض الرصيد في الكاشير */
+        .points-display {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 16px 0;
+            background: linear-gradient(135deg, var(--dark-navy), #1e293b);
+            color: #fff;
+            padding: 18px;
+            border-radius: 14px;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+        }
+
+        .points-display span {
+            font-size: 28px;
+            font-weight: 800;
+            color: #fbbf24;
+            margin-right: 6px;
+        }
+
+        .add-points-box, .deduct-points-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .deduct-points-box {
+            margin-bottom: 20px;
+            padding-bottom: 18px;
+            border-bottom: 2px dashed var(--border-color);
+        }
+
+        .add-points-box input, .deduct-points-box input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .add-points-box button {
+            flex: 2.2;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--emerald), var(--emerald-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transition: 0.2s;
+        }
+
+        .deduct-points-box button {
+            flex: 2.2;
+            padding: 12px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            transition: 0.2s;
+        }
+
         .redeem-buttons-container {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
+
         .redeem-tier-btn {
-            background-color: #dc3545;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
-            padding: 12px;
+            padding: 13px;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             width: 100%;
             cursor: pointer;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
             transition: 0.2s;
         }
-        .redeem-tier-btn:hover { background-color: #c82333; }
 
-        .reward-settings-box {
-            background: #f8f9fa;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 18px;
-            margin-bottom: 20px;
+        .redeem-tier-btn:hover { transform: translateY(-1px); opacity: 0.95; }
+
+        /* بطاقات الإحصائيات الفاخرة في لوحة المدير */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 18px;
+            margin-bottom: 26px;
         }
+
+        .stat-box {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid var(--border-color);
+            border-right: 5px solid var(--dark-navy);
+            padding: 20px;
+            border-radius: 14px;
+            text-align: right;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+            transition: transform 0.2s;
+        }
+
+        .stat-box:hover { transform: translateY(-3px); }
+        .stat-box:nth-child(2) { border-right-color: var(--emerald); }
+        .stat-box:nth-child(3) { border-right-color: var(--accent-gold); }
+        .stat-box:nth-child(4) { border-right-color: #8b5cf6; }
+
+        .stat-box h4 {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--slate-600);
+        }
+
+        .stat-box .num {
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--dark-navy);
+            line-height: 1.1;
+        }
+
+        /* صناديق الإعدادات في لوحة المدير */
+        .reward-settings-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+        }
+
         .reward-settings-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 14px;
             align-items: flex-end;
-            margin-top: 12px;
+            margin-top: 14px;
         }
+
         .reward-field label {
             display: block;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 700;
             margin-bottom: 6px;
-            color: #444;
-        }
-        .reward-field input, .reward-field select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-family: inherit;
-            font-size: 13px;
-        }
-        .save-reward-btn {
-            background: #111;
-            color: #fff;
-            border: none;
-            padding: 11px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            height: 40px;
-            width: 100%;
-            font-size: 13px;
+            color: var(--slate-600);
         }
 
-        /* شريط تقدم طابور الواتساب الجماعي */
-        .wa-queue-bar {
-            margin-top: 14px;
-            padding: 12px 15px;
+        .reward-field input, .reward-field select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
             background: #fff;
-            border: 1px solid #c3e6cb;
-            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .reward-field input:focus, .reward-field select:focus {
+            outline: none;
+            border-color: var(--dark-navy);
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.06);
+        }
+
+        .save-reward-btn {
+            background: var(--dark-navy);
+            color: #fff;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            height: 44px;
+            width: 100%;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .save-reward-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+
+        /* شريط حملة الواتساب الجماعية */
+        .wa-queue-bar {
+            margin-top: 16px;
+            padding: 14px 18px;
+            background: #ffffff;
+            border: 1px solid #a7f3d0;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
+
         .wa-next-btn {
-            background: #25D366;
+            background: linear-gradient(135deg, #25D366, #16a34a);
             color: #fff;
             border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: bold;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: 700;
             font-size: 14px;
             cursor: pointer;
             flex: 2;
-            min-width: 220px;
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.25);
+            min-width: 230px;
+            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.28);
             transition: 0.2s;
         }
-        .wa-next-btn:hover { background: #1ebe5d; }
-        .wa-next-btn:disabled { background: #999; box-shadow: none; cursor: not-allowed; }
+
+        .wa-next-btn:hover { transform: translateY(-1px); }
+        .wa-next-btn:disabled { background: #94a3b8; box-shadow: none; cursor: not-allowed; }
 
         .wa-util-btn {
-            background: #111;
+            background: var(--dark-navy);
             color: #fff;
             border: none;
-            padding: 10px 14px;
-            border-radius: 8px;
+            padding: 11px 16px;
+            border-radius: 10px;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
+            transition: 0.2s;
         }
 
         .rewards-list-manager {
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 10px;
         }
+
         .reward-item-row {
             background: #fff;
-            border: 1px solid #ddd;
-            padding: 10px 14px;
-            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
+
         .delete-reward-btn {
-            background: #dc3545;
-            color: white;
+            background: #fee2e2;
+            color: #dc2626;
             border: none;
             padding: 6px 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
+            transition: 0.2s;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .stat-box {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-bottom: 4px solid #111;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        .stat-box h4 { margin: 0 0 8px 0; font-size: 13px; color: #666; }
-        .stat-box .num { font-size: 26px; font-weight: bold; color: #111; }
+        .delete-reward-btn:hover { background: #dc2626; color: #fff; }
 
-        .table-wrapper { overflow-x: auto; margin-bottom: 25px; }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; color: #444; }
-        tr:hover { background: #f5f5f5; }
+        /* الجداول الاحترافية */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 28px;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            background: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: right;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th {
+            background: #f8fafc;
+            color: var(--slate-600);
+            font-weight: 800;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f8fafc; }
+
         .action-btn {
-            padding: 6px 10px;
+            padding: 6px 12px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 700;
             color: white;
             margin-left: 4px;
             margin-bottom: 4px;
+            transition: 0.2s;
         }
-        .select-cust-btn { background: #00439c; }
-        .whatsapp-cust-btn { background: #25D366; }
-        .delete-cust-btn { background: #dc3545; }
+
+        .action-btn:hover { transform: translateY(-1px); opacity: 0.92; }
+        .select-cust-btn { background: var(--info); }
+        .whatsapp-cust-btn { background: #16a34a; }
+        .delete-cust-btn { background: var(--danger); }
 
         .log-badge {
             display: inline-block;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
         }
-        .log-add { background: #d4edda; color: #155724; }
-        .log-deduct { background: #fff3cd; color: #856404; }
-        .log-redeem { background: #f8d7da; color: #721c24; }
+        .log-add { background: #dcfce7; color: #166534; }
+        .log-deduct { background: #fef3c7; color: #92400e; }
+        .log-redeem { background: #fee2e2; color: #991b1b; }
         .actor-tag {
             font-size: 12px;
-            padding: 3px 8px;
-            border-radius: 12px;
-            background: #eee;
-            color: #333;
-            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            color: var(--slate-800);
+            font-weight: 700;
         }
     </style>
 </head>
@@ -324,9 +618,9 @@
         
         <!-- 0. شاشة إيقاف الاشتراك -->
         <div id="suspendedScreen" class="container hidden">
-            <div style="font-size:48px; margin-bottom:10px;">⛔</div>
-            <h2 style="color:#dc3545; margin:0 0 10px 0;">الاشتراك متوقف مؤقتاً</h2>
-            <p style="color:#555; font-size:14px; line-height:1.7;">
+            <div style="font-size:52px; margin-bottom:10px;">⛔</div>
+            <h2 style="color:#dc2626; margin:0 0 10px 0; font-weight:800;">الاشتراك متوقف مؤقتاً</h2>
+            <p style="color:#475569; font-size:14px; line-height:1.8;">
                 عذراً، تم إيقاف حساب متجر <b id="suspendedStoreName"></b> مؤقتاً.<br>
                 يرجى التواصل مع إدارة <b>SHABTEN CARD</b> لتجديد الاشتراك وإعادة تفعيل النظام فوراً.
             </p>
@@ -335,40 +629,41 @@
         <!-- 1. صندوق تسجيل الدخول -->
         <div id="authContainer" class="container">
             <span id="loginStoreBadge" class="store-badge">جاري التحميل...</span>
-            <h1>تسجيل الدخول للمتجر</h1>
-            <p style="font-size:13px; color:#666; margin-bottom:15px;">اختر نوع الحساب وأدخل الرمز السري للمتابعة</p>
+            <h1>بوابة الدخول للمتجر</h1>
+            <p style="font-size:13px; color:#64748b; margin:4px 0 18px 0;">اختر صلاحية الدخول وأدخل الرمز السري للمتابعة</p>
 
             <div class="role-tabs">
-                <div id="tabCashier" class="role-tab active">👨‍💼 موظف (كاشير)</div>
-                <div id="tabManager" class="role-tab">👑 مدير المحل</div>
+                <div id="tabCashier" class="role-tab active">👨‍💼 موظف الكاشير</div>
+                <div id="tabManager" class="role-tab">👑 مدير المتجر</div>
             </div>
 
             <input type="password" id="pinInput" class="pin-input" placeholder="أدخل الرمز السري للموظف" />
-            <button id="loginSubmitBtn" class="login-btn">دخول 🔒</button>
+            <button id="loginSubmitBtn" class="login-btn">تسجيل الدخول الآمن 🔒</button>
         </div>
 
         <!-- 2. شاشة الكاشير -->
         <div id="cashierContainer" class="container hidden">
             <div class="top-bar">
-                <span id="roleIndicator" style="font-weight:bold; color:#1e7041;">👨‍💼 وضع الموظف</span>
+                <span id="roleIndicator" style="font-weight:800; color:#059669;">👨‍💼 وضع الموظف</span>
                 <button id="logoutBtn" class="logout-btn">تسجيل خروج 🚪</button>
             </div>
 
             <span id="storeBadge" class="store-badge">المتجر</span>
-            <h1 id="cashierTitle">لوحة الكاشير</h1>
+            <h1 id="cashierTitle">نقطة كاشير الولاء</h1>
+            <p style="font-size:12px; color:#64748b; margin-top:0; margin-bottom:16px;">ابحث برقم بطاقة العميل لإضافة أو استبدال النقاط فوراً</p>
             
             <div class="search-box">
                 <input type="text" id="customerId" placeholder="أدخل رقم البطاقة" />
-                <button id="searchBtn">بحث</button>
+                <button id="searchBtn">بحث 🔍</button>
             </div>
 
             <div id="resultArea" class="hidden">
-                <h3 id="statusMessage" style="margin-top:0;"></h3>
+                <h3 id="statusMessage" style="margin-top:0; font-size:15px;"></h3>
                 
                 <div id="customerDetails" class="customer-info hidden">
-                    <div>الاسم: <strong id="custNameDisplay">-</strong></div>
-                    <div style="margin-top:4px;">رقم الهاتف: <strong id="custPhoneDisplay" dir="ltr">-</strong></div>
-                    <div style="margin-top:4px;">تاريخ الميلاد: <strong id="custBirthDisplay">-</strong></div>
+                    <div>👤 الاسم: <strong id="custNameDisplay">-</strong></div>
+                    <div>📱 رقم الهاتف: <strong id="custPhoneDisplay" dir="ltr">-</strong></div>
+                    <div>🎂 تاريخ الميلاد: <strong id="custBirthDisplay">-</strong></div>
                 </div>
 
                 <div id="birthdayAlert" class="birthday-banner hidden">
@@ -378,20 +673,20 @@
 
                 <div id="actionsArea">
                     <div class="points-display">
-                        النقاط الحالية: <span id="currentPoints">0</span>
+                        رصيد النقاط الحالي: <span id="currentPoints">0</span>
                     </div>
                     
                     <div class="add-points-box">
                         <input type="number" id="pointsToAdd" placeholder="عدد" min="1" value="1" />
-                        <button id="addMultiplePointsBtn">إضافة نقاط (+)</button>
+                        <button id="addMultiplePointsBtn">➕ إضافة نقاط</button>
                     </div>
 
                     <div class="deduct-points-box">
                         <input type="number" id="pointsToDeduct" placeholder="عدد" min="1" value="1" />
-                        <button id="deductMultiplePointsBtn">خصم نقاط (-)</button>
+                        <button id="deductMultiplePointsBtn">➖ خصم نقاط</button>
                     </div>
 
-                    <div style="text-align:right; font-size:13px; font-weight:bold; margin-bottom:6px; color:#444;">🎁 اختر المكافأة المراد استبدالها:</div>
+                    <div style="text-align:right; font-size:13px; font-weight:800; margin-bottom:8px; color:#1e293b;">🎁 استبدال المكافآت المتاحة:</div>
                     <div id="redeemButtonsContainer" class="redeem-buttons-container"></div>
                 </div>
             </div>
@@ -399,30 +694,55 @@
 
         <!-- 3. لوحة الإدارة الكاملة الخاصة بمدير المحل فقط -->
         <div id="managerDashboard" class="manager-container hidden">
-            <h2 style="margin-top:0; border-bottom:2px solid #eee; padding-bottom:10px;">👑 لوحة تقارير وإدارة المتجر (خاصة بالمدير)</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:14px; margin-bottom:22px; flex-wrap:wrap; gap:10px;">
+                <div>
+                    <h2 style="margin:0; font-size:22px; color:#0f172a; font-weight:800;">👑 مركز إدارة وتقارير المتجر</h2>
+                    <span style="font-size:13px; color:#64748b;">تحكم كامل بالعروض، الجوائز، الرقابة المالية، والتسويق عبر واتساب</span>
+                </div>
+            </div>
+
+            <!-- إحصائيات المتجر في الأعلى -->
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h4>👥 إجمالي زبائن المتجر</h4>
+                    <div class="num" id="mgrTotalCustomers">0</div>
+                </div>
+                <div class="stat-box">
+                    <h4>⭐ مجموع النقاط الفعالة</h4>
+                    <div class="num" id="mgrTotalPoints">0</div>
+                </div>
+                <div class="stat-box">
+                    <h4 id="mgrReadyHeader">🎁 مؤهلون لمكافأة</h4>
+                    <div class="num" id="mgrReadyRewards">0</div>
+                </div>
+                <div class="stat-box">
+                    <h4>🎂 أعياد ميلاد اليوم</h4>
+                    <div class="num" id="mgrBirthdaysToday">0</div>
+                </div>
+            </div>
             
             <!-- نشر العروض التسويقية اللحظية -->
-            <div class="reward-settings-box" style="border-color: #d4af37; background: #fffdf5;">
-                <h3 style="margin:0; font-size:16px; color:#111;">📢 نشر عرض تسويقي مباشر على بطاقات جميع زبائن المتجر</h3>
-                <p style="margin:5px 0 0 0; font-size:12px; color:#666;">يظهر هذا العرض فوراً كشريط إعلاني بارز داخل بطاقة كل زبون يفتح بطاقته.</p>
+            <div class="reward-settings-box" style="border-right: 5px solid #d4af37; background: linear-gradient(135deg, #fffbeb, #ffffff);">
+                <h3 style="margin:0; font-size:16px; color:#0f172a; font-weight:800;">📢 نشر عرض تسويقي مباشر على بطاقات جميع الزبائن</h3>
+                <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">يظهر هذا الإعلان فوراً كشريط ذهبي بارز داخل بطاقة كل زبون يفتح بطاقته الرقمية.</p>
                 <div class="reward-settings-grid">
                     <div class="reward-field" style="grid-column: span 2;">
-                        <label>نص العرض أو الإعلان الحالي:</label>
+                        <label>نص العرض أو الإعلان الترويجي:</label>
                         <input type="text" id="promoMessageInput" placeholder="مثال: 🔥 عرض اليوم فقط: نقطتان بدل نقطة على كل طلب!" />
                     </div>
                     <div class="reward-field">
-                        <button id="publishPromoBtn" class="save-reward-btn" style="background:#d4af37; color:#111;">📢 نشر العرض الآن</button>
+                        <button id="publishPromoBtn" class="save-reward-btn" style="background:linear-gradient(135deg, #d4af37, #b48a1e); color:#111;">📢 نشر العرض الآن</button>
                     </div>
                     <div class="reward-field">
-                        <button id="clearPromoBtn" class="save-reward-btn" style="background:#dc3545;">🗑️ إيقاف / مسح العرض</button>
+                        <button id="clearPromoBtn" class="save-reward-btn" style="background:#ef4444;">🗑️ إيقاف / مسح العرض</button>
                     </div>
                 </div>
             </div>
 
             <!-- قسم حملات الواتساب الجماعية وطابور الإرسال السريع -->
-            <div class="reward-settings-box" style="border-color: #25D366; background: #f2fdf6;">
-                <h3 style="margin:0; font-size:16px; color:#111;">💬 حملة واتساب جماعية سريعة لزبائن المتجر</h3>
-                <p style="margin:5px 0 0 0; font-size:12px; color:#555;">اختر الفئة المستهدفة وأرسل لهم واحداً تلو الآخر بضغطات متتالية سريعة (يتم إدراج اسم الزبون ونقاطه تلقائياً لمنع الحظر)، أو انسخ جميع أرقامهم دفعة واحدة.</p>
+            <div class="reward-settings-box" style="border-right: 5px solid #25D366; background: linear-gradient(135deg, #f0fdf4, #ffffff);">
+                <h3 style="margin:0; font-size:16px; color:#0f172a; font-weight:800;">💬 حملات الواتساب الذكية وطابور الإرسال السريع</h3>
+                <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">اختر الفئة المستهدفة وأرسل لهم بالتتابع بضغطة زر (يدرج النظام اسم الزبون ونقاطه تلقائياً)، أو انسخ جميع الأرقام دفعة واحدة.</p>
                 
                 <div class="reward-settings-grid">
                     <div class="reward-field">
@@ -440,92 +760,75 @@
                 </div>
 
                 <div class="wa-queue-bar">
-                    <div id="waQueueStatus" style="font-size:13px; font-weight:bold; color:#155724;">
+                    <div id="waQueueStatus" style="font-size:13px; font-weight:800; color:#166534;">
                         جاري تجهيز قائمة الأرقام...
                     </div>
                     <div style="display:flex; gap:8px; flex-wrap:wrap; flex:1; justify-content:flex-end;">
                         <button id="waSendNextBtn" class="wa-next-btn">📲 إرسال للزبون التالي</button>
-                        <button id="waResetQueueBtn" class="wa-util-btn" style="background:#6c757d;">🔄 البدء من الأول</button>
-                        <button id="waCopyNumbersBtn" class="wa-util-btn" style="background:#00439c;">📋 نسخ جميع الأرقام</button>
+                        <button id="waResetQueueBtn" class="wa-util-btn" style="background:#475569;">🔄 البدء من الأول</button>
+                        <button id="waCopyNumbersBtn" class="wa-util-btn" style="background:#2563eb;">📋 نسخ جميع الأرقام</button>
                     </div>
                 </div>
             </div>
 
             <!-- إدارة الجوائز المتعددة -->
-            <div class="reward-settings-box">
-                <h3 style="margin:0; font-size:16px; color:#111;">🎁 إدارة جوائز ومكافآت المتجر (يمكنك إضافة أكثر من جائزة)</h3>
+            <div class="reward-settings-box" style="border-right: 5px solid #0f172a;">
+                <h3 style="margin:0; font-size:16px; color:#0f172a; font-weight:800;">🎁 مستويات الجوائز والمكافآت (Multiple Tiers)</h3>
                 <div class="reward-settings-grid">
                     <div class="reward-field">
-                        <label>عدد النقاط المطلوبة:</label>
+                        <label>النقاط المطلوبة:</label>
                         <input type="number" id="newRewardPointsInput" min="1" placeholder="مثال: 100 أو 150" />
                     </div>
                     <div class="reward-field" style="grid-column: span 2;">
-                        <label>اسم/وصف الجائزة:</label>
+                        <label>اسم/وصف المكافأة:</label>
                         <input type="text" id="newRewardTitleInput" placeholder="مثال: ساعة لعب مجانية 🎮 أو مشروب مجاني ☕" />
                     </div>
                     <div class="reward-field">
-                        <button id="addRewardTierBtn" class="save-reward-btn" style="background:#1e7041;">➕ إضافة الجائزة</button>
+                        <button id="addRewardTierBtn" class="save-reward-btn" style="background:#10b981;">➕ إضافة الجائزة</button>
                     </div>
                 </div>
                 <div id="managerRewardsList" class="rewards-list-manager"></div>
             </div>
 
-            <!-- نقاط الترحيب التلقائية -->
-            <div class="reward-settings-box" style="border-color: #1e7041; background: #f4fbf7;">
-                <h3 style="margin:0; font-size:16px; color:#111;">🎉 نقاط الترحيب التلقائية للزبون الجديد (Welcome Bonus)</h3>
-                <p style="margin:5px 0 0 0; font-size:12px; color:#666;">تُضاف هذه النقاط تلقائياً لرصيد أي زبون ينشئ بطاقة لأول مرة لتشجيعه على التسجيل (ضع 0 لإلغائها).</p>
-                <div class="reward-settings-grid">
-                    <div class="reward-field" style="grid-column: span 2;">
-                        <label>عدد نقاط الهدية عند التسجيل لأول مرة:</label>
-                        <input type="number" id="welcomePointsInput" min="0" value="0" placeholder="مثال: 1 أو 5 أو 10" />
-                    </div>
-                    <div class="reward-field">
-                        <button id="saveWelcomePtsBtn" class="save-reward-btn" style="background:#1e7041;">حفظ نقاط الترحيب 🎁</button>
+            <!-- صف مزدوج: نقاط الترحيب + الرموز السرية -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:22px;">
+                <div class="reward-settings-box" style="margin-bottom:0; border-right: 5px solid #10b981;">
+                    <h3 style="margin:0; font-size:15px; color:#0f172a; font-weight:800;">🎉 نقاط الترحيب للزبون الجديد</h3>
+                    <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">تُمنح تلقائياً عند التسجيل لأول مرة (ضع 0 لإلغائها).</p>
+                    <div class="reward-settings-grid">
+                        <div class="reward-field">
+                            <label>عدد نقاط الهدية:</label>
+                            <input type="number" id="welcomePointsInput" min="0" value="0" placeholder="0" />
+                        </div>
+                        <div class="reward-field">
+                            <button id="saveWelcomePtsBtn" class="save-reward-btn" style="background:#059669;">حفظ الهدية 🎁</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- الرموز السرية -->
-            <div class="reward-settings-box">
-                <h3 style="margin:0; font-size:16px; color:#111;">🔐 إعدادات الرموز السرية للدخول</h3>
-                <div class="reward-settings-grid">
-                    <div class="reward-field">
-                        <label>رمز الكاشير (الموظف):</label>
-                        <input type="text" id="mgrCashierPinInput" placeholder="1111" />
+                <div class="reward-settings-box" style="margin-bottom:0; border-right: 5px solid #6366f1;">
+                    <h3 style="margin:0; font-size:15px; color:#0f172a; font-weight:800;">🔐 الرموز السرية للدخول</h3>
+                    <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">تخصيص رمز الكاشير ورمز المدير الخاص بالمتجر.</p>
+                    <div class="reward-settings-grid">
+                        <div class="reward-field">
+                            <label>رمز الكاشير:</label>
+                            <input type="text" id="mgrCashierPinInput" placeholder="1111" />
+                        </div>
+                        <div class="reward-field">
+                            <label>رمز المدير:</label>
+                            <input type="text" id="mgrManagerPinInput" placeholder="9999" />
+                        </div>
+                        <div class="reward-field">
+                            <button id="savePinsBtn" class="save-reward-btn">حفظ الرموز 💾</button>
+                        </div>
                     </div>
-                    <div class="reward-field">
-                        <label>رمز مدير المحل:</label>
-                        <input type="text" id="mgrManagerPinInput" placeholder="9999" />
-                    </div>
-                    <div class="reward-field">
-                        <button id="savePinsBtn" class="save-reward-btn">حفظ الرموز السرية 💾</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <h4>إجمالي زبائن المتجر</h4>
-                    <div class="num" id="mgrTotalCustomers">0</div>
-                </div>
-                <div class="stat-box">
-                    <h4>مجموع النقاط الفعالة</h4>
-                    <div class="num" id="mgrTotalPoints">0</div>
-                </div>
-                <div class="stat-box">
-                    <h4 id="mgrReadyHeader">زبائن مؤهلون لجائزة</h4>
-                    <div class="num" id="mgrReadyRewards">0</div>
-                </div>
-                <div class="stat-box">
-                    <h4>أعياد ميلاد اليوم 🎂</h4>
-                    <div class="num" id="mgrBirthdaysToday">0</div>
                 </div>
             </div>
 
             <!-- جدول زبائن المتجر -->
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
-                <h3 style="margin:0;">📋 سجل زبائن المتجر بالكامل</h3>
-                <input type="text" id="mgrSearchInput" placeholder="ابحث بالاسم أو الهاتف أو رقم البطاقة..." style="padding:8px 12px; border:1px solid #ccc; border-radius:6px; width:260px;" />
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+                <h3 style="margin:0; font-size:17px; font-weight:800; color:#0f172a;">📋 قاعدة بيانات زبائن المتجر</h3>
+                <input type="text" id="mgrSearchInput" placeholder="🔍 ابحث بالاسم أو الهاتف أو رقم البطاقة..." style="padding:10px 14px; border:1.5px solid #cbd5e1; border-radius:10px; width:280px; font-size:13px;" />
             </div>
 
             <div class="table-wrapper">
@@ -548,8 +851,8 @@
             </div>
 
             <!-- سجل الرقابة المالية وآخر الحركات -->
-            <div style="border-top:2px solid #eee; padding-top:20px;">
-                <h3 style="margin:0 0 12px 0; color:#111;">🕵️‍♂️ سجل الرقابة المالية وآخر حركات الكاشير (آخر 30 حركة)</h3>
+            <div style="border-top:2px solid #f1f5f9; padding-top:22px;">
+                <h3 style="margin:0 0 14px 0; font-size:17px; font-weight:800; color:#0f172a;">🕵️‍♂️ سجل الرقابة المالية وحركات الكاشير (آخر 30 حركة)</h3>
                 <div class="table-wrapper" style="margin-bottom:0;">
                     <table>
                         <thead>
@@ -633,7 +936,6 @@
         const publishPromoBtn = document.getElementById('publishPromoBtn');
         const clearPromoBtn = document.getElementById('clearPromoBtn');
 
-        // عناصر حملة الواتساب الجماعية
         const waCampaignFilter = document.getElementById('waCampaignFilter');
         const waCustomMessage = document.getElementById('waCustomMessage');
         const waQueueStatus = document.getElementById('waQueueStatus');
@@ -664,11 +966,10 @@
         let currentCustomerName = "";
         let storeCustomersList = [];
 
-        // متغيرات طابور الإرسال الجماعي عبر واتساب
         let waFilteredQueue = [];
         let waCurrentQueueIndex = 0;
 
-        customerIdInput.placeholder = `أدخل رقم البطاقة (مثال: ${expectedPrefix}-12)`;
+        customerIdInput.placeholder = `رقم البطاقة (مثال: ${expectedPrefix}-12)`;
         storeBadge.innerText = `متجر: ${currentCafeId.toUpperCase()}`;
         loginStoreBadge.innerText = `متجر: ${currentCafeId.toUpperCase()}`;
 
@@ -705,7 +1006,6 @@
             }
         }
 
-        // تحديث طابور حملة الواتساب الجماعية بناءً على الفلتر المختار
         function updateWhatsAppCampaignQueue() {
             const filterType = waCampaignFilter.value;
             const minRewardPts = storeRewardsList.length > 0 ? Number(storeRewardsList[0].points) : 10;
@@ -786,16 +1086,16 @@
 
             managerRewardsList.innerHTML = "";
             if (storeRewardsList.length === 0) {
-                managerRewardsList.innerHTML = `<div style="color:#777; font-size:13px;">لا توجد جوائز مضافة حالياً. أضف جائزتك الأولى من الأعلى.</div>`;
+                managerRewardsList.innerHTML = `<div style="color:#64748b; font-size:13px;">لا توجد جوائز مضافة حالياً. أضف جائزتك الأولى من الأعلى.</div>`;
             } else {
                 storeRewardsList.forEach((reward, index) => {
                     const row = document.createElement('div');
                     row.className = 'reward-item-row';
                     row.innerHTML = `
                         <div>
-                            <strong style="color:#1e7041;">${reward.points} نقطة</strong> ⬅️ <span>${reward.title}</span>
+                            <strong style="color:#059669;">${reward.points} نقطة</strong> ⬅️ <span style="font-weight:700;">${reward.title}</span>
                         </div>
-                        <button class="delete-reward-btn" data-index="${index}">🗑️ حذف الجائزة</button>
+                        <button class="delete-reward-btn" data-index="${index}">🗑️ حذف</button>
                     `;
                     managerRewardsList.appendChild(row);
                 });
@@ -818,7 +1118,7 @@
             });
 
             const minPts = storeRewardsList.length > 0 ? storeRewardsList[0].points : 10;
-            mgrReadyHeader.innerText = `زبائن مؤهلون لجائزة (+${minPts})`;
+            mgrReadyHeader.innerText = `🎁 مؤهلون لجائزة (+${minPts})`;
         }
 
         tabCashier.addEventListener('click', () => {
@@ -866,7 +1166,6 @@
                         storeBadge.style.backgroundColor = data.primaryColor;
                         loginStoreBadge.style.backgroundColor = data.primaryColor;
                         searchBtn.style.backgroundColor = data.primaryColor;
-                        loginSubmitBtn.style.backgroundColor = data.primaryColor;
                     }
                     
                     if (Array.isArray(data.rewards) && data.rewards.length > 0) {
@@ -1013,7 +1312,7 @@
                 alert("حدث خطأ أثناء حفظ نقاط الترحيب.");
             } finally {
                 saveWelcomePtsBtn.disabled = false;
-                saveWelcomePtsBtn.innerText = "حفظ نقاط الترحيب 🎁";
+                saveWelcomePtsBtn.innerText = "حفظ الهدية 🎁";
             }
         });
 
@@ -1040,7 +1339,7 @@
                 alert("حدث خطأ أثناء حفظ الرموز.");
             } finally {
                 savePinsBtn.disabled = false;
-                savePinsBtn.innerText = "حفظ الرموز السرية 💾";
+                savePinsBtn.innerText = "حفظ الرموز 💾";
             }
         });
 
@@ -1059,7 +1358,7 @@
                     cashierContainer.classList.remove('hidden');
                     managerDashboard.classList.add('hidden');
                     roleIndicator.innerText = "👨‍💼 وضع الموظف (الكاشير)";
-                    roleIndicator.style.color = "#1e7041";
+                    roleIndicator.style.color = "#059669";
                 } else {
                     alert("❌ الرمز السري للموظف غير صحيح!");
                 }
@@ -1069,8 +1368,8 @@
                     authContainer.classList.add('hidden');
                     cashierContainer.classList.remove('hidden');
                     managerDashboard.classList.remove('hidden');
-                    roleIndicator.innerText = "👑 وضع مدير المحل (صلاحيات كاملة)";
-                    roleIndicator.style.color = "#d4af37";
+                    roleIndicator.innerText = "👑 وضع مدير المتجر (صلاحيات كاملة)";
+                    roleIndicator.style.color = "#b48a1e";
                     await loadManagerDashboardData();
                     await loadStoreAuditLogs();
                 } else {
@@ -1145,15 +1444,15 @@
                 if (customerCafe !== currentCafeId) {
                     currentCustomerId = "";
                     statusMessage.innerText = "⛔ عفواً، هذه البطاقة تابعة لمتجر آخر!";
-                    statusMessage.style.color = "#dc3545";
+                    statusMessage.style.color = "#dc2626";
                     actionsArea.classList.add('hidden');
                     return;
                 }
 
                 currentCustomerId = id;
                 actionsArea.classList.remove('hidden');
-                statusMessage.innerText = "بيانات الزبون:";
-                statusMessage.style.color = "green";
+                statusMessage.innerText = "✅ تم العثور على بطاقة العميل:";
+                statusMessage.style.color = "#059669";
                 currentPointsEl.innerText = data.points || 0;
                 currentCustomerName = data.name || "عميل مميز";
 
@@ -1169,7 +1468,7 @@
             } else {
                 currentCustomerId = "";
                 statusMessage.innerText = "❌ رقم البطاقة غير مسجل في هذا المتجر.";
-                statusMessage.style.color = "#dc3545";
+                statusMessage.style.color = "#dc2626";
                 actionsArea.classList.add('hidden');
             }
         }
@@ -1354,11 +1653,11 @@
                 const bdayBadge = (cust.birthDate && isBirthdayToday(cust.birthDate)) ? ' 🎂' : '';
                 tr.innerHTML = `
                     <td>${idx + 1}</td>
-                    <td style="font-weight:bold;">${cust.name || 'غير معروف'}${bdayBadge}</td>
+                    <td style="font-weight:700;">${cust.name || 'غير معروف'}${bdayBadge}</td>
                     <td dir="ltr" style="text-align:right;">${cust.phone || '---'}</td>
                     <td>${cust.birthDate || '---'}</td>
-                    <td><b>${cust.id}</b></td>
-                    <td style="font-weight:bold; color:#1e7041; font-size:15px;">${cust.points || 0}</td>
+                    <td><span style="background:#f1f5f9; padding:3px 8px; border-radius:6px; font-weight:800;">${cust.id}</span></td>
+                    <td style="font-weight:800; color:#059669; font-size:15px;">${cust.points || 0}</td>
                     <td>
                         <button class="action-btn select-cust-btn" data-id="${cust.id}">🔍 بالكاشير</button>
                         <button class="action-btn whatsapp-cust-btn" data-id="${cust.id}">💬 واتساب</button>
@@ -1414,7 +1713,7 @@
 
                 logBody.innerHTML = "";
                 if (recentLogs.length === 0) {
-                    logBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#777;">لا توجد حركات مسجلة في هذا المتجر بعد.</td></tr>`;
+                    logBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b;">لا توجد حركات مسجلة في هذا المتجر بعد.</td></tr>`;
                     return;
                 }
 
@@ -1434,11 +1733,11 @@
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td style="font-size:12px; color:#555;">${dateStr}</td>
+                        <td style="font-size:12px; color:#64748b;">${dateStr}</td>
                         <td>${badgeHtml}</td>
-                        <td dir="ltr" style="text-align:right; font-weight:bold;">${log.pointsChange}</td>
-                        <td><b>${log.customerName || '-'}</b> <span style="color:#666; font-size:12px;">(${log.customerId})</span></td>
-                        <td style="font-weight:bold;">${log.newBalance}</td>
+                        <td dir="ltr" style="text-align:right; font-weight:800;">${log.pointsChange}</td>
+                        <td><b>${log.customerName || '-'}</b> <span style="color:#64748b; font-size:12px;">(${log.customerId})</span></td>
+                        <td style="font-weight:800;">${log.newBalance}</td>
                         <td><span class="actor-tag">${log.performedBy || 'الكاشير'}</span></td>
                     `;
                     logBody.appendChild(tr);
