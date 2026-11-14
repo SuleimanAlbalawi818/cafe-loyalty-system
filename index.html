@@ -173,24 +173,67 @@
             margin-bottom: 6px;
             color: #444;
         }
-        .reward-field input {
+        .reward-field input, .reward-field select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 6px;
             box-sizing: border-box;
             font-family: inherit;
+            font-size: 13px;
         }
         .save-reward-btn {
             background: #111;
             color: #fff;
             border: none;
-            padding: 11px 20px;
+            padding: 11px 16px;
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
             height: 40px;
             width: 100%;
+            font-size: 13px;
+        }
+
+        /* شريط تقدم طابور الواتساب الجماعي */
+        .wa-queue-bar {
+            margin-top: 14px;
+            padding: 12px 15px;
+            background: #fff;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .wa-next-btn {
+            background: #25D366;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            flex: 2;
+            min-width: 220px;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.25);
+            transition: 0.2s;
+        }
+        .wa-next-btn:hover { background: #1ebe5d; }
+        .wa-next-btn:disabled { background: #999; box-shadow: none; cursor: not-allowed; }
+
+        .wa-util-btn {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
         }
 
         .rewards-list-manager {
@@ -279,7 +322,7 @@
 <body>
     <div class="main-wrapper">
         
-        <!-- 0. شاشة إيقاف الاشتراك (تظهر فوراً إذا تم تجميد المتجر من الإدارة) -->
+        <!-- 0. شاشة إيقاف الاشتراك -->
         <div id="suspendedScreen" class="container hidden">
             <div style="font-size:48px; margin-bottom:10px;">⛔</div>
             <h2 style="color:#dc3545; margin:0 0 10px 0;">الاشتراك متوقف مؤقتاً</h2>
@@ -372,6 +415,38 @@
                     </div>
                     <div class="reward-field">
                         <button id="clearPromoBtn" class="save-reward-btn" style="background:#dc3545;">🗑️ إيقاف / مسح العرض</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم حملات الواتساب الجماعية وطابور الإرسال السريع -->
+            <div class="reward-settings-box" style="border-color: #25D366; background: #f2fdf6;">
+                <h3 style="margin:0; font-size:16px; color:#111;">💬 حملة واتساب جماعية سريعة لزبائن المتجر</h3>
+                <p style="margin:5px 0 0 0; font-size:12px; color:#555;">اختر الفئة المستهدفة وأرسل لهم واحداً تلو الآخر بضغطات متتالية سريعة (يتم إدراج اسم الزبون ونقاطه تلقائياً لمنع الحظر)، أو انسخ جميع أرقامهم دفعة واحدة.</p>
+                
+                <div class="reward-settings-grid">
+                    <div class="reward-field">
+                        <label>🎯 الفئة المستهدفة بالحملة:</label>
+                        <select id="waCampaignFilter">
+                            <option value="all">جميع زبائن المتجر</option>
+                            <option value="ready">المؤهلون لاستلام جائزة فقط 🎁</option>
+                            <option value="birthday">أصحاب أعياد ميلاد اليوم فقط 🎂</option>
+                        </select>
+                    </div>
+                    <div class="reward-field" style="grid-column: span 2;">
+                        <label>✍️ نص رسالة الحملة (اتركه فارغاً لاستخدام الرسالة الذكية التلقائية):</label>
+                        <input type="text" id="waCustomMessage" placeholder="مثال: 🔥 خصم 20% اليوم فقط لحاملي بطاقة الولاء! ننتظركم" />
+                    </div>
+                </div>
+
+                <div class="wa-queue-bar">
+                    <div id="waQueueStatus" style="font-size:13px; font-weight:bold; color:#155724;">
+                        جاري تجهيز قائمة الأرقام...
+                    </div>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; flex:1; justify-content:flex-end;">
+                        <button id="waSendNextBtn" class="wa-next-btn">📲 إرسال للزبون التالي</button>
+                        <button id="waResetQueueBtn" class="wa-util-btn" style="background:#6c757d;">🔄 البدء من الأول</button>
+                        <button id="waCopyNumbersBtn" class="wa-util-btn" style="background:#00439c;">📋 نسخ جميع الأرقام</button>
                     </div>
                 </div>
             </div>
@@ -558,6 +633,14 @@
         const publishPromoBtn = document.getElementById('publishPromoBtn');
         const clearPromoBtn = document.getElementById('clearPromoBtn');
 
+        // عناصر حملة الواتساب الجماعية
+        const waCampaignFilter = document.getElementById('waCampaignFilter');
+        const waCustomMessage = document.getElementById('waCustomMessage');
+        const waQueueStatus = document.getElementById('waQueueStatus');
+        const waSendNextBtn = document.getElementById('waSendNextBtn');
+        const waResetQueueBtn = document.getElementById('waResetQueueBtn');
+        const waCopyNumbersBtn = document.getElementById('waCopyNumbersBtn');
+
         const newRewardPointsInput = document.getElementById('newRewardPointsInput');
         const newRewardTitleInput = document.getElementById('newRewardTitleInput');
         const addRewardTierBtn = document.getElementById('addRewardTierBtn');
@@ -581,9 +664,122 @@
         let currentCustomerName = "";
         let storeCustomersList = [];
 
+        // متغيرات طابور الإرسال الجماعي عبر واتساب
+        let waFilteredQueue = [];
+        let waCurrentQueueIndex = 0;
+
         customerIdInput.placeholder = `أدخل رقم البطاقة (مثال: ${expectedPrefix}-12)`;
         storeBadge.innerText = `متجر: ${currentCafeId.toUpperCase()}`;
         loginStoreBadge.innerText = `متجر: ${currentCafeId.toUpperCase()}`;
+
+        function formatInternationalPhone(rawPhone) {
+            if (!rawPhone) return "";
+            let clean = rawPhone.replace(/\D/g, '');
+            if (clean.startsWith('07')) {
+                clean = '962' + clean.substring(1);
+            } else if (clean.startsWith('05')) {
+                clean = '966' + clean.substring(1);
+            }
+            return clean;
+        }
+
+        function buildCustomerWhatsAppMessage(cust, customText = "") {
+            const minRewardPts = storeRewardsList.length > 0 ? Number(storeRewardsList[0].points) : 10;
+            const firstRewardTitle = storeRewardsList.length > 0 ? storeRewardsList[0].title : 'مكافأتك المجانية';
+            const activePromo = promoMessageInput.value.trim();
+
+            if (customText && customText.trim() !== "") {
+                return `مرحباً ${cust.name || ''} 👋 من *${storeDisplayName}*:\n\n${customText.trim()}\n\n💳 رصيد بطاقتك (${cust.id}): *${cust.points || 0} نقطة*`;
+            }
+
+            if (cust.birthDate && isBirthdayToday(cust.birthDate)) {
+                return `كل عام وأنت بألف خير يا ${cust.name || ''} 🎂🎉! أسرة *${storeDisplayName}* تهنئك بعيد ميلادك وتدعوك لاستلام هدية ميلادك اليوم!`;
+            } else if ((cust.points || 0) >= minRewardPts) {
+                return `مبروك يا ${cust.name || ''} 🎉! رصيدك في *${storeDisplayName}* وصل إلى *${cust.points} نقطة*، ولديك مكافأة جاهزة للاستبدال (${firstRewardTitle}) بانتظارك!`;
+            } else {
+                let msg = `مرحباً ${cust.name || ''} 👋، نسعد بتواصلك معنا من *${storeDisplayName}*!\nرصيد بطاقتك (${cust.id}) الحالي هو: *${cust.points || 0} نقطة*.`;
+                if (activePromo) {
+                    msg += `\n\n📢 *عرضنا الخاص لك:* ${activePromo}`;
+                }
+                return msg;
+            }
+        }
+
+        // تحديث طابور حملة الواتساب الجماعية بناءً على الفلتر المختار
+        function updateWhatsAppCampaignQueue() {
+            const filterType = waCampaignFilter.value;
+            const minRewardPts = storeRewardsList.length > 0 ? Number(storeRewardsList[0].points) : 10;
+
+            waFilteredQueue = storeCustomersList.filter(c => {
+                const hasValidPhone = formatInternationalPhone(c.phone).length >= 8;
+                if (!hasValidPhone) return false;
+
+                if (filterType === 'ready') {
+                    return (c.points || 0) >= minRewardPts;
+                } else if (filterType === 'birthday') {
+                    return c.birthDate && isBirthdayToday(c.birthDate);
+                }
+                return true;
+            });
+
+            waCurrentQueueIndex = 0;
+            renderWhatsAppQueueUI();
+        }
+
+        function renderWhatsAppQueueUI() {
+            const total = waFilteredQueue.length;
+            if (total === 0) {
+                waQueueStatus.innerText = "⚠️ لا يوجد زبائن بأرقام هواتف ضمن هذه الفئة حالياً.";
+                waSendNextBtn.disabled = true;
+                waSendNextBtn.innerText = "لا يوجد زبائن للإرسال";
+                return;
+            }
+
+            if (waCurrentQueueIndex >= total) {
+                waQueueStatus.innerText = `✅ اكتملت الحملة بنجاح! تم المرور على جميع الزبائن (${total}/${total}).`;
+                waSendNextBtn.disabled = true;
+                waSendNextBtn.innerText = "🎉 تم الانتهاء من القائمة";
+                return;
+            }
+
+            const nextCust = waFilteredQueue[waCurrentQueueIndex];
+            waQueueStatus.innerText = `📊 جاهز للإرسال: الزبون (${waCurrentQueueIndex + 1}) من أصل (${total})`;
+            waSendNextBtn.disabled = false;
+            waSendNextBtn.innerText = `📲 إرسال للزبون (${waCurrentQueueIndex + 1}/${total}): ${nextCust.name || nextCust.id}`;
+        }
+
+        waCampaignFilter.addEventListener('change', () => {
+            updateWhatsAppCampaignQueue();
+        });
+
+        waResetQueueBtn.addEventListener('click', () => {
+            waCurrentQueueIndex = 0;
+            renderWhatsAppQueueUI();
+        });
+
+        waSendNextBtn.addEventListener('click', () => {
+            if (waCurrentQueueIndex >= waFilteredQueue.length) return;
+            const targetCust = waFilteredQueue[waCurrentQueueIndex];
+            const cleanPhone = formatInternationalPhone(targetCust.phone);
+            const msg = buildCustomerWhatsAppMessage(targetCust, waCustomMessage.value);
+
+            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+            waCurrentQueueIndex++;
+            renderWhatsAppQueueUI();
+        });
+
+        waCopyNumbersBtn.addEventListener('click', async () => {
+            if (waFilteredQueue.length === 0) {
+                return alert("لا توجد أرقام لنسخها في هذه الفئة!");
+            }
+            const numbersList = waFilteredQueue.map(c => `+${formatInternationalPhone(c.phone)}`).join('\n');
+            try {
+                await navigator.clipboard.writeText(numbersList);
+                alert(`✅ تم نسخ (${waFilteredQueue.length}) رقم هاتف بالصيغة الدولية بنجاح! يمكنك لصقها في قائمة بث واتساب.`);
+            } catch (e) {
+                prompt("انسخ الأرقام التالية:", numbersList);
+            }
+        });
 
         function renderRewardsUI() {
             storeRewardsList.sort((a, b) => Number(a.points) - Number(b.points));
@@ -639,7 +835,6 @@
             pinInput.placeholder = "أدخل الرمز السري لمدير المحل";
         });
 
-        // مراقبة حية ومباشرة لحالة اشتراك المتجر وإعداداته
         function watchStoreConfigLive() {
             const cafeRef = doc(db, "cafes", currentCafeId);
             onSnapshot(cafeRef, (cafeSnap) => {
@@ -647,7 +842,6 @@
                     const data = cafeSnap.data();
                     storeDisplayName = data.name || currentCafeId.toUpperCase();
 
-                    // فحص فوري إذا تم إيقاف المتجر من لوحة الإدارة الشاملة
                     if (data.isActive === false) {
                         isStoreSuspended = true;
                         activeRole = null;
@@ -658,7 +852,6 @@
                         managerDashboard.classList.add('hidden');
                         return;
                     } else {
-                        // إذا تم إعادة تفعيله، نخفي شاشة الإيقاف ونظهر شاشة الدخول إذا لم يكن مسجلاً
                         isStoreSuspended = false;
                         suspendedScreen.classList.add('hidden');
                         if (!activeRole) {
@@ -1101,30 +1294,10 @@
         }
 
         function sendWhatsAppToCustomer(cust) {
-            if (!cust.phone) return alert("لا يوجد رقم هاتف مسجل لهذا الزبون!");
-            let cleanPhone = cust.phone.replace(/\D/g, '');
-            if (cleanPhone.startsWith('07')) {
-                cleanPhone = '962' + cleanPhone.substring(1);
-            } else if (cleanPhone.startsWith('05')) {
-                cleanPhone = '966' + cleanPhone.substring(1);
-            }
-
-            const minRewardPts = storeRewardsList.length > 0 ? Number(storeRewardsList[0].points) : 10;
-            const firstRewardTitle = storeRewardsList.length > 0 ? storeRewardsList[0].title : 'مكافأتك المجانية';
-            const activePromo = promoMessageInput.value.trim();
-
-            let msg = `مرحباً ${cust.name || ''} 👋، نسعد بتواصلك معنا من *${storeDisplayName}*!\nرصيد بطاقتك (${cust.id}) الحالي هو: *${cust.points || 0} نقطة*.`;
-
-            if (cust.birthDate && isBirthdayToday(cust.birthDate)) {
-                msg = `كل عام وأنت بألف خير يا ${cust.name || ''} 🎂🎉! أسرة *${storeDisplayName}* تهنئك بعيد ميلادك وتدعوك لاستلام هدية ميلادك اليوم!`;
-            } else if ((cust.points || 0) >= minRewardPts) {
-                msg = `مبروك يا ${cust.name || ''} 🎉! رصيدك في *${storeDisplayName}* وصل إلى *${cust.points} نقطة*، ولديك مكافأة جاهزة للاستبدال (${firstRewardTitle}) بانتظارك!`;
-            } else if (activePromo) {
-                msg += `\n\n📢 *عرضنا الخاص لك:* ${activePromo}`;
-            }
-
-            const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
-            window.open(waUrl, '_blank');
+            const cleanPhone = formatInternationalPhone(cust.phone);
+            if (!cleanPhone) return alert("لا يوجد رقم هاتف مسجل لهذا الزبون!");
+            const msg = buildCustomerWhatsAppMessage(cust, waCustomMessage.value);
+            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         async function loadManagerDashboardData() {
@@ -1160,6 +1333,7 @@
                 document.getElementById('mgrBirthdaysToday').innerText = birthdaysCount;
 
                 renderManagerTable(storeCustomersList);
+                updateWhatsAppCampaignQueue();
             } catch (err) {
                 console.error(err);
                 mgrTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">خطأ في تحميل البيانات</td></tr>`;
