@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بطاقة الولاء - SHABTEN CARD</title>
+    <title>بطاقة الولاء الرقمية - SHABTEN CARD</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SHABTEN CARD">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #eef2f5;
+            background: radial-gradient(circle at top, #e2e8f0 0%, #f8fafc 55%, #eef2f6 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -18,23 +25,24 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            box-sizing: border-box;
         }
+
         .hidden { display: none !important; }
 
         .loader-box {
             background: #fff;
-            padding: 40px 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 42px 32px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
             text-align: center;
-            font-weight: bold;
-            color: #333;
+            font-weight: 700;
+            color: #1e293b;
         }
+
         .spinner {
-            width: 40px; height: 40px;
-            border: 4px solid #ddd;
-            border-top-color: #111;
+            width: 42px; height: 42px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #0f172a;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin: 0 auto 15px auto;
@@ -43,27 +51,40 @@
 
         .card-wrapper {
             width: 100%;
-            max-width: 410px;
+            max-width: 425px;
             text-align: center;
         }
 
         .loyalty-card {
-            background: linear-gradient(135deg, #222222, #111111);
+            background: linear-gradient(135deg, #1e293b, #0f172a);
             color: #fff;
-            border-radius: 20px;
-            padding: 22px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            border-radius: 26px;
+            padding: 26px 22px;
+            box-shadow: 0 22px 45px -8px rgba(15, 23, 42, 0.35);
             position: relative;
             overflow: hidden;
             text-align: right;
             margin-bottom: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        /* لمعان خفيف خلف البطاقة */
+        .loyalty-card::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .store-info {
@@ -73,79 +94,83 @@
         }
 
         .store-logo {
-            width: 54px;
-            height: 54px;
+            width: 58px;
+            height: 58px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid rgba(255,255,255,0.85);
+            border: 2.5px solid rgba(255, 255, 255, 0.9);
             background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         .store-name {
-            font-size: 18px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            line-height: 1.3;
         }
 
         .brand-badge {
             font-size: 10px;
-            background: rgba(255,255,255,0.18);
-            padding: 4px 8px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 5px 10px;
+            border-radius: 999px;
             letter-spacing: 1px;
-            font-weight: bold;
+            font-weight: 800;
         }
 
-        /* شريط العروض التسويقية المباشرة */
         .promo-banner {
-            background: linear-gradient(90deg, #ffd700, #ffae00);
-            color: #111;
-            padding: 10px 14px;
-            border-radius: 12px;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            color: #0f172a;
+            padding: 11px 14px;
+            border-radius: 14px;
             font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 15px;
+            font-weight: 800;
+            margin-bottom: 16px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.22);
             line-height: 1.5;
         }
 
         .points-box {
-            background: rgba(255,255,255,0.12);
-            border-radius: 14px;
-            padding: 16px;
+            background: rgba(255, 255, 255, 0.11);
+            border-radius: 18px;
+            padding: 18px 16px;
             text-align: center;
             margin-bottom: 18px;
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.16);
         }
 
         .points-label {
             font-size: 13px;
+            font-weight: 700;
             opacity: 0.9;
             margin-bottom: 2px;
         }
 
         .points-value {
-            font-size: 34px;
-            font-weight: bold;
-            line-height: 1.2;
+            font-size: 38px;
+            font-weight: 800;
+            line-height: 1.15;
+            color: #ffffff;
         }
 
         .progress-track {
             width: 100%;
-            height: 10px;
-            background: rgba(0,0,0,0.35);
-            border-radius: 10px;
+            height: 11px;
+            background: rgba(0, 0, 0, 0.38);
+            border-radius: 999px;
             overflow: hidden;
-            margin: 12px 0;
+            margin: 14px 0;
         }
 
         .progress-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #ffd700, #ffae00);
-            border-radius: 10px;
+            background: linear-gradient(90deg, #fde047, #f59e0b);
+            border-radius: 999px;
             transition: width 0.5s ease-in-out;
         }
 
@@ -158,73 +183,80 @@
         }
 
         .stamp-circle {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            border: 2px dashed rgba(255,255,255,0.35);
+            background: rgba(255, 255, 255, 0.09);
+            border: 2px dashed rgba(255, 255, 255, 0.35);
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 16px;
-            color: rgba(255,255,255,0.5);
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.6);
             transition: all 0.35s ease;
         }
 
         .stamp-circle.active {
-            background: #fff;
-            border: 2px solid #ffd700;
-            color: #111;
-            transform: scale(1.06);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            background: #ffffff;
+            border: 2px solid #fbbf24;
+            color: #0f172a;
+            transform: scale(1.07);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.28);
         }
 
         .tiers-list {
-            margin-top: 12px;
+            margin-top: 14px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 7px;
             text-align: right;
         }
+
         .tier-item {
-            background: rgba(0,0,0,0.25);
-            padding: 8px 12px;
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.28);
+            padding: 9px 12px;
+            border-radius: 10px;
             font-size: 12px;
+            font-weight: 600;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
+
         .tier-item.unlocked {
-            background: rgba(40, 167, 69, 0.45);
-            border-color: #ffd700;
-            font-weight: bold;
+            background: rgba(16, 185, 129, 0.45);
+            border-color: #fbbf24;
+            font-weight: 800;
         }
+
         .tier-status {
             font-size: 11px;
-            padding: 3px 7px;
-            border-radius: 6px;
-            background: rgba(255,255,255,0.15);
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.16);
+            font-weight: 700;
         }
+
         .tier-item.unlocked .tier-status {
-            background: #ffd700;
-            color: #111;
-            font-weight: bold;
+            background: #fbbf24;
+            color: #0f172a;
+            font-weight: 800;
         }
 
         .motivation-text {
             font-size: 13px;
-            font-weight: bold;
-            margin-top: 10px;
-            padding: 8px 10px;
-            border-radius: 8px;
-            background: rgba(0,0,0,0.3);
+            font-weight: 700;
+            margin-top: 12px;
+            padding: 9px 12px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.32);
             color: #fff;
         }
 
         .motivation-ready {
-            background: rgba(40, 167, 69, 0.85);
+            background: rgba(16, 185, 129, 0.88);
             color: #fff;
         }
 
@@ -233,75 +265,82 @@
             justify-content: space-between;
             align-items: flex-end;
             font-size: 14px;
-            border-top: 1px solid rgba(255,255,255,0.15);
-            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.16);
+            padding-top: 14px;
         }
 
         .cust-label {
             font-size: 11px;
-            opacity: 0.75;
+            font-weight: 600;
+            opacity: 0.78;
         }
 
         .cust-val {
-            font-weight: bold;
-            font-size: 15px;
+            font-weight: 800;
+            font-size: 16px;
             margin-top: 2px;
         }
 
         .wallet-btn {
             width: 100%;
             padding: 15px;
-            background: #000;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
             color: #fff;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 15px;
-            font-weight: bold;
+            font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-            transition: 0.3s;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3);
+            transition: transform 0.2s, opacity 0.2s;
         }
-        .wallet-btn:hover { opacity: 0.9; }
-        .wallet-btn:disabled { background: #666; cursor: not-allowed; }
+
+        .wallet-btn:hover { transform: translateY(-2px); opacity: 0.95; }
+        .wallet-btn:disabled { background: #64748b; cursor: not-allowed; }
 
         .ios-modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6);
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
             padding: 20px;
         }
+
         .ios-modal-box {
             background: #fff;
-            border-radius: 18px;
-            padding: 24px;
-            max-width: 350px;
+            border-radius: 20px;
+            padding: 26px;
+            max-width: 360px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.35);
         }
+
         .ios-steps {
             text-align: right;
-            background: #f8f9fa;
+            background: #f8fafc;
             padding: 14px;
             border-radius: 12px;
             font-size: 13px;
+            font-weight: 600;
             line-height: 1.8;
-            color: #333;
+            color: #1e293b;
             margin: 15px 0;
-            border: 1px solid #e9ecef;
+            border: 1px solid #e2e8f0;
         }
+
         .close-modal-btn {
-            background: #111;
+            background: #0f172a;
             color: #fff;
             border: none;
             padding: 12px;
             width: 100%;
             border-radius: 10px;
-            font-weight: bold;
+            font-weight: 800;
             font-size: 14px;
             cursor: pointer;
         }
@@ -311,7 +350,7 @@
 
     <div id="loadingBox" class="loader-box">
         <div class="spinner"></div>
-        <div id="loadingText">جاري تجهيز بطاقتك...</div>
+        <div id="loadingText">جاري تجهيز بطاقتك الرقمية...</div>
     </div>
 
     <div id="cardWrapper" class="card-wrapper hidden">
@@ -321,13 +360,12 @@
                     <img id="cardLogo" class="store-logo hidden" src="" alt="Logo">
                     <div>
                         <div id="cardStoreName" class="store-name">بطاقة الولاء</div>
-                        <div id="rewardHint" style="font-size:11px; opacity:0.85;">اجمع النقاط واستبدلها بمكافآت فورية</div>
+                        <div id="rewardHint" style="font-size:11px; font-weight:600; opacity:0.85;">اجمع النقاط واستبدلها بمكافآت فورية</div>
                     </div>
                 </div>
                 <span class="brand-badge">SHABTEN CARD</span>
             </div>
 
-            <!-- شريط العروض التسويقية المباشرة من مدير المتجر -->
             <div id="storePromoBanner" class="promo-banner hidden"></div>
 
             <div class="points-box">
@@ -362,12 +400,11 @@
         </button>
     </div>
 
-    <!-- نافذة تنبيه خاصة بمستخدمي الآيفون -->
     <div id="iosModal" class="ios-modal-overlay hidden">
         <div class="ios-modal-box">
-            <div style="font-size: 36px; margin-bottom: 8px;">🍎</div>
-            <h3 style="margin: 0 0 8px 0; color: #111;">إضافة إلى Apple Wallet (قريباً!)</h3>
-            <p style="font-size: 13px; color: #555; margin: 0;">
+            <div style="font-size: 38px; margin-bottom: 8px;">🍎</div>
+            <h3 style="margin: 0 0 8px 0; color: #0f172a; font-weight:800;">إضافة إلى Apple Wallet (قريباً!)</h3>
+            <p style="font-size: 13px; color: #475569; margin: 0; font-weight:600;">
                 سيتم تفعيل الربط المباشر مع Apple Wallet قريباً جداً! يمكنك الآن حفظ بطاقتك كتطبيق مباشر على شاشة الآيفون الرئيسية لفتحها بلمسة واحدة:
             </p>
             <div class="ios-steps">
@@ -433,7 +470,6 @@
 
         let customerDataGlobal = null;
         let cafeDataGlobal = {};
-        // قيمة افتراضية آمنة تمنع حدوث أي خطأ أثناء التحميل
         let storeRewards = [{ points: 10, title: "مكافأة مجانية 🎁" }];
         let stampIcon = "☕";
 
@@ -441,7 +477,6 @@
             cafeDataGlobal = data || {};
             cardStoreName.innerText = cafeDataGlobal.name || cafeId.toUpperCase();
 
-            // إظهار أو إخفاء العرض التسويقي المباشر
             if (cafeDataGlobal.promoMessage && cafeDataGlobal.promoMessage.trim() !== "") {
                 storePromoBanner.innerText = `📢 ${cafeDataGlobal.promoMessage}`;
                 storePromoBanner.classList.remove('hidden');
@@ -467,8 +502,8 @@
                 cardLogo.classList.remove('hidden');
             }
 
-            const pColor = cafeDataGlobal.primaryColor || '#222222';
-            const sColor = cafeDataGlobal.secondaryColor || '#111111';
+            const pColor = cafeDataGlobal.primaryColor || '#1e293b';
+            const sColor = cafeDataGlobal.secondaryColor || '#0f172a';
             loyaltyCard.style.background = `linear-gradient(135deg, ${pColor}, ${sColor})`;
         }
 
@@ -509,7 +544,7 @@
                     const circle = document.createElement('div');
                     circle.className = `stamp-circle ${reached ? 'active' : ''}`;
                     circle.style.fontSize = "12px";
-                    circle.style.fontWeight = "bold";
+                    circle.style.fontWeight = "800";
                     circle.innerText = reached ? "🎁" : tier.points;
                     stampsGrid.appendChild(circle);
                 });
@@ -521,7 +556,7 @@
                     const circle = document.createElement('div');
                     circle.className = `stamp-circle ${isReached ? 'active' : ''}`;
                     circle.style.fontSize = "12px";
-                    circle.style.fontWeight = "bold";
+                    circle.style.fontWeight = "800";
                     circle.innerText = isReached ? (step === 5 ? "🎁" : stampIcon) : milestoneValue;
                     stampsGrid.appendChild(circle);
                 }
@@ -578,13 +613,11 @@
 
                 if (cafeId) {
                     const cafeRef = doc(db, "cafes", cafeId);
-                    // جلب بيانات المتجر أولاً لضمان عدم فراغ الجوائز
                     const initialCafeSnap = await getDoc(cafeRef);
                     if (initialCafeSnap.exists()) {
                         applyCafeBranding(initialCafeSnap.data());
                     }
 
-                    // ثم تفعيل المراقبة اللحظية لأي عرض جديد ينشره المدير
                     onSnapshot(cafeRef, (liveCafeSnap) => {
                         if (liveCafeSnap.exists()) {
                             applyCafeBranding(liveCafeSnap.data());
@@ -639,7 +672,7 @@
                         cafeId: cafeId,
                         cafeName: cafeDataGlobal.name || cafeId.toUpperCase(),
                         logoUrl: cafeDataGlobal.logoUrl || '',
-                        primaryColor: cafeDataGlobal.primaryColor || '#111111'
+                        primaryColor: cafeDataGlobal.primaryColor || '#0f172a'
                     })
                 });
 

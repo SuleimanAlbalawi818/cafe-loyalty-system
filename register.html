@@ -3,108 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة العملاء - SHABTEN CARD</title>
+    <title>بوابة العملاء الذكية - SHABTEN CARD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #eef2f5; 
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; margin: 0; padding: 15px; box-sizing: border-box;
+        :root {
+            --dark-navy: #0f172a;
+            --slate-800: #1e293b;
+            --slate-600: #475569;
+            --border-color: #e2e8f0;
+            --gold: #d4af37;
+            --emerald: #10b981;
         }
-        .register-container { 
-            background: #fff; padding: 28px; border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            width: 100%; max-width: 400px; text-align: center; 
+
+        * {
             box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
         }
+
+        body { 
+            background: radial-gradient(circle at top right, #e2e8f0 0%, #f8fafc 50%, #eef2f6 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+            min-height: 100vh;
+            margin: 0;
+            padding: 18px;
+            color: var(--slate-800);
+        }
+
+        .register-container { 
+            background: #ffffff;
+            padding: 34px 28px;
+            border-radius: 24px; 
+            box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.12), 0 4px 16px rgba(15, 23, 42, 0.04); 
+            width: 100%;
+            max-width: 420px;
+            text-align: center; 
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .register-container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--dark-navy), var(--gold), var(--emerald));
+        }
+
         .hidden { display: none !important; }
 
         .loader-box {
-            padding: 40px 10px;
-            color: #444;
-            font-weight: bold;
+            padding: 45px 10px;
+            color: var(--slate-800);
+            font-weight: 700;
             font-size: 15px;
         }
+
         .spinner {
-            width: 40px; height: 40px;
-            border: 4px solid #ddd;
-            border-top-color: #111;
+            width: 44px;
+            height: 44px;
+            border: 4px solid #e2e8f0;
+            border-top-color: var(--dark-navy);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin: 0 auto 15px auto;
+            margin: 0 auto 16px auto;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        .logo-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
         .logo { 
-            width: 85px; height: 85px; border-radius: 50%; 
-            border: 3px solid #ddd; margin-bottom: 10px; 
+            width: 92px;
+            height: 92px;
+            border-radius: 50%; 
+            border: 3px solid var(--dark-navy);
             object-fit: cover;
             background-color: #fff;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
         }
-        h1 { color: #111; font-size: 20px; margin-top: 0; margin-bottom: 6px; }
-        p { color: #666; font-size: 13px; margin-bottom: 14px; line-height: 1.5; }
+
+        h1 {
+            color: var(--dark-navy);
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0 0 6px 0;
+        }
+
+        p {
+            color: var(--slate-600);
+            font-size: 13px;
+            font-weight: 600;
+            margin: 0 0 18px 0;
+            line-height: 1.6;
+        }
         
         .welcome-bonus-banner {
-            background: linear-gradient(135deg, #fff3cd, #ffeeba);
-            color: #856404;
-            border: 1px solid #ffe8a1;
-            padding: 10px 12px;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            border: 1px solid #f59e0b;
+            padding: 12px 14px;
+            border-radius: 14px;
             font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 16px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+            font-weight: 800;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
         }
 
         .mode-tabs {
             display: flex;
             gap: 8px;
-            margin-bottom: 20px;
-            background: #f1f3f5;
-            padding: 5px;
-            border-radius: 10px;
+            margin-bottom: 22px;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: 14px;
         }
+
         .mode-tab {
             flex: 1;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 11px 8px;
+            border-radius: 10px;
             font-size: 13px;
-            font-weight: bold;
-            color: #555;
+            font-weight: 700;
+            color: var(--slate-600);
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.25s ease;
         }
+
         .mode-tab.active {
-            background: #fff;
-            color: #111;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background: var(--dark-navy);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
         }
 
         .field-label {
             display: block;
             text-align: right;
             font-size: 13px;
-            color: #444;
+            color: var(--slate-800);
             margin-bottom: 6px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         input { 
-            width: 100%; padding: 13px; margin-bottom: 14px; 
-            border: 1px solid #ccc; border-radius: 8px; 
-            box-sizing: border-box; font-family: inherit; font-size: 15px;
+            width: 100%;
+            padding: 13px 15px;
+            margin-bottom: 14px; 
+            border: 1.5px solid #cbd5e1;
+            border-radius: 12px; 
+            background: #f8fafc;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
         }
-        input:focus { outline: none; border-color: #555; }
+
+        input:focus {
+            outline: none;
+            border-color: var(--dark-navy);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.06);
+        }
         
         button { 
-            width: 100%; padding: 14px; background: #111;
-            color: white; border: none; border-radius: 8px; 
-            font-size: 16px; font-weight: bold; cursor: pointer; 
-            transition: opacity 0.3s; 
-            margin-top: 5px;
+            width: 100%;
+            padding: 14px;
+            background: var(--dark-navy);
+            color: white;
+            border: none;
+            border-radius: 12px; 
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer; 
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s; 
+            margin-top: 6px;
+            box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.3);
         }
-        button:hover { opacity: 0.9; }
-        button:disabled { background: #888 !important; cursor: not-allowed; }
+
+        button:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        button:disabled {
+            background: #94a3b8 !important;
+            box-shadow: none;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .brand-footer {
+            margin-top: 22px;
+            padding-top: 14px;
+            border-top: 1px solid #f1f5f9;
+            font-size: 11px;
+            font-weight: 800;
+            color: #94a3b8;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
@@ -112,11 +214,13 @@
     <div class="register-container">
         <div id="loadingScreen" class="loader-box">
             <div class="spinner"></div>
-            <div>جاري تحميل بيانات المتجر...</div>
+            <div>جاري تحميل بوابة المتجر...</div>
         </div>
 
         <div id="mainContent" class="hidden">
-            <img id="displayCafeLogo" class="logo hidden" src="" alt="شعار المتجر">
+            <div class="logo-wrapper">
+                <img id="displayCafeLogo" class="logo hidden" src="" alt="شعار المتجر">
+            </div>
             <h1 id="cafeTitle">برنامج الولاء</h1>
             <p id="cafeDesc">سجل معنا واجمع النقاط مع كل زيارة للحصول على مكافأتك المجانية ✨</p>
 
@@ -128,20 +232,25 @@
             </div>
 
             <div id="newCustomerForm">
-                <input type="text" id="custName" placeholder="الاسم الكريم">
-                <input type="tel" id="custPhone" placeholder="رقم الهاتف (مثال: 079xxxxxxx)">
+                <label for="custName" class="field-label">👤 الاسم الكريم:</label>
+                <input type="text" id="custName" placeholder="أدخل اسمك الثنائي">
 
-                <label for="custBirthDate" class="field-label">تاريخ الميلاد للحصول على هدية ميلادك 🎂:</label>
+                <label for="custPhone" class="field-label">📱 رقم الهاتف:</label>
+                <input type="tel" id="custPhone" placeholder="مثال: 079xxxxxxx">
+
+                <label for="custBirthDate" class="field-label">🎂 تاريخ الميلاد (للحصول على هدية ميلادك):</label>
                 <input type="date" id="custBirthDate">
 
-                <button id="registerBtn">إصدار بطاقتي الآن</button>
+                <button id="registerBtn">إصدار بطاقتي الرقمية الآن 🚀</button>
             </div>
 
             <div id="loginCustomerForm" class="hidden">
-                <label for="loginIdentifier" class="field-label">أدخل رقم هاتفك أو رقم البطاقة:</label>
+                <label for="loginIdentifier" class="field-label">🔍 أدخل رقم هاتفك أو رقم البطاقة:</label>
                 <input type="text" id="loginIdentifier" placeholder="رقم الهاتف أو كود البطاقة (مثال: MAN-12)">
                 <button id="loginCustBtn">فتح بطاقتي الحالية 🔓</button>
             </div>
+
+            <div class="brand-footer">POWERED BY SHABTEN CARD</div>
         </div>
     </div>
 
@@ -252,12 +361,10 @@
 
         fetchCafeData();
 
-        // دالة بحث فائقة السرعة تستخدم الاستعلام المفلتر بدلاً من تحميل كل الزبائن
         async function findExistingCustomerInStoreFast(phoneOrId) {
             const cleanInput = phoneOrId.trim().toUpperCase();
             const cleanPhone = phoneOrId.replace(/\s+/g, '');
 
-            // 1. إذا أدخل كود بطاقة (يحتوي على شرطة مثل MAN-12)، نفحصه مباشرة بطلب واحد فقط
             if (cleanInput.includes('-')) {
                 const directSnap = await getDoc(doc(db, "customers", cleanInput));
                 if (directSnap.exists() && (directSnap.data().cafeId || '').toLowerCase() === cafeId) {
@@ -265,7 +372,6 @@
                 }
             }
 
-            // 2. استعلام سريع ومباشر عن زبائن هذا المتجر فقط
             const q = query(collection(db, "customers"), where("cafeId", "==", cafeId));
             const snap = await getDocs(q);
             let matchedId = null;
@@ -321,7 +427,6 @@
                 const newCardId = await generateShortCardIdFast(cafeId);
                 const initialPoints = storeWelcomePoints > 0 ? storeWelcomePoints : 0;
 
-                // حفظ البطاقة وسجل الترحيب في نفس اللحظة (Parallel) لتوفير الوقت
                 const savePromises = [
                     setDoc(doc(db, "customers", newCardId), {
                         name: name,
@@ -355,7 +460,7 @@
                 console.error(error);
                 alert("حدث خطأ أثناء التسجيل. حاول مرة أخرى.");
                 registerBtn.disabled = false;
-                registerBtn.innerText = "إصدار بطاقتي الآن";
+                registerBtn.innerText = "إصدار بطاقتي الرقمية الآن 🚀";
             }
         });
 
